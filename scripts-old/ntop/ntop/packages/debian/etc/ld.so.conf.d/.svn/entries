@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="3201"
+   name=""
+   committed-date="2007-06-13T15:34:14.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/packages/debian/etc/ld.so.conf.d"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="3201"
+   name="ntop.conf"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-06-13T15:34:14.000000Z"
+   checksum="bcdcb23c5d5fb460cee2ce315ef7bd32"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+</wc-entries>

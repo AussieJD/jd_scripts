@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1188"
+   name=""
+   committed-date="2002-09-19T08:30:58.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/www"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   name="Python"
+   kind="dir"/>
+<entry
+   name="Perl"
+   kind="dir"/>
+<entry
+   committed-rev="604"
+   name="FILES"
+   text-time="2008-01-04T00:38:19.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="be272c99291fd8c49446fb586bd0eeda"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:16.000000Z"/>
+<entry
+   name="PHP"
+   kind="dir"/>
+<entry
+   committed-rev="1030"
+   name="README"
+   text-time="2008-01-04T00:38:19.000000Z"
+   committed-date="2002-07-09T03:09:44.000000Z"
+   checksum="099554e815ed8a07eb128313dc38a9c1"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:38:19.000000Z"/>
+</wc-entries>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="3130"
+   name=""
+   committed-date="2007-02-26T22:26:11.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/html/img_inquisitor"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="3130"
+   name="ul_corner_br.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="bb46320fca21d6eff5b3b9a6ed49ebf0"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="ul_corner_tr.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="e6a58041b01f257a650414226830a245"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="hl_corner_br.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="32f0e32a5049d7aa7cf7e22a719c652d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="hl_corner_tr.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="deb05ee41b50924a4b3cfc8b0675873c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="as_pointer.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="49fb70c3b1847681765ad41cc80249b8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="ul_corner_bl.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="591663976ecafcde990e6bd9393f4325"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="ul_corner_tl.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="2d367d395a2a0b1b5f2d833c29d9c973"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="hl_corner_bl.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="8eb62ad85a373497879c92eb1afba384"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+<entry
+   committed-rev="3130"
+   name="hl_corner_tl.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2007-02-26T22:26:11.000000Z"
+   checksum="1a1b1f06c8e1ece6d805e9ffd2fa0e1c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:26.000000Z"/>
+</wc-entries>

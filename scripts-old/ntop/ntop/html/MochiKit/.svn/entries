@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="3126"
+   name=""
+   committed-date="2007-02-25T16:19:47.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/html/MochiKit"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="3126"
+   name="MochiKit.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="6da687e791cef7816d2f12bdb0de2ffd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:42.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Base.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="256ed996e9ddd3da299be2c0ff46638a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:44.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Signal.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="dcfeb33d64cb67b7baceb51c4461a69f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:44.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Async.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="486243e94f10ec3f44d8a3ad7e3be3bc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:44.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Color.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="7e0f435c736ed9d1cf78e8749406d076"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:45.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Test.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="0d4262e2831129c975c760c6ae66e643"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:46.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="DOM.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="545988d92207454d8fa2f6ed5148a7b7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:46.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Logging.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="3b2625338a8c341fabcda5bfda44e974"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:40.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="__package__.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="3383a8b3b1b4a217b08355821f404419"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:42.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Format.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="954a6ad1d4abdaf59282be4b95e9c531"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:42.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="MockDOM.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="cc2b88c1425a47ce28693f0d0cdaec0b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:43.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="LoggingPane.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="efea4873aa56d9b31aba48ad7c42e49c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:44.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="DateTime.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="9d54708e3a8402161bb497feb3532c1d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:44.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Visual.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="6a4897a4575de1125a5b153977acd21c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:47.000000Z"/>
+<entry
+   committed-rev="3126"
+   name="Iter.js"
+   text-time="2008-01-04T00:43:48.000000Z"
+   committed-date="2007-02-25T16:19:47.000000Z"
+   checksum="7855a1ce131331d310476dfa70174c0c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:47.000000Z"/>
+</wc-entries>

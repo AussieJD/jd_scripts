@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2394"
+   name=""
+   committed-date="2004-03-09T18:08:05.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/packages/FreeBSD-ports/net/ntop/files"
+   last-author="burton"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="2394"
+   name="patch-configure-in"
+   text-time="2008-01-04T00:40:21.000000Z"
+   committed-date="2004-03-09T18:08:05.000000Z"
+   checksum="5529a4d49e0f1958e933a82af748f4e2"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:40:20.000000Z"/>
+<entry
+   committed-rev="2394"
+   name="patch-ntop-h"
+   text-time="2008-01-04T00:40:21.000000Z"
+   committed-date="2004-03-09T18:08:05.000000Z"
+   checksum="eb75ba1f99a9660dc36090ec1fab6565"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:40:20.000000Z"/>
+<entry
+   committed-rev="2394"
+   name="ntop.conf.sample"
+   text-time="2008-01-04T00:40:21.000000Z"
+   committed-date="2004-03-09T18:08:05.000000Z"
+   checksum="dca35eacd7858ca804d0ebac5aa2a586"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:40:20.000000Z"/>
+<entry
+   committed-rev="1639"
+   name="ntop.sh"
+   text-time="2008-01-04T00:40:21.000000Z"
+   committed-date="2003-04-13T14:51:05.000000Z"
+   checksum="2482cd3e78876c49dcf2c8ec64894cfc"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:40:21.000000Z"/>
+<entry
+   committed-rev="2394"
+   name="patch-configure"
+   text-time="2008-01-04T00:40:21.000000Z"
+   committed-date="2004-03-09T18:08:05.000000Z"
+   checksum="c9d1218fe60ffee32c4a70476ad8fedd"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:40:21.000000Z"/>
+</wc-entries>

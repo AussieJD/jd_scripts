@@ -1,0 +1,5 @@
+PING google.com (74.125.237.83): 56 data bytes
+
+--- google.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss, 1 packets out of wait time
+round-trip min/avg/max/stddev = 40.922/40.922/40.922/0.000 ms

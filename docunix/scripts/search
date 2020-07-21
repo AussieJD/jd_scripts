@@ -1,0 +1,40 @@
+#!/usr/local/bin/bash
+
+. variables
+
+
+# You must add following two lines before
+# outputting data to the web browser from shell
+# script
+
+echo "Content-type: text/html"
+echo ""
+
+cat << EOF1
+<html><head><title>JD's Docunix Summary and Search Page</title></head><body>
+<table border=1><tr><td><a href="http://16.176.23.32/docunix" target=_parent > Docunix Home </a>
+                |<a href="http://16.176.23.32/bin/search"> Main Search Page </a>
+                |<a href="http://16.176.23.32/bin/scripts/001-search"> Custom  Search  Page </a></td></tr>
+
+<tr><td>
+Go to the Custom Search page <a href=/bin/scripts/001-search>here</a>
+</form>
+</td></tr>
+</table>
+
+<table border=1>
+<tr><td colspan="${COLSPAN1}" ><b>...a few pre-canned searches of the Docunix explorers. </td></tr>
+
+EOF1
+
+$SCRIPTBASE/master.sh
+echo "</td></tr>"
+
+cat << EOF2
+</table>
+<hr>Today is $OUTPUT <br>
+Current directory is $(pwd) <br>
+Shell Script name is $0 <br>
+Base is $BASE
+</body></html>
+EOF2

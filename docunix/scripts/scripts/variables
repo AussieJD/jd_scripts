@@ -1,0 +1,16 @@
+BASE="/explorers/docunix"
+FILENAME_COUNT=0
+SCRIPTBASE="/var/www/docunix/bin/scripts"
+FILEVIEW="http://16.176.23.32/bin/fileview?"
+
+OUTPUT="$(date)"
+COLSPAN1=2
+BGCOLOR1="lightgrey"
+#BGCOLOR2="#c0c0c0"
+BGCOLOR2="#101060"
+TEXTCOLOR1="white"
+
+COUNT_10=0
+COUNT_9=0
+COUNT_OTHER=0
+

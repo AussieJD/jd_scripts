@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2622"
+   name=""
+   committed-date="2004-12-03T07:59:28.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/utils/rrd-alarm/doc"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="2622"
+   name="rrd.pdf"
+   text-time="2008-01-04T00:44:12.000000Z"
+   committed-date="2004-12-03T07:59:28.000000Z"
+   checksum="c199a63c7891a604a2816232e92d83af"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:12.000000Z"/>
+</wc-entries>

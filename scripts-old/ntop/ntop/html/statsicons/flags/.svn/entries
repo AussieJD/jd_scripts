@@ -1,0 +1,2030 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2626"
+   name=""
+   committed-date="2004-12-06T13:14:56.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/html/statsicons/flags"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="2625"
+   name="mo.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="8b4d9ee4b065403e3efa837ab3fc3d79"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="it.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="72b0c360b078e4b7d58840c12ec89525"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="mq.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="212d28e747208fe3dee4b3186e771ee5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="uk.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="bd0b40453419fc0b44169b161de02813"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="mu.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="04045966a7d9975886ee15e2e9f50025"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ba.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="1c8a23d4d9ed0f8decf5eea261e631b5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="my.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="809e20fa6ea5fa4f6dfaf629bfe32786"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="be.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="e2697c0d2f33f4c8ca85dac762734cfc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="us.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a5a63b0486b82f067e8cfcbf254a989b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bg.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="f6e51fba28e2744b678ffd752d75f945"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bi.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="fe5f4500cf4baef1d65a424e8d5689bc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="uy.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="275a0eccdca2720e84afa23054b5d371"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bm.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="06045f155dd3b1d22cd28b86e57de479"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="fj.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a825cdf6cdc75877a2748201e0d14874"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bo.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="9c4ef78c1b8051c0038227e04705c871"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:04.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bs.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="1bc0a1b6cf00a50bb9bf3588d84b321c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:05.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="jm.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b71f782c24a3caf90d61119fc2a03ade"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:05.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="fr.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="7f66797472eb9360e0bd22bfcfb9de1f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:05.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bw.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d4232256a8374cff569021c5351301be"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:05.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="jo.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="9ee5f4d1e42146b658b84b3ddd99119c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:05.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="nl.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="96199acdb50773fe45dfdbc31078ea4c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="za.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="37d219e52bce3b94891821896c71699a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="by.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="23f79b7553f5cdcc90f3bce1f7fe1d0c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="np.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="563b2a18cc772e8152588f1593e62296"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="604"
+   name="fx.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="212d28e747208fe3dee4b3186e771ee5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ze.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="88b24480de3ec4575b8a2b4dfe99bd89"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ro.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ac04fb14afaae3bc4449a5401c3517e0"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="604"
+   name="mil.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8c5c37d43e3aed135a1cc093406cbdb7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="vn.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="5bf8dfaf74506f3d89aa4a6fd9c4e211"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ru.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="daa2a635125539998a491f04ce53dc60"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="604"
+   name="cd.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="e37048fce1419bce143794f8ae1e01a9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="604"
+   name="zm.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="356670cf78c97ef1a678368518d6a948"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ga.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="96de40e3362ec03980171a6b347755e4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="nz.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3156460b6b5711d6eed7f7d8cc2ab5a7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cf.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="fdd15d7a37c8e885b731d6f7c8c67dc6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="604"
+   name="rw.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="524d66dc34a89b2c52894e16fde9ec3d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ch.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a9aa4db50f1d232d494610110455e98d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ge.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ac87f86413d9e214be3de0d3820cf1a7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cl.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="65341ffddf87323b55fdff8bb115bc75"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gi.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="26f676e5676155c1aa1278e3c0e2ede6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:06.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cn.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="12a79273092a0a93adbfe9b685634e5f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:07.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="zw.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="8d31cf8ee73d6c4e8fdd3c8382d01549"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:07.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="kh.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="10324ab7e6a04171269da2092333d4e6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:07.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gm.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="4bb02dfd58c8f255fcad64d28cdc24fd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:07.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cr.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="c5fa3319590501d12afd4e16b4ed81b0"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:07.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="sb.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="c41690739c4f92af9e065e81690a2356"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="sd.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="aef2c6903b36e52b667bb0baa52604fc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gq.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="024dbaffef14ee8e8feb117e2fe73d35"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="604"
+   name="kn.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="58a83046967f074a8a7e84160354440c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cv.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d26c9fc27103d723586ba616057460dd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="kp.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="83172c1241cad924321c27151533316d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="604"
+   name="cx.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="c6f8209b0fa60dc748eca5225951a236"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gu.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d8ee6ee605a30ddadafb179000f1e62b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="om.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="82a30a1754878742cc4f2d53a321bb18"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="kr.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="27b12726647e7e783763ad85fbf407c5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cz.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3c706c7f9d3bb30ae2df290c8a9be3e7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gw.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="d9bc24b9b93c941e53836e953ff6cfa6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:08.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gy.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="e0745abf42d852da0588adeab822c002"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="sn.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="08bb7ad680e8ed319df1535f1595491a"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="kz.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="c9a29f216dc2aeb3f73f7b50b77a4b4f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="de.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="1f31389417402bf187e3276579adcfc1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="sv.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="7a4252a1aa35be753e691648f8f5e47f"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ws.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a027ff7cdd02b873d271f8d51ab89ae8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="604"
+   name="int.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="eb56ab105b83bd650d51462073ff7f45"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="604"
+   name="sz.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="bbc25257b34690cc324630b204ba5305"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="604"
+   name="la.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="f7a41de930dfa1fbfb6e86e16d2d0233"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="dk.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="8337faebf55a6e5b297aff95517147a9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="lc.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="4ff65704775e685024c149a9b86787e0"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="604"
+   name="dm.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="cd57a5219124c94bc2f82167a6a319e4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="604"
+   name="do.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="9fdf065d0831d77c645addd8b7d10c9c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="604"
+   name="li.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="63b785c435127378d905bdae249da536"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="pf.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="fbd8fc23d9eba2d1e25bd045bbe460a0"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="604"
+   name="hn.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="0cd6610f7a81079ee950151fbf9dce0f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:09.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="tc.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="5d456951dcf4eb341117c87857a20848"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="lk.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d9eee6b3fcc3d011b684d422ccfd6e38"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ph.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="cec4d7560e2d08926359d2e877f3a76c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="hr.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="39cac2f2e2e6a9f41f89026442287682"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="tg.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="6aa920611047a1bc48d722a896ae9466"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="pl.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a929046f3f0c7781989a284371a7f43b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ht.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="99b88b35b9310162500f187da64b579e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="604"
+   name="tk.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="4fe7b5128569ca13886bebd3a6672d6a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ls.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="353403f4ee2bea939c1a8a0778f05510"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="604"
+   name="tm.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="ba8561d4724a4cb699691c72896d6739"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="lu.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="c333c2b38ad7dbec56be0ea95460a12c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:10.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="pr.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b4c3c92d6f14d845e5bd6ef808992e75"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="to.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="1ee074e0dbbb595647270dbced8a8743"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="pt.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ae548aa692ef71a331afe943026e111d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ly.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ad9d25d33cfa64c074d4afce1944a7a3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ae.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="923408afc215dad689bda490e4fbf01d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="604"
+   name="net.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8c5c37d43e3aed135a1cc093406cbdb7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ag.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="f12e6611c87c4f54521de299c705a40a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ai.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="cf57e37072e279da0966db4021c75572"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="tw.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="cf5c19a25cb1dd17f9d47b362d98e0a4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gov.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8c5c37d43e3aed135a1cc093406cbdb7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="604"
+   name="eh.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="836be886992d065287ed5c995b39ccf9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="am.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="6a2e3d4ac7139f1665ec85daf905c4fb"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ie.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d0101b97df3644ac8ef40780ca5cdf8b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:11.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ao.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3a30af9a98cf20e6619ee234e8c7f929"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="md.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d10c62b50e2d991f4229d01613bf64ba"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="qa.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="6ad5b83645bf557fe570894f453f432a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="604"
+   name="aq.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="0ae7b15abae7d3c92697ea8edc5f8e70"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="604"
+   name="as.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="0617eb7d31c19e9b2c29d2e0e2434b3c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="au.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b91b6739c8107e29680568ef8ff952f9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="aw.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="8e91812abcd372b3a32e7c16c15dd8ed"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="604"
+   name="io.gif"
+   text-time="2008-01-04T00:43:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="46f39993cdf79b4ff530b311502c5837"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="ml.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="433cec0188a6bf827b7891464cfd52ae"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="et.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="737dc12da78a0b27b999544a41b8c954"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="iq.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="43a114c7298e15308378fe959f94f3ed"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="mn.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="75afb51335f3a965ff7f1b4435c6828c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:12.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="is.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="142622e0042666bac6eebeaf8c8e53ec"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ye.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ee7fb77f702f0182de807f188138a152"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="604"
+   name="edu.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8c5c37d43e3aed135a1cc093406cbdb7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="604"
+   name="mr.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="e5c1861243abcfa14cea5e0d77a89deb"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="mt.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b630e0faea7c9db87aeef9cae912d573"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bb.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ae7aadd035a40e5026a777e2ecdbd5f5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="mx.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d3d43f8b958739b00582aa117b7b0d5f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bd.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="5349673c83420f65faac21f9ee14a7d2"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="mz.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="169b88a2d2e2b61074725cafcdb02137"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bf.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d10e907a9fb8487940f6c5d350dde6ae"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bh.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b8aeb3f5a24a277ea6c826cd4113e2ee"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:13.000000Z"/>
+<entry
+   committed-rev="2626"
+   name="local.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T13:14:56.000000Z"
+   checksum="703148ce466c0deb2df9250d90302346"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:14.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bj.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="97af4afce5fd166559201493f6848c47"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:14.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="yu.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="6a7e5fbc9e3ac06b720eea3387477771"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:14.000000Z"/>
+<entry
+   committed-rev="604"
+   name="uz.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="41a0b37a92c34e26a0c3a75bdbff86ee"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:14.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="na.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="7879034a66005c6362f2dd6e76006903"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:14.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="fi.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="0aae04dbd30720f6bd155ce7840910e3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:14.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bn.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="43948655b170b8e063f023620d97c76b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:15.000000Z"/>
+<entry
+   committed-rev="604"
+   name="fk.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="54475a754676b3ca281128b4dc62c03e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:15.000000Z"/>
+<entry
+   committed-rev="604"
+   name="fm.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="caf5f5c251a186f03d07d8f903b8e7c1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:15.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ne.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8e55c7da890ef68c2879ddaf02cc2e77"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:15.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="br.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="667c1c786e5365ea1ff2c51baed8e6a7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:15.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="fo.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="adc678b55e16ee1c8e4363e1fd764086"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:15.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ng.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="2e6fcf1119ae31232168a295f9c45f7a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:15.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bt.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="995226c86da889b77ee9fa9c60bee399"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:16.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="ni.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="247b87e6c21944e0ac8a387a529d8b55"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:16.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="va.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="4fccba188125599f6448f8e0b71d0677"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:16.000000Z"/>
+<entry
+   committed-rev="604"
+   name="bv.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="42b0ccdd11dd2486d2db0822a6750a5f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:16.000000Z"/>
+<entry
+   committed-rev="604"
+   name="vc.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="c943441f11074e9f8dbdb941d899d408"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:16.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="jp.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="531e4982260e50c173872d32553b9d91"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:16.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ve.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="f1082562cd7ee5776e6e732cc7220889"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:16.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="bz.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="2ab46e28a4d3084d7620e0aaecf4c235"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="no.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d98132d9186daf717fea60b515391dbb"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="vg.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="5f89b155213d1c29181d06da33a974f8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="vi.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b30d88bf20ffc5c75a254ab25b4c562c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="604"
+   name="nu.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="3e29cef9f26a931e24ffaa09c6c53381"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ca.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="c1c24f48ac653bf3f07423fd12ecd11f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="604"
+   name="cc.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="6911e7bb7539daa54f68565572888e85"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gb.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="93cb87bcf85c3b2756f6b296494cbc37"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cg.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="62a3129d39d66d648580fbeef1fce60f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gd.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="ad159920e4b3a224be5fb13df4450e99"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ci.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="0f8d3618f8a62d914f0f792a83c2c687"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gf.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="14eec5655d77a13f5b607af489b903d4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ck.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="edafceaaf10f5f387523fd27915628e7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gh.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="c852dca4e10c1494586a7d2109216c61"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ke.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="27481845c6081487f2b67fc7754f8944"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cm.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="1bb0670559a2676fd42dfdef3a7b1b7f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="kg.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="202b1977ecf77a413b7565ada8e126fa"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="co.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="966dc7ed9306794734a2e61438f89744"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:18.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gl.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="220ba9d5444b958512cf8c14e6f3664d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:19.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ki.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3367e0e37cf04ef726ed4f31cbb255b1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:19.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="sa.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="bbd932aea9265abf5815b74dd9446de4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:19.000000Z"/>
+<entry
+   committed-rev="604"
+   name="gn.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="5253708aae1ba059566040deab5cbc4b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:19.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gp.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d12f295c5396a57c3ca27de5e46b1f94"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:19.000000Z"/>
+<entry
+   committed-rev="604"
+   name="km.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="65827629c3f09f92c7dabc00bbc97655"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:19.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cu.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a40b55eeca54fe5605f06d194b179d3a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:20.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="se.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="63ff75c06900689a5d43ab931bc82662"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:20.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gr.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="cee23846c8603623882ed5134406806c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:20.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="sg.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d89f586fb81c9a9cf9cdf95013f73908"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:20.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="gt.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="9b5e92154496a88f1ca10648454977af"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:20.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="cy.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="d8dd4cfcd2570984219c9826d417ee9a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:20.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="si.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="4f311a4b0a39db339be74a2f354d3799"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:20.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="wf.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ead7d3ac3881242575c0d251d7ad89e4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="sk.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="01d603424483cf66ca867ba0f1c9fec4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="sm.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="ff9064d59b870fef8dac943d047a4e3e"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="604"
+   name="kw.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8651ef382057d576761c3cc8b5639e97"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ky.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="cc6c838c50ec7d1ec09f4c59537f2c05"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="604"
+   name="org.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8c5c37d43e3aed135a1cc093406cbdb7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="604"
+   name="su.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="1097b1d6f20603b726666fe450ff1871"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="sy.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="73380e84dc753e6cfd5b3d19219024d3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="lb.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="6b7a372934ffc86493ae4daadaa67501"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="604"
+   name="dj.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="3cbed729c8cd8d35a3c6ccb63a749c1f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="pa.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="2cb5e6357313398ff7769acdc246d5a5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="hk.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="83301f5dfebf29cd5aca49a6272240c8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="604"
+   name="hm.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="6911e7bb7539daa54f68565572888e85"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="pe.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="5c359dd05ae0be539b2d428c767269a3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:21.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="pg.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="67dd22b312c48345abd65358db9ad00e"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="604"
+   name="td.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="ad5c220a74c061d04f04def8413e5de1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="604"
+   name="tf.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="05b5f25bec995c1ba78705dc75528841"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="pk.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="5cb1ff3e37207a760e2ecf45a5bb81d7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="th.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b525712cc1014c12071aa555b29d9654"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="hu.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3212a65eba5018fdee554234c45fb5ff"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="dz.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="fd8b3e3a882012c111c387b4a24c201b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="604"
+   name="lr.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="f556df11c354a14532b9f7cc124b40b3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="tj.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="719f4a0b878e99ea9068a8452df04cec"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="604"
+   name="com.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8c5c37d43e3aed135a1cc093406cbdb7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="lt.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="84d76f1fbaa49b7d81a10119fa550081"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="lv.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="514de74dc630c59838c4406dbc6f3815"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="tn.gif"
+   text-time="2008-01-04T00:43:25.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="f7d1ccddc14b1b2754f19c5eb2d51a56"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="ps.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="fc02e902de42a69ac4315b54e3ef9e61"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ad.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="b118f9c6de237f7c5367e9db0e121e80"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="tr.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="23c0420906ac063753138c20bacd3e1a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="af.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ccaf2f8cd19e558d2cb925e37b120f20"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ec.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="6d213134a8af6250fe5b269d16b52967"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="tt.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="87decec956e1fc484b1a8b1716326b25"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="604"
+   name="localhost.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="8c5c37d43e3aed135a1cc093406cbdb7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:22.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="py.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="479edce4532bd36f766bd29a346ee0c2"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ee.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3e3f7d30e9e58b2c98f6f5d7f7be164c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="eg.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="9600de10fc4779b7873d463e4a5188e9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="id.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a3fe271b1dec3d96fd3cebce6591c840"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="al.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="2379c017b4858d90f900b3564a88b72e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ma.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="a64b6726eecb6c97cdc7d9e99f97f58b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="tz.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ef039d9935ecda27125f0fd39212ad44"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="an.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3fe1ba098d2bd5f85c996ea0a5d7dd5a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="mc.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="b078930a4bc2282c3669e0af905513dd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ar.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="2940a84a15b26e5ee37fa29a89947228"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:23.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="il.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="ce092caa1539ae185ae407fbc543cd5c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="at.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="cadc74036384cda59ee91d99bdcfdd69"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ua.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="1cc325bedc5df0920efedda54a184fdc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="in.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="3f042c528c4bf957777be35f6b18c691"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="es.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="4fc4c91dbb8012db776af9b476c4e1cd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="604"
+   name="mk.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="96db09b07ec1d618a00765d82b47086d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="1600"
+   name="eu.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2003-03-31T17:56:52.000000Z"
+   checksum="e05a9bb1932981ebfb30580104335d22"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="ir.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="2a8da57126b658e256ce5b93c6949b83"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+<entry
+   committed-rev="2625"
+   name="az.gif"
+   text-time="2008-01-04T00:43:26.000000Z"
+   committed-date="2004-12-06T11:54:17.000000Z"
+   checksum="64c82a7cafccd37a526f7745b915b8aa"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:24.000000Z"/>
+</wc-entries>

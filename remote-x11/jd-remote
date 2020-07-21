@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+./goodcitizen thaw
+/usr/dist/pkgs/x11vnc,v0.7.2/bin/x11vnc -scale 0.95 -wait 200 -sb 15 -solid -display :6
+./goodcitizen freeze

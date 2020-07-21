@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# kill -STOP/-CONT script for x11vnc (or other) SunRay usage ("freezes"
+# certain apps from hogging resources when disconnected).
+#
+# Put here a pattern that matches the apps that are frozen:
+#
+appmatch="soffice|java_vm|jre|netscape-bin|firefox-bin|realplay|acroread|mozilla-bin"
+
+if [ "X$1" = "Xfreeze" ]; then
+	pkill -STOP -U $LOGNAME "$appmatch"
+elif [ "X$1" = "Xthaw" ]; then
+	pkill -CONT -U $LOGNAME "$appmatch"
+
+elif [ "$RFB_MODE" = "afteraccept" -a "$RFB_STATE" = "NORMAL" ]; then
+	# a valid x11vnc login.
+	if [ "$RFB_CLIENT_COUNT" = "1" ]; then
+		# only one client present.
+		pkill -CONT -U $LOGNAME "$appmatch"
+	fi
+elif [ "$RFB_MODE" = "gone" -a "$RFB_STATE" = "NORMAL" ]; then
+	# a valid x11vnc login.
+	if [ "$RFB_CLIENT_COUNT" = "0" ]; then
+		# last client present has just left.
+		pkill -STOP -U $LOGNAME "$appmatch"
+	fi
+fi
+exit 0
+

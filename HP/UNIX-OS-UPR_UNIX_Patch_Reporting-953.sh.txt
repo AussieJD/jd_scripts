@@ -1,0 +1,626 @@
+#!/usr/bin/env ksh
+#
+##########
+# NAME:	ams_upr_r2.1.ksh
+#
+# PURPOSE:  Script to gather the unix/linux server high level patch information for use in
+#	    patch compliance.
+#	    This script was developed for Solaris, HP-UX, AIX, and Linux(Suse, Redhat, Oracle).
+#
+# ORIGINAL AUTHOR: Dave Hamm
+# AUTHORS: Jonathan Howard, Ray Regalado, Christopher Sheard
+##########
+#
+##########
+#
+# DO NOT MODIFY USAGE START/END LINES!!! This will cause UsageMessage to fail. All
+# text between to the 2 lines can be modified as needed.
+# SCRIPTNAMEPLACEHOLDER will be replaced by actual script name when displayed via
+# UsageMessage.
+#
+##### USAGE START
+#
+# USAGE:  SCRIPTNAMEPLACEHOLDER [ -d | -D | -h | -? ]
+#
+#	  Parameter descriptions:
+#	      -d ) Template debug mode. (See Note2)
+#	      -D ) Individual tool debug mode. (See Note2)
+#	  -h, -? ) Show this usage message
+#
+##### USAGE END
+#
+#################################################################################
+#                                                                               #
+# (c) Copyright 2012 Hewlett Packard Corporation. All Rights Reserved.          #
+#                                                                               #
+# Information contained in this document is proprietary and confidential to     #
+# Hewlett Packard Corporation and may not be disclosed to any third             #
+# party without prior written consent from Hewlett Packard Corporation.         #
+#                                                                               #
+#################################################################################
+#
+##### MODIFICATION HISTORY:
+# Feb 26 2013 Jonathan Howard - Initial Release Candidate
+# Mar 01 2013 Jonathan Howard - Updated to include Dave Hamm's script. Converted
+#				to Posix korn shell.
+# Mar 04 2013 Jonathan Howard - Added logic to grab information from /etc/eds-release
+# Mar 05 2013 Jonathan Howard - Changed uprserver to AMSSERVER to align output with database table
+# Mar 06 2013 Jonathan Hoawrd - Updated Solaris logic to fix current year output instead of time.
+#				Updated AIX logic to handle issues with versions earlier than 5.3.
+#				Changed patch bundle release to be handle by two seperate sub-functions
+#				to handle issues between linux and the other OS's, and to generate an
+#				NA response to not finding eds-release either from the file or from rpm
+#				Added logic to handle an intermittent issue with getting the install date
+#				on linux boxes. This is a temporary measure till the real issue is fixed.
+# Mar 08 2013 Jonathan Howard - Removed logic that was added to Solaris to try and fix the year issue
+#				Add logic to handle problem with AIX 5.2 machines having intermittent issues
+#				with oslevel.
+# Mar 11 2013 Jonathan Howard - Added an alternate solution for AIX oslevel issue, as some linux boxes did not
+#				have that binary available.
+# Mar 18 2013 Jonathan Howard - Added grabbing date from /etc/eds-release as the primary patch date, using
+#				OS patch date if not available.
+# Apr 09 2013 Jonathan Howard - Changed AIX Patch bundle logic so that it does not strip the date field.
+#				Per Laura Jones request.
+#
+# Jun 06 2013 Jonathan Howard - Added HPSA MID detection/generation routine. Precursor to R2.1
+# Jun 20 2013 Ray Regalado    - Updated date format for Redhat, Oracle, Suse, and AIX. Updated logic for
+#				getting patch bundle information for AIX version 5.2 and older.
+# Jun 20 2013 Chris Sheard    - Updated date format for Solaris and HP-UX. Added support for solaris 5.11
+#
+##### End History #####
+#
+##### Initial function definition
+BinaryVariableDefinition() {
+### Used to define all binary variables, and set their location
+# Specific local function declarations
+BinaryVariableDefinitionErrorStatus=0
+
+# Define common directory locations for needed binaries
+set -A CommonBinaryDirectoryLocations -- "${CommonBinaryDirectoryLocations[@]}" /sbin /usr/sbin /bin /usr/bin /usr/local/bin
+
+### Local main function body
+for CurrentBinaryInput in ${BinaryList[*]}; do
+  typeset -u CurrentBinaryVariableName=${CurrentBinaryInput}
+  CurrentBinaryFound=0
+
+  # This will check current path for existence of binary, and makes sure it is executable
+  for CurrentDirectoryLocationInput in ${CommonBinaryDirectoryLocations[*]}; do
+    if [[ -x "${CurrentDirectoryLocationInput}/${CurrentBinaryInput}" ]]; then
+      set -A ${CurrentBinaryVariableName} "${CurrentDirectoryLocationInput}/${CurrentBinaryInput}"
+      CurrentBinaryFound=1
+      break
+    fi
+  done
+
+  # Collects a list of binaries not found, and reports it back to user
+  if [[ ${CurrentBinaryFound} -eq 0 ]]; then
+    set -A MissingBinaryList -- "${MissingBinaryList[@]}" ${CurrentBinaryInput}
+    BinaryVariableDefinitionErrorStatus=1
+  fi
+done
+
+# Call binary error handling
+BinaryErrorHandling $1
+
+# Clear used arrays and variables
+unset CommonBinaryDirectoryLocations CurrentBinaryVariableName MissingBinaryList CurrentBinaryInput CurrentBinaryVariableName CurrentDirectoryLocationInput
+}
+
+##### Binary error handling
+BinaryErrorHandling() {
+### Handles all missing binaries
+
+# Local main function body
+if [[ ${BinaryVariableDefinitionErrorStatus} -eq 1 && $1 = "PRIMARY" ]]; then
+  print "Unable to find all primary binaries to run!!!\nMissing binaries: ${MissingBinaryList[*]}"
+  exit 1
+
+elif [[ ${BinaryVariableDefinitionErrorStatus} -eq 1 && $1 != "PRIMARY" ]]; then
+  # BinaryVariableDefinitionErrorMessage="Unable to find necessary binaries!!! Skipping. Missing binaries: ${MissingBinaryList[*]}"
+  BinaryVariableDefinitionErrorStatus=1
+fi
+}
+
+##### Common Binary Definitions
+set -A BinaryList uname grep egrep awk sed cut hostname ps cat date who wc ls tr renice rm diff find nice sort sleep tail head uptime chmod uniq df id 
+BinaryVariableDefinition PRIMARY
+
+##### Global Varariable Declaration
+CurrentHostname="$(${HOSTNAME})"
+CurrentDateTime=$(${DATE} '+%m/%d/%Y %H:%M:%S')
+ScriptVersion="2.1"
+ScriptName=$(print ${0##*/})
+CurrentOptions="$*"
+ScriptExitStatus=0
+DebugMode=0
+RunCount=0
+
+UsageMessage() {
+# Generates the usage message, using the information between USAGE START/END at top of script
+${SED} -n '/^#\{1,\} USAGE START$/,/^#\{1,\} USAGE END$/p' $0 2>/dev/null | ${SED} 's/^#\{1,\} USAGE [S|E].*//;s/#//g' 2>/dev/null | ${SED} "s/SCRIPTNAMEPLACEHOLDER/${ScriptName}/g" 2>/dev/null
+
+exit ${ScriptExitStatus}
+}
+
+##### Determine if root user is running script
+if [[ $(${ID} 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${SED} 's/.*(//;s/).*//' 2>/dev/null) != "root" ]]; then
+  if [[ $(${WHO} am i 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) != "root" ]]; then
+    print "Script must run by root!!!"
+    exit 1
+  fi
+fi
+
+##### OS discovery and initialization
+OSName=$(${UNAME} 2>/dev/null)
+
+case ${OSName} in 
+  HP-UX ) OSUsage=1 ;;
+
+    AIX ) OSUsage=2 ;;
+	  
+
+  SunOS ) OSUsage=3 ;;
+	  
+
+  Linux ) if [[ -s /etc/oracle-release ]]; then
+	    OSName=ORACLE
+	    OSUsage=4
+
+	  elif [[ -s /etc/SuSE-release ]]; then
+	    OSName=SUSE
+	    OSUsage=5
+
+	  elif [[ -s /etc/redhat-release ]]; then
+	    OSName=RHEL
+	    OSUsage=6
+
+	  else print "Cannot determine OS, or script is not implemented for this platform!!!"
+	    exit 1
+	  fi ;;
+
+    * ) print "Cannot determine OS, or script is not implemented for this platform!!!"
+	exit 1 ;;
+esac
+
+##### Initial Option handling
+# Check for invalid initial option format
+if [[ ! -z $(print $1 2>/dev/null | ${GREP} -v ^- 2>/dev/null) ]]; then
+  UsageMessage
+fi
+
+# Handle all options
+while getopts ":dDh" Option; do
+  case ${Option} in
+    d ) set -x ;;
+
+    D ) DebugMode=1 ;;
+
+    h|* ) UsageMessage ;;
+  esac
+done
+shift $(($OPTIND -1))
+
+##### Killed script cleanup
+trap 'print "${ScriptName} killed!!!"; ${RM} /tmp/*.$$ 2>/dev/null; return 1' INT TERM
+
+##### Change script priority
+${RENICE} +20 $$ 1>/dev/null 2>&1
+
+##### Set umask setting - This will prevent unauthorized users from reading temp files
+if [[ ${OSUsage} = [123] ]]; then
+  ${UMASK} 0077 2>/dev/null
+elif [[ ${OSUsage} = [456] ]]; then
+  umask 0077 2>/dev/null
+fi
+
+##### Startup summary of options and current run date/time
+print "Script starting: ${CurrentDateTime} - Script Version: ${ScriptVersion}\nOptions used: ${CurrentOptions}"
+
+##### HPSA MID Collection
+if [[ -s /etc/opt/opsware/agent/mid ]]; then
+  HPSAMID=$(${CAT} /etc/opt/opsware/agent/mid 2>/dev/null | ${TR} -d '\r' 2>/dev/null)
+
+elif [[ -s /var/opt/opsware/agent/last_sw_inventory ]]; then
+  HPSAMID=$(${SED} '1,/mid/d' /var/opt/opsware/agent/last_sw_inventory 2>/dev/null | ${GREP} ^S 2>/dev/null | ${SED} 's/[^0-9]*//g' 2>/dev/null)
+
+elif [[ -a /opt/opsware/agent/pylibs/cog/bs_hardware ]]; then
+  HPSAMID=$(/opt/opsware/agent/pylibs/cog/bs_hardware 2>/dev/null | ${GREP} "Opsware machine ID" 2>/dev/null | ${SED} 's/[^0-9]*//g' 2>/dev/null)
+
+else HPSAMID=NA
+fi
+
+##### Global defined functions - All functions that interact with multiple tools should go here
+StatusOutput() {
+### Output status of calling function
+### Local main function body
+print ${CSVOutputResult[*]}
+
+# Increment run count
+let RunCount=${RunCount}+1
+
+# Cleanup
+unset ToolID CSVOutputResult
+}
+
+##### Month conversion - Converts raw month data(01, 02, etc) to 3 characater equiv(Jan, Feb, etc)
+FormattedMonth() {
+RawMonthInput=$1
+
+# First field will be set to NA, to correctly set month layout, since array's start at 0
+set -A MonthList NA Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+
+# Returns converted month
+print ${MonthList[${RawMonthInput}]}
+}
+
+##### Function debugging - Called to enable debugging of individual tools
+FunctionDebug() {
+if [[ ${DebugMode} -eq 1 ]]; then
+  set -x
+fi
+}
+
+##### OS defined tool functions - All tools should be defined here. Tools are not order specific, and 
+##### can appear or added in any order
+AMS_UPR01_CMDS() {
+### UPR01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=UPR01
+ToolObjective="Gather patch data for patch compliance check"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+PatchBundleReleaseID=NA
+PatchBundleID=NA
+PatchBundleInstallDate=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "AMSSERVER~${CurrentHostname}~${HPSAMID}~${OSVersion}~${PatchBundleReleaseID}~${PatchBundleID}~${PatchBundleInstallDate}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+      HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      # Define local common data
+	      OSVersion="$(${UNAME} -r 2>/dev/null | ${SED} 's/B\.//' 2>/dev/null)"
+
+	      PrimaryMethod() {
+	      # Gather information from /etc/eds-release
+	      if [[ -a /etc/eds-release ]]; then
+		PatchBundleReleaseID=$(< /etc/eds-release 2>/dev/null)
+		PatchBundleInstallDate=$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $7, $6, $8}' 2>/dev/null)
+
+		# Check year entry for current year. Any entry with a : in the field will be changed to the current year
+		if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} ":" 2>/dev/null) ]]; then
+		  PatchBundleInstallDate="$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $6}' 2>/dev/null) $(${DATE} "+%Y" 2>/dev/null)"
+		fi
+	      fi
+
+	      # This will only get information on the latest(last) patch bundle 
+	      # Custom binary(s) needed
+	      set -A BinaryList swlist
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		PatchBundleID=$(${SWLIST} -a revision 2>/dev/null | ${GREP} QPKBASE 2>/dev/null | ${TAIL} -1 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null)
+
+		# Use date from /etc/eds-release file if exists, otherwise try and grab patch information from the OS
+		if [[ ${PatchBundleInstallDate} = NA ]]; then
+		  RawPatchBundleInstallDate=$(${SWLIST} -a revision -a install_date 2>/dev/null | ${GREP} ${PatchBundleID} 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null | ${CUT} -c 1-8 2>/dev/null)
+
+		  # Format install date DDMMYYYY
+		  PatchBundleInstallYear=$(print ${RawPatchBundleInstallDate} 2>/dev/null | ${CUT} -c 1-4 2>/dev/null) 
+		  PatchBundleInstallDay=$(print ${RawPatchBundleInstallDate} 2>/dev/null | ${CUT} -c 7,8 2>/dev/null) 
+		  PatchBundleInstallMonth=$(print ${RawPatchBundleInstallDate} 2>/dev/null | ${CUT} -c 5,6 2>/dev/null)
+		  PatchBundleInstallDate="${PatchBundleInstallDay} $(FormattedMonth ${PatchBundleInstallMonth}) ${PatchBundleInstallYear}"
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      # Define local common data
+	      OSVersion="$(${UNAME} -r 2>/dev/null)"
+
+	      PrimaryMethod() {
+	      # Gather information from /etc/eds-release
+	      if [[ -a /etc/eds-release ]]; then
+		PatchBundleReleaseID=$(< /etc/eds-release 2>/dev/null)
+		PatchBundleInstallDate=$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $7, $6, $8}' 2>/dev/null)
+
+		# Check year entry for current year. Any entry with a : in the field will be changed to the current year
+		if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} ":" 2>/dev/null) ]]; then
+		  PatchBundleInstallDate="$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $6}' 2>/dev/null) $(${DATE} "+%Y" 2>/dev/null)"
+		fi
+	      fi
+
+	      # This will only get information on the latest(last) patch bundle 
+	      PatchBundleID=$(${UNAME} -v 2>/dev/null | ${AWK} -F_ '{print $2}' 2>/dev/null)
+
+	      # Use date from /etc/eds-release file if exists, otherwise try and grab patch information from the OS
+	      if [[ ${PatchBundleInstallDate} = NA ]]; then
+
+		# On Solaris there is no command that will show the exact date the kernel patch was installed on, so we 
+		# offer two possible dates, if patch folder is still available, we grab the date of the folder, otherwise we use the kernel date
+		# Only one date will be shown in the output, with patch folder date taking precedence over kernel date
+		if [[ -a "/var/sadm/patch/${PatchBundleID}" ]]; then
+		  PatchBundleInstallDate="$(${LS} -ld "/var/sadm/patch/${PatchBundleID}" 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $7, $6, $8}' 2>/dev/null)"
+
+		# Check year entry for current year. Any entry with a : in the field will be changed to the current year
+		if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} ":" 2>/dev/null) ]]; then
+		  PatchBundleInstallDate="$(${LS} -ld "/var/sadm/patch/${PatchBundleID}" 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $6}' 2>/dev/null) $(${DATE} "+%Y" 2>/dev/null)"
+		fi
+
+		elif [[ ! -a "/var/sadm/patch/${PatchBundleID}" ]]; then
+
+		  # Custom binary(s) needed
+		  set -A BinaryList showrev
+		  BinaryVariableDefinition
+
+		  if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 && ${OSVersion} != "5.11" ]]; then
+		    PatchBundleInstallDate="$(${SHOWREV} 2>/dev/null | ${GREP} ^"Kernel version" 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $8}' 2>/dev/null)"
+
+		  elif [[ ${OSVersion} = "5.11" ]]; then
+
+		    # Custom binary(s) needed
+		    set -A BinaryList pkg
+		    BinaryVariableDefinition
+
+		    if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		      PatchBundleInstallDate=`${PKG} info kernel 2>/dev/null | ${GREP} "Packaging" 2>/dev/null | ${TR} -d ',' 2>/dev/null | ${AWK} '{ printf("%s %s %s\n", $4, substr($0,17,3), $5) }' 2>/dev/null`
+		    fi
+		  fi
+		fi
+	      fi
+	      }
+
+	      # do alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      # Define local common data
+	      OSVersion="$(${UNAME} -v -r 2>/dev/null | ${AWK} '{printf "%s.%s\n", $2, $1}' 2>/dev/null)"
+
+              # This is because in AIX the ML do not return day on the Date format
+              NewDay="00"
+
+	      PrimaryMethod() {
+	      # Gather information from /etc/eds-release
+	      if [[ -a /etc/eds-release ]]; then
+		PatchBundleReleaseID=$(< /etc/eds-release 2>/dev/null)
+		PatchBundleInstallDate=$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $7, $6, $8}' 2>/dev/null)
+
+		# Check year entry for current year. Any entry with a : in the field will be changed to the current year
+		if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} ":" 2>/dev/null) ]]; then
+		  PatchBundleInstallDate="$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $6}' 2>/dev/null) $(${DATE} "+%Y" 2>/dev/null)"
+		fi
+	      fi
+
+	      # This will only get information on the latest(last) patch bundle 
+	      # Custom binary(s) needed
+	      set -A BinaryList oslevel
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		if [[ $(${UNAME} -v 2>/dev/null) != [123] ]]; then
+
+                  # If OS version is 4.x and up - different parameter for 4.3 to 5.2 and exception for 5.2
+                  case ${OSVersion} in
+
+                       3.*|4.*|5.[12] ) PatchBundleID=$(${OSLEVEL} -r 2>/dev/null | ${SED} q 2>/dev/null) ;;
+		
+			  5.3|6.*|7.* ) PatchBundleID=$(${OSLEVEL} -s 2>/dev/null | ${SED} q 2>/dev/null) ;;
+
+                  esac
+                  #KernelVersion=$(${GETCONF} KERNEL_BITMODE 2>/dev/null)
+		fi
+
+                if [[ $(print ${PatchBundleID} 2>/dev/null | ${GREP} -ic usage 2>/dev/null) -ne 0 ]]; then
+		  PatchBundleID="NA"
+                fi
+
+		# Use date from /etc/eds-release file if exists, otherwise try and grab patch information from the OS
+		if [[ ${PatchBundleInstallDate} = NA ]]; then
+
+		  if [[ "${PatchBundleID}" != "NA" ]]; then
+		    RawPatchBundleInstallDate=$(print ${PatchBundleID} 2>/dev/null | ${CUT} -c 12-15 2>/dev/null)
+		    PatchBundleInstallYear=$(print ${RawPatchBundleInstallDate} 2>/dev/null | ${CUT} -c 1,2 2>/dev/null)
+		    PatchBundleInstallWeeks=$(($(print ${RawPatchBundleInstallDate} 2>/dev/null | ${CUT} -c 3,4 2>/dev/null)/7 +4))
+		    PatchBundleInstallDate="${NewDay} $(FormattedMonth ${PatchBundleInstallWeeks}) $(${DATE} '+%Y' 2>/dev/null | ${CUT} -c 1,2 2>/dev/null)${PatchBundleInstallYear}"
+		    #PatchBundleInstallDate="20${PatchBundleInstallYear} Week ${PatchBundleInstallWeeks} ${KernelVersion}-bit"
+		  fi
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      # Define local common data
+	      OSVersion="$(${CAT} /etc/redhat-release 2>/dev/null | ${AWK} '{print $7}' 2>/dev/null)"
+
+	      PrimaryMethod() {
+	      # Gather information from /etc/eds-release
+	      if [[ -a /etc/eds-release ]]; then
+		PatchBundleReleaseID=$(< /etc/eds-release 2>/dev/null)
+		PatchBundleInstallDate=$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $7, $6, $8}' 2>/dev/null)
+
+		# Check year entry for current year. Any entry with a : in the field will be changed to the current year
+		if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} ":" 2>/dev/null) ]]; then
+		  PatchBundleInstallDate="$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $6}' 2>/dev/null) $(${DATE} "+%Y" 2>/dev/null)"
+		fi
+	      fi
+
+	      # This will only get information on the latest(last) patch bundle 
+	      PatchBundleID=$(${UNAME} -r 2>/dev/null)
+
+	      # Custom binary(s) needed
+	      set -A BinaryList rpm
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Use date from /etc/eds-release file if exists, otherwise try and grab patch information from the OS
+		if [[ ${PatchBundleInstallDate} = NA ]]; then
+		  PatchBundleInstallDate="$(${RPM} -last -q "kernel-${PatchBundleID}" 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $3, $4, $5}' 2>/dev/null)"
+
+		  # Check patch bundle install date for not installed issues. TEMPORARY WORK AROUND
+		  if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} -i "not" 2>/dev/null) ]]; then
+		    PatchBundleInstallDate="NA"
+		  fi
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      SUSE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      # Define local common data
+	      RawVersion="$(${CAT} /etc/SuSE-release 2>/dev/null | ${GREP} VERSION 2>/dev/null | ${AWK} -F= '{print $2}' 2>/dev/null | ${SED} 's/ //g' 2>/dev/null)"
+	      RawRelease="$(${CAT} /etc/SuSE-release 2>/dev/null | ${GREP} PATCHLEVEL 2>/dev/null | ${AWK} -F= '{print $2}' 2>/dev/null | ${SED} 's/ //g' 2>/dev/null)"
+	      OSVersion="${RawVersion}.${RawRelease}"
+
+	      PrimaryMethod() {
+	      # Gather information from /etc/eds-release
+	      if [[ -a /etc/eds-release ]]; then
+		PatchBundleReleaseID=$(< /etc/eds-release 2>/dev/null)
+		PatchBundleInstallDate=$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $7, $6, $8}' 2>/dev/null)
+
+		# Check year entry for current year. Any entry with a : in the field will be changed to the current year
+		if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} ":" 2>/dev/null) ]]; then
+		  PatchBundleInstallDate="$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $6}' 2>/dev/null) $(${DATE} "+%Y" 2>/dev/null)"
+		fi
+	      fi
+
+	      # This will only get information on the latest(last) patch bundle 
+	      PatchBundleID=$(${UNAME} -r 2>/dev/null)
+
+	      # Custom binary(s) needed
+	      set -A BinaryList rpm
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Use date from /etc/eds-release file if exists, otherwise try and grab patch information from the OS
+		if [[ ${PatchBundleInstallDate} = NA ]]; then
+
+		  # Suse inverts the kernel name information when displayed in uname, so extra handling is done to correctly get the right information
+		  PatchBundleIdentifier=$(print ${PatchBundleID} 2>/dev/null | ${AWK} -F- '{print $NF}' 2>/dev/null)
+		  PatchBundleLevel=$(print ${PatchBundleID} 2>/dev/null | ${SED} "s/-${PatchBundleIdentifier}//g" 2>/dev/null)
+		  PatchBundleInstallDate="$(${RPM} -last -qa 2>/dev/null | ${GREP} "kernel-${PatchBundleIdentifier}-${PatchBundleLevel}" 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $4, $3, $6}' 2>/dev/null)"
+
+		  # Check patch bundle install date for not installed issues. TEMPORARY WORK AROUND
+		  if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} -i "not" 2>/dev/null) ]]; then
+		    PatchBundleInstallDate="NA"
+		  fi
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      ORACLE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      # Define local common data
+	      OSVersion="$(${CAT} /etc/oracle-release 2>/dev/null | ${AWK} '{print $5}' 2>/dev/null)"
+
+	      PrimaryMethod() {
+	      # Gather information from /etc/eds-release
+	      if [[ -a /etc/eds-release ]]; then
+		PatchBundleReleaseID=$(< /etc/eds-release 2>/dev/null)
+		PatchBundleInstallDate=$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $7, $6, $8}' 2>/dev/null)
+
+		# Check year entry for current year. Any entry with a : in the field will be changed to the current year
+		if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} ":" 2>/dev/null) ]]; then
+		  PatchBundleInstallDate="$(${LS} -l /etc/eds-release 2>/dev/null | ${AWK} '{printf "%s %s\n", $7, $6}' 2>/dev/null) $(${DATE} "+%Y" 2>/dev/null)"
+		fi
+	      fi
+
+	      # This will only get information on the latest(last) patch bundle 
+	      PatchBundleID=$(${UNAME} -r 2>/dev/null)
+
+	      # Custom binary(s) needed
+	      set -A BinaryList rpm
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Use date from /etc/eds-release file if exists, otherwise try and grab patch information from the OS
+		if [[ ${PatchBundleInstallDate} = NA ]]; then
+		  PatchBundleInstallDate="$(${RPM} -last -q "kernel-${PatchBundleID}" 2>/dev/null | ${AWK} '{printf "%s %s %s\n", $3, $4, $5}' 2>/dev/null)"
+
+		  # Check patch bundle install date for not installed issues. TEMPORARY WORK AROUND
+		  if [[ ! -z $(print ${PatchBundleInstallDate} 2>/dev/null | ${GREP} -i "not" 2>/dev/null) ]]; then
+		    PatchBundleInstallDate="NA"
+		  fi
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+### Generate list of all items available for use, for the current OS
+set -A FinalRunList $(functions | ${SED} 's/^function //' 2>/dev/null | ${GREP} ^AMS_* 2>/dev/null | ${SED} 's/(.*//g' 2>/dev/null)
+
+##### Run Body - DO NOT MODIFY
+# Run final list of all selected tools
+for MainRunInput in "${FinalRunList[@]}"; do
+  ${MainRunInput} 
+done
+
+##### Show total run time for script
+print "Script running time: ${SECONDS} seconds - Total items run: ${RunCount}"
+
+##### Exit Status
+exit ${ScriptExitStatus}

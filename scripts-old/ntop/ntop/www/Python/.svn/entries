@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1188"
+   name=""
+   committed-date="2002-09-19T08:30:58.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/www/Python"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="1188"
+   name="ntopTest.py"
+   text-time="2008-01-04T00:38:16.000000Z"
+   committed-date="2002-09-19T08:30:58.000000Z"
+   checksum="b9d1897655db9869ee574a692c73e10e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:16.000000Z"/>
+</wc-entries>

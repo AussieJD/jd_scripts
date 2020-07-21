@@ -1,0 +1,14 @@
+for f in *;
+do
+if [[ -f $f ]]
+then
+count=`mdfind -onlyin $1 -count -name $f`
+if [[ $count -gt 1 ]]
+then
+echo $count
+echo $f
+mdfind -onlyin $1 -name $f
+echo “—”
+fi
+fi
+done

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2386"
+   name=""
+   committed-date="2004-03-08T16:46:44.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/packages/Gentoo"
+   last-author="burton"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="2386"
+   name="digest-ntop-3.0_pre1"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2004-03-08T16:46:44.000000Z"
+   checksum="636b1e430974552cee25f8b32a9d4478"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:24.000000Z"/>
+<entry
+   committed-rev="2386"
+   name="digest-ntop-3.0_pre2"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2004-03-08T16:46:44.000000Z"
+   checksum="3418cb8e2caa478f0c0496d8e76dac7a"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:24.000000Z"/>
+<entry
+   committed-rev="2330"
+   name="ntop-3.0_pre1.ebuild"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2004-02-17T23:37:09.000000Z"
+   checksum="4c2454920469aaf5b539a6b85d013100"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:24.000000Z"/>
+<entry
+   committed-rev="2386"
+   name="ntop-3.0_pre2.ebuild"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2004-03-08T16:46:44.000000Z"
+   checksum="59fe160b8a5b5d572bf63e675f919d59"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:24.000000Z"/>
+</wc-entries>

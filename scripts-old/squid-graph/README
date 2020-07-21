@@ -1,0 +1,167 @@
+===============================================================================
+
+                           README FILE FOR SQUID-GRAPH
+
+                     To find out more, visit the website at:
+                       http://squid-graph.sourceforge.net/
+
+===============================================================================
+
+ NOTE: AS OF VERSION 3, THE OFFICIAL DOCUMENTATION IS IN HTML FORMAT. THIS
+       README FILE IS PROVIDED FOR THE CONVINIENCE OF USERS WHO DO NOT HAVE
+       HTML VIEWERS.
+
+
+ WHAT IS SQUID-GRAPH?
+ =====================
+
+ Squid-Graph is a free, simple, but powerful Squid logfile analysis tool 
+ distributed under the GNU General Public Licence. It generates reports which
+ analyzes the traffic of a Squid proxy server in the form of graphs.
+
+
+
+ SUPPORTED PLATFORMS
+ ====================
+
+ Squid-Graph is actively developed on a Linux machine running Perl 5 and
+ 2.2.x to 2.4.x kernel. It should work with most other similar operating
+ systems.
+
+ A few platforms which Squid-Graph have been reported to work with are
+ FreeBSD, OpenBSD, Sun Solaris and various different Linux distributions.
+
+ To use in Windows, you can obtain the Win32 port of PERL from ActiveState,
+ and modify the code of this software, but we will not provide support for
+ Windows-specific issues because we did not design this program to work with
+ Windows.
+
+
+
+ PRE-REQUISITES
+ ===============
+
+ You will need a working copy of PERL 5 and GD-1.3.3 installed.
+ See http://search.cpan.org/dist/GD/ for latest GD version.
+
+ GD _MUST_ be working, i.e. all its dependent libs must also be installed for
+ Squid Graph v3 to work.
+
+ ... and of course, you'll need a Squid proxy server.
+
+
+
+ INSTALLING SQUID-GRAPH
+ =======================
+
+ Extract the tarball file squid-graph-x.x.tar.gz into a desired directory. To
+ extract,
+
+    Linux:
+    $ tar -zxvf squid-graph-x.x.tar.gz
+
+    Other UNIX:
+    $ zcat squid-graph-x.x.tar.gz | tar xvf -
+
+
+ Then, move the extracted contents to your desired directory. e.g.
+
+    $ mv squid-graph-x.x /usr/local/squid-graph
+
+
+
+ CONFIGURING SQUID-GRAPH
+ ========================
+
+ As of version 3.0, there aren't any more configuration files. For a list
+ of configuration options, simply run squid-graph without any parameters.
+
+    $ cd bin
+    $ ./squid-graph
+
+
+ FOR EXPERTS ONLY:
+
+ For experts, you might want to configure some things like your graph colours
+ or remove the console output messages. This can be done by editing the file
+ `squid-graph', and then changing the $MYCONSOLELOG variable and the $color
+ variables to your preferred values.
+
+    $ vi squid-graph
+
+
+ RUNNING SQUID-GRAPH
+ ====================
+
+ Quickstart:
+ To run Squid Graph with the default settings, simply do this:
+
+    $ cd bin
+    $ ./squid-graph --output-dir=/tmp < /usr/local/squid/access.log
+
+
+ However, you really won't want the reports to end up in /tmp, so you might
+ want to specify another directory, for example: -
+ 
+    $ ./squid-graph --output-dir=/var/www/html < /usr/local/squid...
+
+
+ If you hate the annoying console ouput/logging, you can disable it
+ by using the --no-console-log parameter, e.g.
+
+   $ ./squid-graph --no-console-log --output-dir=/var/www/html...
+
+
+ Advanced:
+ If your cache only logs TCP or does not use the UDP at all, you can
+ specify the --tcp-only option for tcp-only output. e.g.
+
+   $ ./squid-graph --tcp-only --output-dir=/var/www/html...
+
+
+ Likewise, if you would like to see only UDP reports,  you can specify
+ the --udp-only option. e.g.
+
+   $ ./squid-graph --udp-only --output-dir=/var/www/html...
+
+
+ For more help on running Squid Graph, see the HTML documentation or
+ the project website.
+
+
+
+ RUNNING SQUID-GRAPH IN REAL TIME VIA THE WEB
+ =============================================
+
+ As of v3, Squid Graph does not support this feature anymore. If you would
+ still like to do this, simply create a shell script to execute Squid
+ Graph.
+
+ We do not recommend this unless your log files are really small. Also,
+ we did not audit Squid Graph for any possible security issues that might
+ arise in an online CGI enviroment. YOU HAVE BEEN WARNED.
+
+
+
+ ACKNOWLEDGEMENTS
+ =================
+
+ GD.pm interface, copyright 1995-2000, Lincoln D. Stein.
+ http://search.cpan.org/dist/GD/
+
+
+
+ CONTRIBUTIONS/CONTACTING US
+ ============================
+
+ To contribute, please visit our Sourceforge project page at:
+ http://sourceforge.net/projects/squid-graph/
+
+
+
+ GNU GPL
+ ========
+
+ Included with the distribution should be the licence in plain text format
+ as gpl.txt.
+

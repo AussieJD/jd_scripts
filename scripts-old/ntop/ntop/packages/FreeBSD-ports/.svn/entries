@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2395"
+   name=""
+   committed-date="2004-03-09T18:50:01.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/packages/FreeBSD-ports"
+   last-author="burton"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   name="net"
+   kind="dir"/>
+<entry
+   committed-rev="2394"
+   name="README"
+   text-time="2008-01-04T00:40:22.000000Z"
+   committed-date="2004-03-09T18:08:05.000000Z"
+   checksum="14beefb7b14fee133148d5629218edf7"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:40:22.000000Z"/>
+</wc-entries>

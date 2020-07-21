@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2936"
+   name=""
+   committed-date="2005-10-20T19:42:45.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/packages/RedHat"
+   last-author="burton"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="1642"
+   name="ntop.logrotate"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2003-04-13T19:01:33.000000Z"
+   checksum="64c590bc518496632b9fdcf822828933"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+<entry
+   committed-rev="2932"
+   name="ntop.init"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2005-10-10T13:43:02.000000Z"
+   checksum="7f5f0e65ee5841513d7296a8fda69114"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+<entry
+   committed-rev="2689"
+   name="cfgdbfile.patch"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2005-01-27T16:47:52.000000Z"
+   checksum="a1ac69b341cd5c1be4dadeb0e6d24f1e"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+<entry
+   committed-rev="2688"
+   name="version.patch"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2005-01-27T16:46:19.000000Z"
+   checksum="32eb0f7475f277be5a29d906edd18eb6"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+<entry
+   committed-rev="2415"
+   name="ntop.conf.sample"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2004-03-18T18:29:41.000000Z"
+   checksum="824f325cd08ad300788acc2c790fab6e"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+<entry
+   committed-rev="1642"
+   name="makefile_am.patch"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2003-04-13T19:01:33.000000Z"
+   checksum="01d67566835beb0f88161af9ef078ed5"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+<entry
+   committed-rev="2936"
+   name="ntop.spec"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2005-10-20T19:42:45.000000Z"
+   checksum="1fc0809fde534924ed24ac4d36d0e44a"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:17.000000Z"/>
+<entry
+   committed-rev="2688"
+   name="README"
+   text-time="2008-01-04T00:41:17.000000Z"
+   committed-date="2005-01-27T16:46:19.000000Z"
+   checksum="c1718453ad3ab59accfd6f7ab0cf415b"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:41:17.000000Z"/>
+</wc-entries>

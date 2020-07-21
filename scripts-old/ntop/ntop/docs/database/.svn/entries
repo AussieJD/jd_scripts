@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="604"
+   name=""
+   committed-date="2002-01-02T08:17:18.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/docs/database"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="604"
+   name="README.mySQL"
+   text-time="2008-01-04T00:42:42.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="7bc63d991cc847dcdd3949d4406c1db6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:42.000000Z"/>
+<entry
+   committed-rev="604"
+   name="README"
+   text-time="2008-01-04T00:42:42.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="19a6d537a9832b35e4577c66706b0b5b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:42.000000Z"/>
+</wc-entries>

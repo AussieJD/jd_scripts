@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# dupecheck - identify potential duplicates of a file using Spotlight metadata
+# see http://www.macosxhints.com/article.php?story=20061003163429425
+#
+# by Derick Fay, October 2006
+# Extended to check md5sums by Craig Hughes, October 2006 -- removed by Marc Shapiro, Oct 2006.
+# Making more MacOS/Darwin standard and added speedups and efficiencies by Scott Barman
+# Support filenames and attributes that contain spaces; avoid duplicates; replace expensive MD5 computation with 'cmp'; bug fixes.  Marc Shapiro, Oct 2006 
+
+# Errors should be written to stderr (file designator 2) and exit with a
+# non-zero status. 
+# [Scott's "," syntax does not work with the bash distributed with 10.4.8 (GNU bash, version 2.05b.0(1)-release (powerpc-apple-darwin8.0))]
+SEARCHFILE="$1"
+if [ $# == 1 -a -r "$SEARCHFILE" ] 
+  then :
+  else echo "Usage: $0 filename" >&2
+       exit 1
+  fi
+
+# extract metadata from the file to be checked.
+# [Scott's 'set' doesn't work with spaces, and the output format of mdls is unfriendly.]
+declare -i size=$( mdls -name kMDItemFSSize "$SEARCHFILE" | tail -n 1 | sed -e 's/^[a-zA-Z ]*= *//' )
+name=$( mdls -name kMDItemFSName "$SEARCHFILE" | tail -n 1 | sed -e 's/^[a-zA-Z ]*= *//' )
+kind=$( mdls -name kMDItemKind "$SEARCHFILE"   | tail -n 1 | sed -e 's/^[a-zA-Z ]*= *//' )
+
+# Get possible matches
+# Carefully build query string supporting file names and item kinds containing spaces.
+query='kMDItemFSName == '"$name"' || ( kMDItemFSSize == '"$size"' && kMDItemKind == '"$kind"' )' 
+echo "Query: $query"
+
+# Avoid 'read' breaking file names in the middle, no matter what characters they contain.
+IFS=''
+# Loop over the results of the query.
+# 'sort -u' removes duplicates.
+mdfind "$query" | sort -u | while read candidate
+do
+  # The 'ls -i' check removes the input file from consideration.
+  # 'cmp' compares the files byte-for-byte; '--bytes 4096' limits the check to the first 4096 bytes (arbitrarily).
+  [ $( ls -i "$SEARCHFILE" | sed -E -e 's/ *([0-9]+).*/\1/' ) != $( ls -i "$candidate" | sed -E -e 's/ *([0-9]+).*/\1/' ) ] \
+     && cmp -s --bytes 4096  "$SEARCHFILE" "$candidate" \
+     && echo "$candidate"
+done

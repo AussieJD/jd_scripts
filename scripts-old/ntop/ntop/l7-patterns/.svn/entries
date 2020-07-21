@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2972"
+   name=""
+   committed-date="2006-01-23T17:35:19.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/l7-patterns"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="2972"
+   name="bittorrent.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="a114ce4018d7927bb56604e302783a99"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="counterstrike-source.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="e2dea9c1a592c51adb4ff54426a63730"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="nbns.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="741fe36d4c4f21bcb1c9015a623285dd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="tsp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="c7ea429957106f5e499fbb8adc14461d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="tesla.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="a70cadf6e70a1ea01a5cb51b3e17b782"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="tftp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="e54c06b63be70219a7e085988551cf38"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="irc.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="29b8df3af413a2a42121eb9860b70836"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="http.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="8f05d25fb3a92e8b32a4cd3e82c9265b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="lpd.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="d38be6d16ee5abaca72feedcc8960842"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="msn-filetransfer.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="df21a039dce4df9f5cfce2f3f9ee357d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:57.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="pop3.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="ec9c6c1a32a471bf87e98045633ff4e5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="fasttrack.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="b859b7c03ffc2c75b6b7da2e240fd0c2"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="skypeout.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="e98e36e5a77a32d040ecfb80bf0b9a72"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ciscovpn.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="1fe881dd59ad0eeaa6e14566cbc8ea4b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="rdp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="057ab9cc8002e15a63e0e7a8fc447067"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="hddtemp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="a33917ad1146c85bfd3555ab4abf3064"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ftp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="19f2d3665fe5b5e025650bdd3ebc52ce"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="rlogin.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="d1ee61ab6931a45f1b264fa6bcaea7b4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="cvs.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="c719d8d9081b499b9b17d50396dc9f0c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="live365.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="d21e436b655d0e92e528f141a58d4f9b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:37:59.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="edonkey.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="7eece4c90c81f91a832661972cd17f28"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:00.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="battlefield1942.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="a7686f938d55fda251b8f209496837b8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:00.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="aimwebcontent.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="2f90714ec46916b45d9453c4ab24170e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:00.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="poco.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="3c578eaba73edc8bcab064d3ccb55a11"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:00.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="xboxlive.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="c9de8d8962a4629bed7b5ccc4b39e6ca"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:00.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ntp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="78b8f8afbc7afbac143ccbf862f5c4ab"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:00.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="hotline.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="089206d67f2aeb8fc4827037da6c0291"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:01.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="tls.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="02dc6d42f91b9430456e0487a3f1c19b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:01.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="goboogy.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="fc7ad92296f89588d3000cd6eaeb2681"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:01.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="biff.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="90aa142588a5003a00a2bc5bc889d29c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:01.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="zmaap.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="d6e599e72343f38a0cefe8122f709e18"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:01.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="skypetoskype.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="f299ff284f30aed032805bae2594f034"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:02.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="finger.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="c2949045725a3b110bd5b39453417c6e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:02.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="mute.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="6d859d289d177daf35add09d5304f4c5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:01.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="napster.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="3bba06bedc92476a1e2f771d83ea9dd2"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:02.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="yahoo.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="5cc3d0488bff2a824971b7e0ce34d825"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:02.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="doom3.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="35a03ab6f7031811b128bd9a151b21eb"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:03.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="applejuice.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="2f7ac3caf1b8e755fc185a49e9d207fa"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:03.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="socks.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="a22480cb7bc850cce61d38506c1c8171"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:03.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="pressplay.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="c27afeb95650137860db196b9bf19d72"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:03.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="soribada.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="0a96db65db0a5bd2fa86002e5f92623b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:04.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="directconnect.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="2672590c8fa1e1e251fc3e0d47ece73b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:03.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="imap.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="80261a011a37a1277f37765a332ac584"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:04.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="rtsp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="0622b88da5f400e841a6beb508c096d1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:04.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="soulseek.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="9dbeb56ea2a6a95a1ceb09f9b92c81f7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:04.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ssh.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="667787ae512d10f8d31b814b4bf063ad"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:04.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="gkrellm.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="892daa389de52e51b78e43aeae7a0129"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:04.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ssl.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="02dc6d42f91b9430456e0487a3f1c19b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="netbios.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="6a34fe345ec92c017c4c558b09743412"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="xunlei.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="3e89d0b331a8b54438e4862224e9892e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="x11.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="3160b7e21ddddda16f5c670f773c6510"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="dayofdefeat-source.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="86d5e80cbd4e5a902a4beab510d238dc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="gnutella.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="f80d6760542fa88dd443980a44abefa4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="snmp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="562fa230772dbf339959e370a494f394"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="shoutcast.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="ded757b94715330ae47a090f8d5fc97c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="dhcp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="583f655d168cb87139b674b65ee9ffcd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="h323.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="14e8cef8d14edcc9ebbd629f2ebaa63b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="nntp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="92a93b015d98938b4d6d0da2328ca7df"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:05.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="qq.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="cdfac79d225526eac8a7d5f08f213250"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="100bao.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="fda52a86437a80a6f3162df72607850a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="gopher.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="130d48e9508edf3eb2fa590bbb0227b6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="dns.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="9ae715533c67726738fecd7cfef18c51"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="jabber.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="381e07ac11df0ac6e1a4797602c4a38c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="vnc.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="c48811cce3a999abf2bf9351feca5486"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ipp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="cae618686a5ddbd59c5261e1ab0c064d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:06.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="whois.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="8df8b42af39eff32db19810ab623522b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="openft.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="b22b076461e5eb148bc582435edd9c6c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="halflife2-deathmatch.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="4a8a2225a63bb1413dc8ae7ed3b37544"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="validcertssl.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="0145554ac2d9fbdef557647464b47aec"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="battlefield2.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="af808ec6c6c3766b55d37d064907d003"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="citrix.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="ff7105379dd982a74650d597f5082184"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ident.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="96578f39d78ec3af42da7ff33300e20e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="subspace.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="d9d017d23aedeb63731785e2e0b1df0e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="msnmessenger.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="01b4ab4b52885b1ee384db81ab1d927d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="aim.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="638282afd8aeb6453f334af7b38ae19b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="bgp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="becd142cf51e822363d9cdb2ed75552c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:07.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ssdp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="485819573d800c336a93b5c3454c645c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:08.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="quake-halflife.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="75bd73093156b7405ebb1042d189128b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:08.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ncp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="4774899852fbb993fc219bd7d3d594d9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:08.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="gnucleuslan.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="e122223a2f146fcb8ae011bd5bbdfc26"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:08.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="smb.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="a32f498c91df452cbd614a8996272973"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:08.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="smtp.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="67c60be7398e068b82644e5c087efafb"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:09.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="kugoo.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="ec40fd6465ee6bddb8dd0ea9d9ae9e87"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:09.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="quake1.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="838ce61650d00622b6ba2ccd29ac444c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:09.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="freenet.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="e7a6d158ae754b9f26ee1e4594d06ed8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:09.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="ares.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="efabbd7d62703e5a840e888c8ae56947"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:09.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="sip.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="8eed01eac8062e3b21aa8fe4b6670368"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:09.000000Z"/>
+<entry
+   committed-rev="2972"
+   name="telnet.pat"
+   text-time="2008-01-04T00:38:09.000000Z"
+   committed-date="2006-01-23T17:35:19.000000Z"
+   checksum="42ff89c12a4202ea3f39195f54605aba"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:09.000000Z"/>
+</wc-entries>

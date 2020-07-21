@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="3393"
+   name=""
+   committed-date="2008-01-03T23:32:46.870383Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="3393"
+   name="globals-structtypes.h"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="0c9dbbc393503582471ce7e57126bc8f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:12.000000Z"/>
+<entry
+   name="l7-patterns"
+   kind="dir"/>
+<entry
+   committed-rev="2909"
+   name="PORTING"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2005-09-09T03:10:32.000000Z"
+   checksum="6bdcfcd68e81bd67307a7373a324a137"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:38:14.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="globals-report.h"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="51c9dbdc89cfd50b9389bbf254d5a4fe"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:14.000000Z"/>
+<entry
+   committed-rev="3144"
+   name="ntop.html"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-03-19T09:17:26.000000Z"
+   checksum="f38a455414a1ff0539c6cb1125c76a3c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:16.000000Z"/>
+<entry
+   name="www"
+   kind="dir"/>
+<entry
+   committed-rev="3198"
+   name="AUTHORS"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-06-09T21:40:17.000000Z"
+   checksum="16c4eaf4f0ace0955c36a6f4e8aff7bf"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:20.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="depcomp"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="58c7cd7c1dcfded98dd24ca21bd7e7ed"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:22.000000Z"/>
+<entry
+   committed-rev="3228"
+   name="THANKS"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-07-14T09:26:25.965751Z"
+   checksum="e1693e5d0f2910d9e07a12333ae3e17f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:22.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ntop-config.in"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="9d2ab6660643913661906a1f9bd72a7b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:23.000000Z"/>
+<entry
+   committed-rev="3177"
+   name="term.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-05-17T15:30:09.000000Z"
+   checksum="d082de3814f5597e0db569f8ba8ac647"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:38:23.000000Z"/>
+<entry
+   committed-rev="2616"
+   name="oui.txt.gz"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2004-12-01T17:45:53.000000Z"
+   checksum="30d8e95c80fbc126566b71282da7cb2e"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:39:00.000000Z"/>
+<entry
+   committed-rev="2320"
+   name="p2c.opt.table.gz"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2004-02-16T22:41:59.000000Z"
+   checksum="4bbb827682b0fbb31cfbbf63d723af22"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:39:16.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="util.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="532c7477a7e95af644a3e6d149742409"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:22.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="traffic.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="34735e0a9754cdcc642d928bdde6b0bc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:22.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="http.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="47998c6462289c8ce0317571b930bfce"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:26.000000Z"/>
+<entry
+   committed-rev="3382"
+   name="hash.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-12-13T13:05:46.056423Z"
+   checksum="6a524148c633eb41720f3c165ecd9856"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:27.000000Z"/>
+<entry
+   committed-rev="2732"
+   name="getopt1.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2005-03-24T13:43:09.000000Z"
+   checksum="f9953c6730743733f271f5094e68621f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:27.000000Z"/>
+<entry
+   committed-rev="3368"
+   name="fcReport.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-11-22T21:46:41.572791Z"
+   checksum="36a259b98ce28a822fd643457a6dafc4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:31.000000Z"/>
+<entry
+   committed-rev="2730"
+   name="ntop_darwin.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2005-03-24T11:59:06.000000Z"
+   checksum="e9ba51dbf71520ea1c34c6d802bc862d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:32.000000Z"/>
+<entry
+   committed-rev="1785"
+   name="dirent.c"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2003-06-19T10:06:00.000000Z"
+   checksum="14b35d78ea2f2be219b32574bfba786d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:32.000000Z"/>
+<entry
+   committed-rev="3281"
+   name="COPYING"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-09-04T08:49:37.487874Z"
+   checksum="59530bdf33659b29e73d4adb9f9f6552"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:32.000000Z"/>
+<entry
+   committed-rev="3177"
+   name="scsiUtils.h"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2007-05-17T15:30:09.000000Z"
+   checksum="31d2390b6842d42ac2da64f0dbdfac3a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:39:32.000000Z"/>
+<entry
+   committed-rev="1719"
+   name="AS-list.txt.gz"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2003-05-09T13:52:47.000000Z"
+   checksum="9e16dd75b44599c4b71b1fd1ee035411"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:40:20.000000Z"/>
+<entry
+   committed-rev="2192"
+   name="ntop_darwin.h"
+   text-time="2008-01-04T00:45:04.000000Z"
+   committed-date="2004-01-01T10:06:43.000000Z"
+   checksum="9790f316f1c491d97d8da2fa30ce9f62"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:40:20.000000Z"/>
+<entry
+   committed-rev="2644"
+   name="NEWS"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2004-12-13T16:51:43.000000Z"
+   checksum="804934e9b4d3904c76592fd70668d4c3"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:40:20.000000Z"/>
+<entry
+   name="packages"
+   kind="dir"/>
+<entry
+   name="plugins"
+   kind="dir"/>
+<entry
+   committed-rev="3393"
+   name="initialize.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="1b30961acc50000c0f03ea4daa40d2f9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:47.000000Z"/>
+<entry
+   committed-rev="2919"
+   name="pluginSkeleton.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2005-09-28T22:39:19.000000Z"
+   checksum="aae273b20d36c5155f58e286fc8154cc"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:47.000000Z"/>
+<entry
+   committed-rev="3333"
+   name="configure.in"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-10-25T09:10:27.874715Z"
+   checksum="f81e4f0510a1fb5fa0661275895343f4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:50.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="sessions.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="50740b755115513432ae4eff4230e536"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:57.000000Z"/>
+<entry
+   committed-rev="3121"
+   name="ChangeLog"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-02-06T14:35:06.000000Z"
+   checksum="7130b45277d643d8185b49cfcd6ae950"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:53.000000Z"/>
+<entry
+   committed-rev="3373"
+   name="iface.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-25T06:22:13.905659Z"
+   checksum="85730aebb6fe04e13ccd4cbf3d56ea86"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:58.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="report.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="94dbaafa7ab0c5a1c09fe3fcb66fc7d3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:04.000000Z"/>
+<entry
+   committed-rev="3183"
+   name="iface.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-05-29T20:47:05.000000Z"
+   checksum="555187d381d9fe24ef8864f3ce08d033"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:05.000000Z"/>
+<entry
+   committed-rev="3144"
+   name="ntop.txt"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-03-19T09:17:26.000000Z"
+   checksum="7fd8c6fd07468fd5a841715bf8b4df97"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:08.000000Z"/>
+<entry
+   committed-rev="3266"
+   name="prefs.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-08-12T22:35:46.213313Z"
+   checksum="7886edbc96390cd0bbcd139b98215f17"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:10.000000Z"/>
+<entry
+   committed-rev="3367"
+   name="config.h.in"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:41:02.607604Z"
+   checksum="46830c91ab2f91367d256e36139d5016"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:08.000000Z"/>
+<entry
+   committed-rev="3278"
+   name="subnets.txt"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-09-02T13:55:50.023317Z"
+   checksum="95d0dbd9be005e71f5d135eaf96ee977"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:10.000000Z"/>
+<entry
+   committed-rev="604"
+   name="vt.sed"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="e0bbe505ad616c1959a270314a8770ce"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:11.000000Z"/>
+<entry
+   committed-rev="3382"
+   name="dataFormat.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-12-13T13:05:46.056423Z"
+   checksum="b6584efe0a8765882466e8ea72c1e7ee"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:10.000000Z"/>
+<entry
+   committed-rev="3177"
+   name="l7.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-05-17T15:30:09.000000Z"
+   checksum="354803d8d5091335486a1f5aa61fa0f8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:10.000000Z"/>
+<entry
+   committed-rev="3008"
+   name="acinclude.m4.in"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2006-05-04T08:41:55.000000Z"
+   checksum="591cdc23d8470dd0713ec7271787bec0"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:11.000000Z"/>
+<entry
+   committed-rev="3384"
+   name="reportUtils.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-12-14T11:29:42.408708Z"
+   checksum="34d9ecdcf92fa1d577fdd2aec4881fef"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:17.000000Z"/>
+<entry
+   committed-rev="3177"
+   name="vendor.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-05-17T15:30:09.000000Z"
+   checksum="f74451a1ca431d6c02da8899395cafef"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:18.000000Z"/>
+<entry
+   committed-rev="3368"
+   name="webInterface.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:46:41.572791Z"
+   checksum="89fbebe24dbfbfcfc1c3ffd1726062bd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:25.000000Z"/>
+<entry
+   committed-rev="1785"
+   name="argv.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2003-06-19T10:06:00.000000Z"
+   checksum="87961dfb814fff5b7307d23458cfa8f9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:25.000000Z"/>
+<entry
+   committed-rev="3368"
+   name="ssl.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:46:41.572791Z"
+   checksum="f994b29ff621ff4096e5f3b40b816d03"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:25.000000Z"/>
+<entry
+   committed-rev="2796"
+   name="getopt.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2005-05-10T14:20:50.000000Z"
+   checksum="fc91ca0821700961a3df62feeab9fe22"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:42:26.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="globals-defines.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="0e961c523129eb8f97865df6231fa21d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:30.000000Z"/>
+<entry
+   committed-rev="604"
+   name="MANIFESTO"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="38b96357f4cea2737a4ddd107f98877e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:30.000000Z"/>
+<entry
+   committed-rev="2980"
+   name="ntop.8"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2006-02-03T15:13:43.000000Z"
+   checksum="270525aca97cf7038472c3042d1c3b4c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:32.000000Z"/>
+<entry
+   committed-rev="3281"
+   name="compile"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-09-04T08:49:37.487874Z"
+   checksum="b2a35e98453194ca837c363ee9c0d379"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:54.000000Z"/>
+<entry
+   committed-rev="1785"
+   name="getopt.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2003-06-19T10:06:00.000000Z"
+   checksum="f2808bcbaa3cba567accc39972127242"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:32.000000Z"/>
+<entry
+   name="docs"
+   kind="dir"/>
+<entry
+   committed-rev="3355"
+   name="emitter.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-10T10:47:11.978972Z"
+   checksum="41fec1557b7f1dccb2604b2af4c50895"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:55.000000Z"/>
+<entry
+   committed-rev="3215"
+   name="fcUtils.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-07-08T14:32:13.000000Z"
+   checksum="a68c237715318002a61c36b827ec70d3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:54.000000Z"/>
+<entry
+   committed-rev="1227"
+   name="SUPPORT_NTOP.txt"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2002-10-16T15:07:02.000000Z"
+   checksum="5b2bda379f56535bafebbaabce5b84e5"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:55.000000Z"/>
+<entry
+   committed-rev="3367"
+   name="config.guess"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:41:02.607604Z"
+   checksum="c0a79ee9067079cf28908a94e971b2f9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:57.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ntop-cert.pem"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="48363a5ba2da45807efa4c56892ab09b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:57.000000Z"/>
+<entry
+   committed-rev="3367"
+   name="config.sub"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:41:02.607604Z"
+   checksum="c60fae95d69ea985f09ec557fc9520fb"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:58.000000Z"/>
+<entry
+   committed-rev="2475"
+   name="fcUtils.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2004-05-28T16:52:32.000000Z"
+   checksum="e4bdc75d5540bc107d3d360c1f2531e7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:42:59.000000Z"/>
+<entry
+   committed-rev="2801"
+   name="autotoolversions"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2005-05-11T21:24:06.000000Z"
+   checksum="2ec9c4e19a608a9bf959d437c69c9aed"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:42:59.000000Z"/>
+<entry
+   name="html"
+   kind="dir"/>
+<entry
+   committed-rev="3242"
+   name="protocols.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-07-15T21:09:16.733160Z"
+   checksum="7db285e24a73bbca3ebb792bcf5c7e31"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:52.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="INSTALL"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="c59cbaf0df9bcf35feca0d0f1fc01dae"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:52.000000Z"/>
+<entry
+   committed-rev="3368"
+   name="address.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:46:41.572791Z"
+   checksum="104669190678d43e0fd252ef55765009"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:53.000000Z"/>
+<entry
+   committed-rev="3269"
+   name="autogen.sh"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-08-17T22:56:11.995541Z"
+   checksum="d49229ec92fd84e78430a5881fbdade9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:54.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="pbuf.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="2bf83a0b1bfc6a973ffc49b522e4cb9f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:59.000000Z"/>
+<entry
+   committed-rev="604"
+   name="stamp-h.in"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="1ded054093de910d9786c62bc4fe8cc6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:59.000000Z"/>
+<entry
+   committed-rev="3368"
+   name="utildl.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:46:41.572791Z"
+   checksum="a68dcb5bbcf8bb6e4a9ef82dc09e43af"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:59.000000Z"/>
+<entry
+   committed-rev="3368"
+   name="plugin.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:46:41.572791Z"
+   checksum="4dfb4fb0d941e5097e3b3a27d0d6d1ad"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:59.000000Z"/>
+<entry
+   committed-rev="3305"
+   name="leaks.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-09-24T17:39:33.183807Z"
+   checksum="9330a0d04b369cd3386b93e5671074bd"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:00.000000Z"/>
+<entry
+   committed-rev="3269"
+   name="mkinstalldirs"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-08-17T22:56:11.995541Z"
+   checksum="ce1fb6b579015b49d94f3b093f4cb332"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:00.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="graph.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="6b5f1403c879cdc494e1c255d25507d3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:01.000000Z"/>
+<entry
+   committed-rev="3180"
+   name="ntop_win32.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-05-17T21:56:04.000000Z"
+   checksum="ee7cf6ff41c72fd4280ea07b132d9ec2"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:04.000000Z"/>
+<entry
+   name="configureextra"
+   kind="dir"/>
+<entry
+   committed-rev="1785"
+   name="leaks.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2003-06-19T10:06:00.000000Z"
+   checksum="3ae942b7c34e14a5e88a42563baf7cb4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:04.000000Z"/>
+<entry
+   committed-rev="2392"
+   name="acinclude.m4.ntop"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2004-03-09T17:19:57.000000Z"
+   checksum="b64775520c8239978c1a34bf43127d28"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:44:04.000000Z"/>
+<entry
+   committed-rev="3380"
+   name="database.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-12-12T11:55:56.886667Z"
+   checksum="ae12d64b3c62d3300f54f64825bf4d1c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:05.000000Z"/>
+<entry
+   committed-rev="3183"
+   name="ntop_win32.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-05-29T20:47:05.000000Z"
+   checksum="63d3ae6913b93e0435a971d74311a197"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:06.000000Z"/>
+<entry
+   committed-rev="3372"
+   name="globals-core.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-24T18:26:29.499135Z"
+   checksum="63679a077030afc05193f61b22f0bbcf"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:06.000000Z"/>
+<entry
+   committed-rev="3017"
+   name="etter.finger.os.gz"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2006-05-08T16:37:11.000000Z"
+   checksum="d93ed0e077075fc6081bd974e86058e6"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:44:08.000000Z"/>
+<entry
+   name="installer"
+   kind="dir"/>
+<entry
+   committed-rev="3236"
+   name="README"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-07-14T13:17:16.924837Z"
+   checksum="ac29157673fa3b2cceaa61bbfc074398"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:09.000000Z"/>
+<entry
+   committed-rev="2472"
+   name="Makefile.mingw"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2004-05-24T07:20:25.000000Z"
+   checksum="f86ba73294b08ae8db3ca11ecedfe727"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:09.000000Z"/>
+<entry
+   committed-rev="2317"
+   name="CONTENTS"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2004-02-16T18:38:09.000000Z"
+   checksum="3bcdb28bbaaf9f6ad18d2c79780b8800"
+   last-author="burton"
+   kind="file"
+   prop-time="2008-01-04T00:44:09.000000Z"/>
+<entry
+   committed-rev="1697"
+   name="specialMAC.txt.gz"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2003-04-24T09:45:14.000000Z"
+   checksum="4a52a90c7db969712eaac5b048d3f3b1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:09.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="globals-core.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="c1679f4cddd8ee8c1a067dc4a9b9da06"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:10.000000Z"/>
+<entry
+   name="utils"
+   kind="dir"/>
+<entry
+   committed-rev="3393"
+   name="ntop.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="e729823c3d697d19b241da90231a72b6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:18.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="main.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="81c8a1dbd864a2e128ac523b62e50678"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:19.000000Z"/>
+<entry
+   committed-rev="3367"
+   name="acinclude.m4"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:41:02.607604Z"
+   checksum="71ebdb3b66a75710edc0134914b8e273"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:25.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="ntop.h"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="dd9bbcbb1da07a0942655098aa0d5dd1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:26.000000Z"/>
+<entry
+   committed-rev="3393"
+   name="missing"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="c7645c248f924f07869059b76300fea9"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:26.000000Z"/>
+<entry
+   committed-rev="3194"
+   name="Makefile.am"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-06-09T21:15:11.000000Z"
+   checksum="27b49fd38b614b98206950c85395254b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:26.000000Z"/>
+<entry
+   committed-rev="3368"
+   name="admin.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:46:41.572791Z"
+   checksum="4678c55fa394f88bb42c299e3924533c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:28.000000Z"/>
+<entry
+   committed-rev="3177"
+   name="globals-report.c"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-05-17T15:30:09.000000Z"
+   checksum="37d56aebb48d9854f287fdddff4026c2"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:28.000000Z"/>
+<entry
+   committed-rev="3367"
+   name="aclocal.m4"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2007-11-22T21:41:02.607604Z"
+   checksum="b24709f8330bac9cab738676b33d0e64"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:31.000000Z"/>
+<entry
+   name="NetFlow"
+   kind="dir"/>
+<entry
+   committed-rev="3393"
+   name="install-sh"
+   text-time="2008-01-04T00:45:05.000000Z"
+   committed-date="2008-01-03T23:32:46.870383Z"
+   checksum="8bff9d6a50300d4b8147940002581a5d"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:31.000000Z"/>
+</wc-entries>

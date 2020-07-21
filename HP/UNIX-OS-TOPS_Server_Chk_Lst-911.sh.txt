@@ -1,0 +1,6571 @@
+#!/usr/bin/env ksh
+#
+##########
+# NAME:	ams_drc_v2.ksh
+#
+# PURPOSE:  Script to verify the unix server checklist as defined by the
+#	    UNIX checklist spreadsheet and the automation team. This script
+#	    was developed for Solaris, HP-UX, AIX, and Linux.
+#
+# ORIGINAL AUTHOR: Calvin Mallory
+# AUTHORS: Jonathan Howard
+#
+##########
+#
+# DO NOT MODIFY USAGE START/END LINES!!! This will cause UsageMessage to fail. All
+# text between to the 2 lines can be modified as needed.
+# SCRIPTNAMEPLACEHOLDER will be replaced by actual script name when displayed via
+# UsageMessage.
+#
+##### USAGE START
+#
+# USAGE:  SCRIPTNAMEPLACEHOLDER [ -v | -l | -i | -x | -d | -D | -r | -h | -? ]
+#
+#	  Parameter descriptions:
+#	      -v ) Verbose mode.
+#		  0 : Sends output to the screen only. Can be used with option [ -r ]
+#		  1 : Sends output to a ~ delimited csv file only.
+#		  2 : Sends output to a ~ delimited csv file, and to the screen. Default if no options used. Can be used with option [ -r ]. 
+#	      -l ) Lists all test items that would be run by current options, but does not run them. Can be used with all options
+#	      -i ) Include. Runs only specific test items. (See Example #2)
+#	      -x ) Exclude. Runs all test items, except specific test items. (See Example #3)
+#	      -g ) Group. Runs items based upon groupings. (disk, network, etc - See Note1)
+#	      -r ) Readable format. Changes output to a form that is easier to read. Does not affect output file
+#	      -d ) Template debug mode. (See Note2)
+#	      -D ) Individual tool debug mode. (See Note2)
+#	  -h, -? ) Show this usage message
+#
+# NOTE1: Option  -g can be used with options [ -l | -i | -x | -r ]
+# NOTE2: Option  -d and -D can be used with any option; however all debug output will only
+#		 be displayed on screen and will not be sent to the output file.
+#
+# Example #1: SCRIPTNAMEPLACEHOLDER
+#   With no options, the script will run all items in quiet mode. This creates
+#   a delimited csv file.
+#
+# Example #2: SCRIPTNAMEPLACEHOLDER -v 0 -i HDW01,OS02,NET01
+#   With options -v and -i, the script will run only items HDW01, OS02, and NET01 in verbose mode.
+#   This will output to the screen only. No output file is created.
+#
+# Example #3: SCRIPTNAMEPLACEHOLDER -v 2 -x HDW01,NET01
+#   With options -V and -x, the script will run all items except HDW01 and NET01 in 
+#   Maximum verbose mode. This will output to the screen, as well as creating a delimited
+#   csv file.
+#
+# Example #4: SCRIPTNAMEPLACEHOLDER -v 0 -g HDW,NET -i OS02
+#   With options -v, -g, and -i, the script will run all HDW and NET based items,
+#   along with running item OS02. This will output to the screen only. No output file
+#   is created.
+#
+##### USAGE END
+#
+#################################################################################
+#                                                                               #
+# (c) Copyright 2012 Hewlett Packard Corporation. All Rights Reserved.          #
+#                                                                               #
+# Information contained in this document is proprietary and confidential to     #
+# Hewlett Packard Corporation and may not be disclosed to any third             #
+# party without prior written consent from Hewlett Packard Corporation.         #
+#                                                                               #
+#################################################################################
+#
+##### MODIFICATION HISTORY:
+# 06/06/2012  Cal Mallory     1.01  - Initial Release
+# 03/06/2013  Cal Mallory     1.2   - Numerous Bug fixes. See original script for
+#				      full details. UNIX-OS-TOPS_Server_Chk_Lst.sh
+# 05/01/2013  Jonathan Howard 2.0   - Converted to Posix Korn shell.
+# 05/21/2013  Jonathan Howard 2.0   - Changed default output, so that script outputs
+#				      to the screen as well as creates the csv file.
+#				      Needed for HPSA
+# 05/29/2013  Jonathan Howard 2.0   - Changed logic for determining if root is running
+#				      this script. Needed as some boxes did not have whoami
+# 06/20/2013  Jonathan Howard 2.0   - Changed default output. Removed "Data:" from the font
+#				      of the standard output.
+#
+##### END HISTORY #####
+#
+##### Initial function definition
+BinaryVariableDefinition() {
+### Used to define all binary variables, and set their location
+# Specific local function declarations
+BinaryVariableDefinitionErrorStatus=0
+
+# Define common directory locations for needed binaries
+set -A CommonBinaryDirectoryLocations -- "${CommonBinaryDirectoryLocations[@]}" /sbin /usr/sbin /bin /usr/bin /usr/local/bin
+
+### Local main function body
+for CurrentBinaryInput in ${BinaryList[*]}; do
+  typeset -u CurrentBinaryVariableName=${CurrentBinaryInput}
+  CurrentBinaryFound=0
+
+  # This will check current path for existence of binary, and makes sure it is executable
+  for CurrentDirectoryLocationInput in ${CommonBinaryDirectoryLocations[*]}; do
+    if [[ -x "${CurrentDirectoryLocationInput}/${CurrentBinaryInput}" ]]; then
+      set -A ${CurrentBinaryVariableName} "${CurrentDirectoryLocationInput}/${CurrentBinaryInput}"
+      CurrentBinaryFound=1
+      break
+    fi
+  done
+
+  # Collects a list of binaries not found, and reports it back to user
+  if [[ ${CurrentBinaryFound} -eq 0 ]]; then
+    set -A MissingBinaryList -- "${MissingBinaryList[@]}" ${CurrentBinaryInput}
+    BinaryVariableDefinitionErrorStatus=1
+  fi
+done
+
+# Call binary error handling
+BinaryErrorHandling $1
+
+# Clear used arrays and variables
+unset CommonBinaryDirectoryLocations CurrentBinaryVariableName MissingBinaryList CurrentBinaryInput CurrentBinaryVariableName CurrentDirectoryLocationInput
+}
+
+##### Binary error handling
+BinaryErrorHandling() {
+### Handles all missing binaries
+
+# Local main function body
+if [[ ${BinaryVariableDefinitionErrorStatus} -eq 1 && $1 = "PRIMARY" ]]; then
+  print "Unable to find all primary binaries to run!!!\nMissing binaries: ${MissingBinaryList[*]}"
+  exit 1
+
+elif [[ ${BinaryVariableDefinitionErrorStatus} -eq 1 && $1 != "PRIMARY" ]]; then
+  # BinaryVariableDefinitionErrorMessage="Unable to find necessary binaries!!! Skipping. Missing binaries: ${MissingBinaryList[*]}"
+  BinaryVariableDefinitionErrorStatus=1
+fi
+}
+
+##### Common Binary Definitions
+set -A BinaryList uname grep egrep awk sed cut hostname ps cat date who wc ls tr renice rm diff find nice sort sleep tail head uptime chmod uniq df id
+BinaryVariableDefinition PRIMARY
+
+##### Global Varariable Declaration
+CurrentHostname="$(${HOSTNAME})"
+CurrentDate=$(${DATE} '+%Y/%m/%d')
+CurrentTime=$(${DATE} '+%H:%M:%S')
+CurrentDateTime=$(${DATE} '+%m/%d/%Y %H:%M:%S')
+ScriptVersion="2.0"
+ScriptName=$(print ${0##*/})
+CurrentOptions="$*"
+ScriptExitStatus=0
+DebugMode=0
+VerboseMode=2
+ListMode=0
+ReadMode=0
+RunCount=0
+
+UsageMessage() {
+# Generates the usage message, using the information between USAGE START/END at top of script
+${SED} -n '/^#\{1,\} USAGE START$/,/^#\{1,\} USAGE END$/p' $0 2>/dev/null | ${SED} 's/^#\{1,\} USAGE [S|E].*//;s/#//g' 2>/dev/null | ${SED} "s/SCRIPTNAMEPLACEHOLDER/${ScriptName}/g" 2>/dev/null
+
+exit ${ScriptExitStatus}
+}
+
+UsageErrorHandling() {
+InvalidSetting="$1"
+CurrentSettingValue="$2"
+
+print "Invalid setting for ${InvalidSetting}!!! ${CurrentSettingValue}\n"
+ScriptExitStatus=1
+UsageMessage
+}
+
+
+##### Determine if root user is running script
+if [[ $(${ID} 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${SED} 's/.*(//;s/).*//' 2>/dev/null) != "root" ]]; then
+  if [[ $(${WHO} am i 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) != "root" ]]; then
+    print "Script must run by root!!!"
+    exit 1
+  fi
+fi
+
+##### OS discovery and initialization
+OSName=$(${UNAME} 2>/dev/null)
+
+case ${OSName} in 
+  HP-UX ) OSUsage=1 ;;
+
+    AIX ) OSUsage=2 ;;
+	  
+
+  SunOS ) OSUsage=3 ;;
+	  
+
+  Linux ) if [[ -s /etc/oracle-release ]]; then
+	    OSName=ORACLE
+	    OSUsage=4
+
+	  elif [[ -s /etc/SuSE-release ]]; then
+	    OSName=SUSE
+	    OSUsage=5
+
+	  elif [[ -s /etc/redhat-release ]]; then
+	    OSName=RHEL
+	    OSUsage=6
+
+	  else print "Cannot determine OS, or script is not implemented for this platform!!!"
+	    exit 1
+	  fi ;;
+
+    * ) print "Cannot determine OS, or script is not implemented for this platform!!!"
+	exit 1 ;;
+esac
+
+##### Initial Option handling
+# Check for invalid initial option format
+if [[ ! -z $(print $1 2>/dev/null | ${GREP} -v ^- 2>/dev/null) ]]; then
+  UsageMessage
+fi
+
+# Handle all options
+while getopts ":dDhrg:v:li:x:" Option; do
+  case ${Option} in
+    d ) set -x ;;
+
+    D ) DebugMode=1 ;;
+
+    v ) VerboseMode=${OPTARG}
+	if [[ ${VerboseMode} != [012] ]]; then
+	  UsageErrorHandling "verbose" "-v ${OPTARG}"
+	fi ;;
+
+    l ) ListMode=1
+	OSName=LIST ;;
+
+    g ) set -A UserGroupInput $(print ${OPTARG} 2>/dev/null | ${SED} 's/=//g;s/,/ /g' 2>/dev/null)
+	typeset -u UserGroupInput ;;
+
+    i ) for CurrentIncludeInput in $(print ${OPTARG} 2>/dev/null | ${SED} 's/=//g;s/,/ /g' 2>/dev/null); do
+	  set -A UserIncludeInput -- "${UserIncludeInput[@]}" "AMS_${CurrentIncludeInput}_CMDS"
+	  typeset -u UserIncludeInput
+	done ;;
+
+    x ) for CurrentExcludeInput in $(print ${OPTARG} 2>/dev/null | ${SED} 's/=//g;s/,/ /g' 2>/dev/null); do
+	  set -A UserExcludeInput -- "${UserExcludeInput[@]}" "AMS_${CurrentExcludeInput}_CMDS"
+	  typeset -u UserExcludeInput
+	done ;;
+
+    r ) ReadMode=1 ;;
+
+    h|* ) UsageMessage ;;
+  esac
+done
+shift $(($OPTIND -1))
+
+##### Killed script cleanup
+trap 'print "${ScriptName} killed!!!"; ${RM} /tmp/*.$$ 2>/dev/null; return 1' INT TERM
+
+##### Change script priority
+${RENICE} +20 $$ 1>/dev/null 2>&1
+
+##### Set umask setting - This will prevent unauthorized users from reading temp files
+if [[ ${OSUsage} = [123] ]]; then
+  ${UMASK} 0077 2>/dev/null
+elif [[ ${OSUsage} = [456] ]]; then
+  umask 0077 2>/dev/null
+fi
+
+##### Startup summary of options and current run date/time
+print "Script starting: ${CurrentDateTime} - Script Version: ${ScriptVersion}\nOptions used: ${CurrentOptions}"
+
+##### HPSA MID Collection
+if [[ -s /etc/opt/opsware/agent/mid ]]; then
+  HPSAMID=$(${CAT} /etc/opt/opsware/agent/mid 2>/dev/null | ${TR} -d '\r' 2>/dev/null)
+
+elif [[ -s /var/opt/opsware/agent/last_sw_inventory ]]; then
+  HPSAMID=$(${SED} '1,/mid/d' /var/opt/opsware/agent/last_sw_inventory 2>/dev/null | ${GREP} ^S 2>/dev/null | ${SED} 's/[^0-9]*//g' 2>/dev/null)
+
+elif [[ -a /opt/opsware/agent/pylibs/cog/bs_hardware ]]; then
+  HPSAMID=$(/opt/opsware/agent/pylibs/cog/bs_hardware 2>/dev/null | ${GREP} "Opsware machine ID" 2>/dev/null | ${SED} 's/[^0-9]*//g' 2>/dev/null)
+
+else HPSAMID=NA
+fi
+
+##### Global defined functions - All functions that interact with multiple tools should go here
+LogCheck() {
+### Check for current file, clear contents, and check/fix permissions if needed
+# Specific local function declarations
+LogOutputDefaultPermission=0600
+LogOutputDir=/tmp
+LogOutputFile=${LogOutputDir}/"TOPS_${CurrentHostname}.csv"
+
+### Local main function body
+if [[ ${VerboseMode} = [12] && ${ListMode} -eq 0 ]]; then
+    
+  # Clear/Create output log file
+  ${CAT} /dev/null > "${LogOutputFile}" 2>/dev/null
+
+    # Re-Check that output log file exists
+    if [[ ! -a ${LogOutputFile} ]]; then
+      print "Unable to continue. Could not create new log output file(${LogOutputFile})"
+      exit 1
+
+    # Check that output log file is empty
+    elif [[ -s ${LogOutputFile} ]]; then
+      print "Unable to continue. Could not clear old log output file(${LogOutputFile})"
+      exit 1
+    fi
+
+  # Check/Set permissions
+  if [[ $(PermissionsCalculator ${LogOutputFile}) != ${LogOutputDefaultPermission} ]]; then
+    ${CHMOD} ${LogOutputDefaultPermission} ${LogOutputFile} 2>/dev/null
+
+    # Re-Check permissions
+    if [[ $(PermissionsCalculator ${LogOutputFile}) != ${LogOutputDefaultPermission} ]]; then
+      print "Unable to continue. Could not set correct permissions on log output file(${LogOutputFile})"
+      exit 1
+    fi
+  fi
+fi
+}
+
+
+PermissionsCalculator() {
+### Calculate permission of item inputted
+# Specific local function declarations
+InputName="$1"
+
+# Main function body
+OwnerPermissions=$(${LS} -lLd "${InputName}" 2>/dev/null | ${CUT} -c2-4 2>/dev/null | ${TR} '\-rwxSs' 042101 2>/dev/null | ${SED} 's/./& /g' 2>/dev/null | ${AWK} '{print $1+$2+$3}' 2>/dev/null)
+OwnerSpecialPermissions=$(${LS} -lLd "${InputName}" 2>/dev/null | ${CUT} -c4 2>/dev/null | ${TR} '\-Ss' 044 2>/dev/null)
+GroupPermissions=$(${LS} -lLd "${InputName}" 2>/dev/null | ${CUT} -c5-7 2>/dev/null | ${TR} '\-rwxls' 042101 2>/dev/null | ${SED} 's/./& /g' 2>/dev/null | ${AWK} '{print $1+$2+$3}' 2>/dev/null)
+GroupSpecialPermissions=$(${LS} -lLd "${InputName}" 2>/dev/null | ${CUT} -c7 2>/dev/null | ${TR} '\-ls' 022 2>/dev/null)
+WorldPermissions=$(${LS} -lLd "${InputName}" 2>/dev/null | ${CUT} -c8-10 2>/dev/null | ${TR} '\-rwxTt' 042101 2>/dev/null | ${SED} 's/./& /g' 2>/dev/null | ${AWK} '{print $1+$2+$3}' 2>/dev/null)
+WorldSpecialPermissions=$(${LS} -lLd "${InputName}" 2>/dev/null | ${CUT} -c10 2>/dev/null | ${TR} '\-Tt' 011 2>/dev/null)
+SpecialPermissions=$(print "${OwnerSpecialPermissions} ${GroupSpecialPermissions} ${WorldSpecialPermissions}" 2>/dev/null | ${AWK} '{print $1+$2+$3}' 2>/dev/null)
+
+print "${SpecialPermissions}${OwnerPermissions}${GroupPermissions}${WorldPermissions}"
+}
+
+StatusOutput() {
+### Output status of calling function
+### Local main function body
+if [[ ${VerboseMode} = [12] ]]; then
+  for CurrentInput in "${CSVOutputResult[@]}"; do
+    print "${CurrentInput}" >> ${LogOutputFile} 2>/dev/null
+  done
+fi
+
+if [[ ${VerboseMode} = [02] ]]; then
+  if [[ ${ReadMode} -eq 0 ]]; then
+    for CurrentInput in "${CSVOutputResult[@]}"; do
+      print "${CurrentInput}" 2>/dev/null
+      # Updated to remove data: frontend - Per JoDee Voight 06/20/2013
+      # print "Data: ${CurrentInput}" 2>/dev/null
+    done
+
+  elif [[ ${ReadMode} -eq 1 ]]; then
+    for CurrentInput in "${ReadableOutputResult[@]}"; do
+      print "${CurrentInput}" 2>/dev/null
+    done
+  fi
+fi
+
+# Increment run count
+let RunCount=${RunCount}+1
+
+# Cleanup
+unset ToolID CSVOutputResult ReadableOutputResult
+}
+
+##### Function debugging - Called to enable debugging of individual tools
+FunctionDebug() {
+if [[ ${DebugMode} -eq 1 ]]; then
+  set -x
+fi
+}
+
+##### OS defined tool functions - All tools should be defined here. Tools are not order specific, and 
+##### can appear or added in any order
+AMS_HDW01_CMDS() {
+### HDW01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=HDW01
+ToolObjective="Hardware Supported by Vendor"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+HardwareModelName=NA
+HardwareSerialNumber=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${HardwareModelName}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_SN~${CurrentHostname}~${HPSAMID}~${HardwareSerialNumber}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Server Model number: ${HardwareModelName}"
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID}_SN - Server Serial number: ${HardwareSerialNumber}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+    HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList getconf model
+	      BinaryVariableDefinition
+
+	      # Capture hardware vendor name, and serial number
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		HardwareModelName=$(${MODEL} 2>/dev/null)
+		HardwareSerialNumber=$(${GETCONF} MACHINE_SERIAL 2>/dev/null)
+
+		if [[ -z ${HardwareModelName} ]]; then
+		  HardwareModelName=NA
+		  AlternateMethodUsage=1
+		fi
+
+		if [[ -z ${HardwareSerialNumber} ]]; then
+		  HardwareSerialNumber=NA
+		  AlternateMethodUsage=1
+		fi
+	      else AlternateMethodUsage=1
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethodUsage} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList machinfo
+		set -A CommonBinaryDirectoryLocations /usr/contrib/bin
+		BinaryVariableDefinition
+
+		# Capture hardware vendor name, and serial number
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		  # No alternate method for getting model information at this time
+
+		  if [[ ${HardwareSerialNumber} = NA ]]; then
+		    HardwareSerialNumber=$(${MACHINFO} 2>/dev/null | ${GREP} -i "machine serial" 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)
+
+		    if [[ -z ${HardwareSerialNumber} ]]; then
+		      HardwareSerialNumber=NA
+		    fi
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	    } ;;
+
+    SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList sneep
+	      set -A CommonBinaryDirectoryLocations /opt/SUNWsneep/bin
+	      BinaryVariableDefinition
+
+	      # Capture hardware vendor name, and serial number
+		HardwareModelName=$(${UNAME} -a 2>/dev/null |  ${AWK} '{print $NF}' 2>/dev/null | ${CUT} -f2 -d',' 2>/dev/null)
+		if [[ -z ${HardwareModelName} ]]; then
+		  HardwareModelName=NA
+		  AlternateMethodUsage=1
+		fi
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		HardwareSerialNumber=$(${SNEEP} 2>/dev/null)
+
+		if [[ -z ${HardwareSerialNumber} ]]; then
+		  HardwareSerialNumber=NA
+		  AlternateMethodUsage=1
+		fi
+	      else AlternateMethodUsage=1
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList lsattr prtconf
+	      BinaryVariableDefinition
+
+	      # Capture hardware vendor name, and serial number
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		HardwareModelName=$(${LSATTR} -EOl sys0 -a modelname 2>/dev/null | ${GREP} -v ^# 2>/dev/null)
+		HardwareSerialNumber=$(${PRTCONF} 2>/dev/null | ${AWK} -F': ' '($1=="Machine Serial Number"){print $NF}' 2>/dev/null)
+
+		if [[ -z ${HardwareModelName} ]]; then
+		  HardwareModelName=NA
+		  AlternateMethodUsage=1
+		fi
+
+		if [[ -z ${HardwareSerialNumber} ]]; then
+		  HardwareSerialNumber=NA
+		  AlternateMethodUsage=1
+		fi
+	      else AlternateMethodUsage=1
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethodUsage} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList lscfg
+		BinaryVariableDefinition
+
+		# Capture hardware vendor name, and serial number
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ ${HardwareModelName} = NA ]]; then
+		    HardwareModelName=$(${UNAME} -M 2>/dev/null)
+
+		    if [[ -z ${HardwareModelName} ]]; then
+		      HardwareModelName=NA
+		    fi
+		  fi
+
+		  if [[ ${HardwareSerialNumber} = NA ]]; then
+		    HardwareSerialNumber=$(${LSCFG} -vp 2>/dev/null | ${SED} -n '/.* System VPD:$/,/.* CEC:$/p' 2>/dev/null | ${AWK} -F'.' '($1=="Machine/Cabinet Serial No"){print $NF}' 2>/dev/null)
+
+		    if [[ -z ${HardwareSerialNumber} ]]; then
+		      HardwareSerialNumber=NA
+		    fi
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	    } ;;
+
+
+     SUSE|ORACLE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList dmidecode
+	      BinaryVariableDefinition
+
+	      # Capture hardware vendor name, and serial number
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		HardwareModelName=$(${DMIDECODE} -s system-product-name 2>/dev/null)
+		HardwareSerialNumber=$(${DMIDECODE} -s system-serial-number 2>/dev/null)
+
+		if [[ -z ${HardwareModelName} ]]; then
+		  HardwareModelName=NA
+		  AlternateMethodUsage=1
+		fi
+
+		if [[ -z ${HardwareSerialNumber} ]]; then
+		  HardwareSerialNumber=NA
+		  AlternateMethodUsage=1
+		fi
+	      else AlternateMethodUsage=1
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethodUsage} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList dmesg
+		BinaryVariableDefinition
+
+		# Capture hardware vendor name, and serial number
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ ${HardwareModelName} = NA ]]; then
+		    HardwareModelName=$(${DMESG} 2>/dev/null | ${GREP} -i " bios " 2>/dev/null | ${HEAD} -1 2>/dev/null | ${SED} -n 's/.*://;s/\/.*//p' 2>/dev/null | ${SED} 's/^ //' 2>/dev/null)
+
+		    if [[ -z ${HardwareVendorName} ]]; then
+		      HardwareModelName=NA
+		    fi
+		  fi
+
+		  # No alternate method for getting serial information at this time
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_HDW02_CMDS() {
+### HDW02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=HDW02
+ToolObjective="Ensure valid hardware support contract exists and is recorded in ADMS/ESL"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_HDW03_CMDS() {
+### HDW03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=HDW03
+ToolObjective="Hardware diags & server \"Burn-in\""
+
+# Specific local function declarations
+AlternateMethodUsage=0
+HardwareUptime=NA
+LogFileErrorFoundStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}A~${CurrentHostname}~${HPSAMID}~${HardwareUptime}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}B~${CurrentHostname}~${HPSAMID}~${LogFileErrorFoundStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID}A - Server uptime in days: ${HardwareUptime}"
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID}B - Errors found in log files: ${LogFileErrorFoundStatus}"
+}
+
+# Define common commands
+CommonCommands() {
+# Generate uptime in days
+
+# Custom binary(s) declaration
+set -A BinaryList uptime bc
+BinaryVariableDefinition
+
+if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+  RawUptimeData=$(${UPTIME} 2>/dev/null)
+  RawTimeFormat=$(print ${RawUptimeData} 2>/dev/null | ${AWK} '{print $3}' 2>/dev/null | ${SED} 's/,$//' 2>/dev/null)
+
+  # Find out if uptime is in mins, hours, or days
+  if [[ ! -z $(print ${RawTimeFormat} 2>/dev/null | ${SED} '/:/d' 2>/dev/null) ]]; then
+    TimeFormat=$(print ${RawUptimeData} 2>/dev/null | ${AWK} '{print $4}' 2>/dev/null | ${CUT} -c 1-2 2>/dev/null)
+
+  else TimeFormat=hr
+  fi
+
+  # Calculate uptime
+  case ${TimeFormat} in
+    da ) HardwareUptime=${RawTimeFormat} ;;
+
+    mi ) HardwareUptime=$(print "scale=2; ${RawTimeFormat}/1440" 2>/dev/null | ${BC} 2>/dev/null) ;;
+
+  hr ) HardwareUptime=$(print "scale=2; $(print ${RawTimeFormat} 2>/dev/null | ${AWK} -F: '{print $1}' 2>/dev/null)/24" 2>/dev/null | ${BC} 2>/dev/null) ;;
+  esac
+fi
+}
+
+# Define commands based upon OS
+case ${OSName} in
+    HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A LogFileList "/var/adm/*.log" "/var/adm/syslog/*.log"
+
+	      # Capture list of "Critical, Alert, and Emergency" messages from various log files
+	      for CurrentLogInput in ${LogFileList[@]}; do
+		if [[ ! -z $(${EGREP} -i 'crit|alert|emerg' "${CurrentLogInput}" 2>/dev/null) ]]; then
+		  LogFileErrorFoundStatus=YES
+		fi
+	      done
+
+	      # Capture hardware uptime
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A LogFileList "/var/log/*.log" "/var/log/syslog" "/var/adm/messages"
+
+	      # Capture list of "Critical, Alert, and Emergency" messages from various log files
+	      for CurrentLogInput in ${LogFileList[@]}; do
+		if [[ ! -z $(${EGREP} -i 'crit|alert|emerg' "${CurrentLogInput}" 2>/dev/null) ]]; then
+		  LogFileErrorFoundStatus=YES
+		fi
+	      done
+
+	      # Capture hardware uptime
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A LogFileList "/var/adm/messages"
+
+	      # Capture list of "Critical, Alert, and Emergency" messages from various log files
+	      for CurrentLogInput in ${LogFileList[@]}; do
+		if [[ ! -z $(${EGREP} -i 'crit|alert|emerg' "${CurrentLogInput}" 2>/dev/null) ]]; then
+		  LogFileErrorFoundStatus=YES
+		fi
+	      done
+
+	      # Capture hardware uptime
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+     SUSE|ORACLE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A LogFileList "/var/log/*.log" "/var/log/messages"
+
+	      # Capture list of "Critical, Alert, and Emergency" messages from various log files
+	      for CurrentLogInput in ${LogFileList[@]}; do
+		if [[ ! -z $(${EGREP} -i 'crit|alert|emerg' "${CurrentLogInput}" 2>/dev/null) ]]; then
+		  LogFileErrorFoundStatus=YES
+		fi
+	      done
+
+	      # Capture hardware uptime
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod CommonCommands
+
+# Function debugging
+set +x
+}
+
+AMS_HDW04_CMDS() {
+### HDW04
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=HDW04
+ToolObjective="Confirm dual power supplies are installed and functional"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_HDW05_CMDS() {
+### HDW05
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=HDW05
+ToolObjective="Confirm that power supplies are on different power feeds/PDU's"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_HDW06_CMDS() {
+### HDW06
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=HDW06
+ToolObjective="Confirm Firmware Levels"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+HardwareFirmwareVersion=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${HardwareFirmwareVersion}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Hardware firmware version: ${HardwareFirmwareVersion}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+    HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList machinfo
+	      set -A CommonBinaryDirectoryLocations /usr/contrib/bin
+	      BinaryVariableDefinition
+
+	      # Capture hardware firmware version
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		if [[ ${HardwareFirmwareVersion} = NA ]]; then
+		  HardwareFirmwareVersion=$(${MACHINFO} 2>/dev/null | ${GREP} "Firmware revision" 2>/dev/null | ${SED} 's/= //' 2>/dev/null | ${AWK} '{print $3}' 2>/dev/null)
+
+		  if [[ -z ${HardwareFirmwareVersion} ]]; then
+		    HardwareFirmwareVersion=NA
+		  fi
+		fi
+	      fi
+
+	      # No alternate method for getting hardware firmware version information at this time
+	      }
+
+	      PrimaryMethod
+	    } ;;
+
+    SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList prtconf
+	      BinaryVariableDefinition
+
+	      # Capture hardware firmware version
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		HardwareFirmwareVersion=$(${PRTCONF} -V 2>/dev/null)
+
+		if [[ -z ${HardwareFirmwareVersion} ]]; then
+		  HardwareFirmwareVersion=NA
+		fi
+	      fi
+
+	      # No alternate method for getting hardware firmware version information at this time
+	      }
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList lsattr
+	      BinaryVariableDefinition
+
+	      # Capture hardware firmware version
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		HardwareFirmwareVersion=$(${LSATTR} -EOl sys0 -a fwversion 2>/dev/null | ${GREP} -v ^# 2>/dev/null)
+
+		if [[ -z ${HardwareFirmwareVersion} ]]; then
+		  HardwareFirmwareVersion=NA
+		  AlternateMethodUsage=1
+		fi
+
+	      else AlternateMethodUsage=1
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethodUsage} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList prtconf
+		BinaryVariableDefinition
+
+		# Capture hardware vendor name, and serial number
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ ${HardwareFirmwareVersion} = NA ]]; then
+		    HardwareFirmwareVersion=$(${PRTCONF} 2>/dev/null | ${AWK} -F': ' '($1=="Firmware Version"){print $NF}' 2>/dev/null)
+
+		    if [[ -z ${HardwareFirmwareVersion} ]]; then
+		      HardwareFirmwareVersion=NA
+		    fi
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	    } ;;
+
+
+     SUSE|ORACLE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList dmidecode
+	      BinaryVariableDefinition
+
+	      # Capture hardware vendor name, and serial number
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		HardwareFirmwareVersion=$(${DMIDECODE} -s system-version 2>/dev/null)
+
+		if [[ -z ${HardwareFirmwareVersion} || ${HardwareFirmwareVersion} = None ]]; then
+		  HardwareFirmwareVersion=NA
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_HDW07_CMDS() {
+### HDW07
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=HDW07
+ToolObjective="Confirm call home is configured and functional(if applicable)"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_OS01_CMDS() {
+### OS01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS01
+ToolObjective="OS Supported by Vendor"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+OSReleaseVersion=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${OSReleaseVersion}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - OS release version: ${OSReleaseVersion}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Capture OS release version
+	      OSReleaseVersion="$(${UNAME} 2>/dev/null) $(${UNAME} -r 2>/dev/null)"
+
+	      if [[ -z ${OSReleaseVersion} ]]; then
+		OSReleaseVersion=NA
+	      fi
+
+	      # No alternate method for getting hardware firmware version information at this time
+	      }
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Capture OS release version
+	      OSReleaseVersion="$(${UNAME} 2>/dev/null) $(${UNAME} -v -r 2>/dev/null | ${AWK} '{printf "%s.%s\n", $2, $1}' 2>/dev/null)"
+
+	      if [[ -z ${OSReleaseVersion} ]]; then
+		OSReleaseVersion=NA
+	      fi
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+
+     RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      ReleaseFile=/etc/redhat-release
+
+	      # Capture OS release version
+	      if [[ -s ${ReleaseFile} ]]; then
+		OSReleaseVersion=$(${HEAD} -1 ${ReleaseFile} 2>/dev/null | ${SED} 's/(.*//' 2>/dev/null)
+
+		if [[ -z ${OSReleaseVersion} ]]; then
+		  OSReleaseVersion=NA
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+     ORACLE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      ReleaseFile=/etc/oracle-release
+
+	      # Capture OS release version
+	      if [[ -s ${ReleaseFile} ]]; then
+		OSReleaseVersion=$(${HEAD} -1 ${ReleaseFile} 2>/dev/null | ${SED} 's/(.*//' 2>/dev/null)
+
+		if [[ -z ${OSReleaseVersion} ]]; then
+		  OSReleaseVersion=NA
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+     SUSE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      ReleaseFile=/etc/SuSE-release
+
+	      # Capture OS release version
+	      if [[ -s ${ReleaseFile} ]]; then
+		OSReleaseVersion=$(${HEAD} -1 ${ReleaseFile} 2>/dev/null | ${SED} 's/(.*//' 2>/dev/null)
+
+		if [[ -z ${OSReleaseVersion} ]]; then
+		  OSReleaseVersion=NA
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_OS02_CMDS() {
+### OS02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS02
+ToolObjective="Ensure valid software support contracts for OS and all \"Layered Products\"(Veritas, PowerPath, etc) exist and are recorded in ADMS/ESL"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_OS03_CMDS() {
+### OS03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS03
+ToolObjective="Confirm server provisioned via HP Standard Build Process"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_OS04_CMDS() {
+### OS04
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS04
+ToolObjective="Confirm OS Patch Revision"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+OSPatchLevel=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${OSPatchLevel}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - OS Patch level: ${OSPatchLevel}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      PatchReleaseFile=/etc/eds-release
+
+	      # Capture OS release version
+	      if [[ -s ${PatchReleaseFile} ]]; then
+		OSPatchLevel="$(${CAT} ${PatchReleaseFile} 2>/dev/null)"
+
+		if [[ -z ${OSPatchLevel} ]]; then
+		  OSPatchLevel=NA
+		  AlternateMethod=1
+		fi
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethod} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList swlist
+		BinaryVariableDefinition
+
+		# Capture OS Patch level
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  OSPatchLevel="$(${SWLIST} -l bundle -a revision QPKBASE 2>/dev/null | ${EGREP} -v '^#|^$' 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)"
+
+		  if [[ -z ${OSPatchLevel} ]]; then
+		    OSPatchRelease=NA
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      PatchReleaseFile=/etc/eds-release
+
+	      # Capture OS release version
+	      if [[ -s ${PatchReleaseFile} ]]; then
+		OSPatchLevel="$(${CAT} ${PatchReleaseFile} 2>/dev/null)"
+
+		if [[ -z ${OSPatchLevel} ]]; then
+		  OSPatchLevel=NA
+		  AlternateMethod=1
+		fi
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethod} -eq 1 ]]; then
+		# Capture OS Patch level
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  OSPatchLevel="$(${UNAME} -v 2>/dev/null | ${SED} 's/Generic_//' 2>/dev/null)"
+
+		  if [[ -z ${OSPatchLevel} ]]; then
+		    OSPatchRelease=NA
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      PatchReleaseFile=/etc/eds-release
+
+	      # Capture OS release version
+	      if [[ -s ${PatchReleaseFile} ]]; then
+		OSPatchLevel="$(${CAT} ${PatchReleaseFile} 2>/dev/null)"
+
+		if [[ -z ${OSPatchLevel} ]]; then
+		  OSPatchLevel=NA
+		  AlternateMethod=1
+		fi
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethod} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList oslevel
+		BinaryVariableDefinition
+
+		# Capture OS Patch level
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ $(${UNAME} -v 2>/dev/null) != [1234] ]]; then
+		    OSPatchLevel=$(${OSLEVEL} -s 2>/dev/null)
+
+		    # Added to handle issues with -s switch on oslevel command not being on all versions of 5.2
+		    if [[ $(print ${OSPatchLevel} 2>/dev/null | ${GREP} -ic usage 2>/dev/null) -ne 0 ]]; then
+		      OSPatchLevel="NA"
+		    fi
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	      } ;;
+
+     ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      PatchReleaseFile=/etc/eds-release
+
+	      # Capture OS release version
+	      if [[ -s ${PatchReleaseFile} ]]; then
+		OSPatchLevel="$(${CAT} ${PatchReleaseFile} 2>/dev/null)"
+
+		if [[ -z ${OSPatchLevel} ]]; then
+		  OSPatchLevel=NA
+		  AlternateMethod=1
+		fi
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethod} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList rpm
+		BinaryVariableDefinition
+
+		# Capture OS Patch level
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  OSPatchLevel="$(${RPM} -qa "eds-release" --qf "%{version}" 2>/dev/null | ${HEAD} -1 2>/dev/null)"
+
+		  if [[ -z ${OSPatchLevel} ]]; then
+		    OSPatchRelease=NA
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	      } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_OS05_CMDS() {
+### OS05
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS05
+ToolObjective="Confirm OS Partition Sizes"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+
+# Local report template
+ReportUsage() {
+for CurrentInput in ${DiskPartitionReport[*]}; do
+
+  # Specific local function declarations
+  CurrentFSName="$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F: '{print $1}' 2>/dev/null)"
+  CurrentFSSize=$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F: '{print $2}' 2>/dev/null)
+  CurrentFSPercentUsed=$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F: '{print $3}' 2>/dev/null)
+  CurrentFSMount="$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F: '{print $4}' 2>/dev/null)"
+
+  # CSV output
+  set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentFSName}~${CurrentFSSize}~${CurrentFSPercentUsed}~${CurrentFSMount}"
+
+  # Readable output
+  set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - File System: ${CurrentFSMount} - Size: ${CurrentFSSize}k - Percent Utilized: ${CurrentFSPercentUsed}"
+done
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|RHEL|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Capture disk partition sizes
+	      set -A DiskPartitionReport -- "${DiskPartitionReport[@]}" $(${DF} -lPk 2>/dev/null | ${GREP} -v '^[^\/]' 2>/dev/null | ${AWK} '{printf "%s:%s:%s:%s\n", $1, $4, $5, $6}' 2>/dev/null)
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Capture disk partition sizes
+	      set -A DiskPartitionReport -- "${DiskPartitionReport[@]}" $(${DF} -lk 2>/dev/null | ${EGREP} -v '^[^\/]|\/platform|\/devices' 2>/dev/null | ${AWK} '{printf "%s:%s:%s:%s\n", $1, $4, $5, $6}' 2>/dev/null)
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Capture disk partition sizes
+	      set -A DiskPartitionReport -- "${DiskPartitionReport[@]}" $(${DF} -kP 2>/dev/null | ${EGREP} -v '^[^\/]|:|\/proc' 2>/dev/null | ${AWK} '{printf "%s:%s:%s:%s\n", $1, $4, $5, $6}' 2>/dev/null)
+	      }
+
+	      # No alternate method for getting hardware firmware version information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod DiskPartitionReport
+
+# Function debugging
+set +x
+}
+
+AMS_OS06_CMDS() {
+### OS06
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS06
+ToolObjective="Confirm Swap/Page Space. Report Total memory available"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+TotalSwapSpaceAvailable=NA
+TotalSwapSpaceFree=NA
+TotalMemoryAvailable=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_SWAP~${CurrentHostname}~${HPSAMID}~${TotalSwapSpaceAvailable}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_FREE~${CurrentHostname}~${HPSAMID}~${TotalSwapSpaceFree}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_MEMORY~${CurrentHostname}~${HPSAMID}~${TotalMemoryAvailable}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Total swap space available: ${TotalSwapSpaceAvailable} - Free swap space available: ${TotalSwapSpaceFree}"
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Total memory available: ${TotalMemoryAvailable}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList swapinfo machinfo
+	      BinaryVariableDefinition
+
+	      # Capture swap/memory information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		TotalSwapSpaceAvailable=$(${SWAPINFO} -d -t 2>/dev/null | ${AWK} '($1=="total"){print $2}' 2>/dev/null)
+		TotalSwapSpaceFree=$(${SWAPINFO} -d -t 2>/dev/null | ${AWK} '($1=="total"){print $4}' 2>/dev/null)
+		TotalMemoryAvailable=$(${MACHINFO} 2>/dev/null | ${AWK} -F': ' '($1=="Memory"){print $2}' 2>/dev/null | ${SED} 's/(.*//' 2>/dev/null)
+
+		if [[ -z ${TotalSwapSpaceAvailable} ]]; then
+		  TotalSwapSpaceAvailable=NA
+		  AlternateMethod=1
+		fi
+
+		if [[ -z ${TotalSwapSpaceFree} ]]; then
+		  TotalSwapSpaceFree=NA
+		  AlternateMethod=1
+		fi
+
+		if [[ -z ${TotalMemoryAvailable} ]]; then
+		  TotalMemoryAvailable=NA
+		  AlternateMethod=1
+		fi
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethod} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList dmesg
+		BinaryVariableDefinition
+
+		# Capture swap/memory information
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  TotalSwapSpaceAvailable="$(( $(${DMESG} 2>/dev/null | ${SED} -n '/Swap device/,/Dump device/p' 2>/dev/null | ${SED} '1d;3d' 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)/2/1024 )) MB"
+		  TotalMemoryAvailable="$(( $(${DMESG} 2>/dev/null | ${AWK} '/Physical:/ {print $2}' 2>/dev/null)/1024)) MB"
+
+		  if [[ -z ${TotalSwapSpaceAvailable} ]]; then
+		    TotalSwapSpaceAvailable=NA
+		  fi
+
+		  # No alternate method for getting swap free information at this time
+
+		  if [[ -z ${TotalMemoryAvailable} ]]; then
+		    TotalMemoryAvailable=NA
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList prtconf swap
+	      BinaryVariableDefinition
+
+	      # Capture swap/memory information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		TotalSwapSpaceAvailable="$(( $(${SWAP} -s 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null | ${SED} 's/k//' 2>/dev/null)/1024 )) MB"
+		TotalSwapSpaceFree="$(( $(${SWAP} -s 2>/dev/null | ${AWK} '{print $11}' 2>/dev/null | ${SED} 's/k//' 2>/dev/null)/1024 )) MB"
+		TotalMemoryAvailable="$(${PRTCONF} 2>/dev/null | ${AWK} -F': ' '($1=="Memory size"){print $2}' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) MB"
+
+		if [[ -z ${TotalSwapSpaceAvailable} ]]; then
+		  TotalSwapSpaceAvailable=NA
+		fi
+
+		if [[ -z ${TotalSwapSpaceFree} ]]; then
+		  TotalSwapSpaceFree=NA
+		fi
+
+		if [[ -z ${TotalMemoryAvailable} ]]; then
+		  TotalMemoryAvailable=NA
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting swap/memory information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList swap lsattr
+	      BinaryVariableDefinition
+
+	      # Capture swap/memory information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		TotalSwapSpaceAvailable="$(( $(${SWAP} -s 2>/dev/null | ${TR} -s " " 2>/dev/null | ${AWK} '{print $3}' 2>/dev/null)*4/1024 )) MB"
+		TotalSwapSpaceFree="$(( $(${SWAP} -s 2>/dev/null | ${TR} -s " " 2>/dev/null | ${AWK} '{print $11}' 2>/dev/null)*4/1024 )) MB"
+		TotalMemoryAvailable=$(${LSATTR} -EOl sys0 -a realmem 2>/dev/null | ${GREP} -v ^# 2>/dev/null)
+
+		if [[ -z ${TotalSwapSpaceAvailable} ]]; then
+		  TotalSwapSpaceAvailable=NA
+		fi
+
+		if [[ -z ${TotalSwapSpaceFree} ]]; then
+		  TotalSwapSpaceFree=NA
+		fi
+
+		if [[ -z ${TotalMemoryAvailable} ]]; then
+		  TotalMemoryAvailable=NA
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting swap/memory information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList free
+	      BinaryVariableDefinition
+
+	      # Capture swap/memory information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		TotalSwapSpaceAvailable="$(${FREE} -m 2>/dev/null | ${AWK} '($1=="Swap:"){print $2}' 2>/dev/null) MB"
+		TotalSwapSpaceFree="$(${FREE} -m 2>/dev/null | ${AWK} '($1=="Swap:"){print $4}' 2>/dev/null) MB"
+		TotalMemoryAvailable="$(${FREE} -m 2>/dev/null | ${AWK} '($1=="Mem:"){print $2}' 2>/dev/null) MB"
+
+		if [[ -z ${TotalSwapSpaceAvailable} ]]; then
+		  TotalSwapSpaceAvailable=NA
+		fi
+
+		if [[ -z ${TotalSwapSpaceFree} ]]; then
+		  TotalSwapSpaceFree=NA
+		fi
+
+		if [[ -z ${TotalMemoryAvailable} ]]; then
+		  TotalMemoryAvailable=NA
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting swap/memory information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_OS07_CMDS() {
+### OS07
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS07
+ToolObjective="Confirm Dump Configured"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+DumpAvailable=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${DumpAvailable}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Dump configured: ${DumpAvailable}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList crashconf
+	      BinaryVariableDefinition
+
+	      # Capture dump available information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -z $(${CRASHCONF} 2>/dev/null | ${GREP} "/dev/" 2>/dev/null) ]]; then
+		  DumpAvailable=NA
+		  AlternateMethod=1
+		else DumpAvailable=YES
+		fi
+	      fi
+	      }
+
+	      AlternateMethod() {
+	      if [[ ${AlternateMethod} -eq 1 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList lvlnboot
+		BinaryVariableDefinition
+
+		# Capture dump availablity information
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ ! -z $(${LVLNBOOT} -v 2>/dev/null | ${GREP} -i "no dump logical volume configured" 2>/dev/null) ]]; then
+		    DumpAvailable=NA
+		  else DumpAvailable=YES
+		  fi
+		fi
+	      fi
+	      }
+
+	      # Both options will be called, but the alternate method will not run if primary method works
+	      PrimaryMethod
+	      AlternateMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList dumpadm
+	      BinaryVariableDefinition
+
+	      # Capture dump availability information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		typeset -u DumpAvailable=$(${DUMPADM} 2>/dev/null | ${AWK} '/Savecore/ && /enabled/ {print $NF}' 2>/dev/null)
+
+		if [[ -z ${DumpAvailable} ]]; then
+		  DumpAvailable=NA
+		else DumpAvailable=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting dump information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList sysdumpdev
+	      BinaryVariableDefinition
+
+	      # Capture dump availability information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -z $(${SYSDUMPDEV} -l 2>/dev/null | ${AWK} '/primary/ {print $2}' 2>/dev/null) ]]; then
+		  DumpAvailable=NA
+		else DumpAvailable=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting dump information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList service
+	      BinaryVariableDefinition
+
+	      # Capture dump availability information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -z $(${SERVICE} kdump status 2>/dev/null | ${GREP} -i "is operational" 2>/dev/null) ]]; then
+		  DumpAvailable=NA
+		else DumpAvailable=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting dump information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      SUSE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList chkconfig
+	      BinaryVariableDefinition
+
+	      # Capture dump availability information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -z $(${CHKCONFIG} kdump 2>/dev/null | ${GREP} "on" 2>/dev/null) ]]; then
+		  DumpAvailable=NA
+		else DumpAvailable=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting dump information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_OS08_CMDS() {
+### OS08
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS08
+ToolObjective="Confirm Apps do not reside on OS partition"
+
+# Specific local function declarations
+ApplicationFoundStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${ApplicationFoundStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Application partition found on root disk: ${ApplicationFoundStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList vgdisplay
+	      BinaryVariableDefinition
+
+	      # Capture dump availability information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Define standard mount points, and root volume group
+		set -A StandardMountPoints / /stand /var /usr /tmp /opt /home
+		RootVolumeGroup=$(${DF} -lP / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $3}' 2>/dev/null)
+
+		for CurrentLogicalVolumeName in $(${VGDISPLAY} -Fv 2>/dev/null | ${GREP} "^lv_name" 2>/dev/null | ${AWK} -F: '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $NF}' 2>/dev/null); do
+
+		  # Check all logical volume names against standard mount points, flagging any that are not in the list
+		  # Note: Swap, and any logical volumes not mounted are not considered during this check, and will not cause a YES response
+		  CurrentLogicalVolumeMountPoint="$(${DF} -lP 2>/dev/null | ${GREP} "${CurrentLogicalVolumeName}" 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)"
+		  ValidMountPointStatus=0
+
+		  if [[ ! -z "${CurrentLogicalVolumeMountPoint}" ]]; then
+		    for CurrentStandardMountPoint in ${StandardMountPoints[*]}; do
+
+		      if [[ "${CurrentLogicalVolumeMountPoint}" = "${CurrentStandardMountPoint}" ]]; then
+			ValidMountPointStatus=1
+			break
+		      fi
+		    done
+
+		    if [[ ${ValidMountPointStatus} -eq 0 ]]; then
+		      set -A InvalidLogicalVolumeList -- "${InvalidLogicalVolumeList[@]}" "${CurrentLogicalVolumeMountPoint}"
+		    fi
+		  fi
+		done
+
+		# Final status report - Written this way to allow for future enhancements
+		if [[ ! -z ${InvalidLogicalVolumeList} ]]; then
+		  ApplicationFoundStatus=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      # No primary or alternate method for getting this information at this time
+	      # This needs to be looked into for a solution
+	      ApplicationFoundStatus=NA
+
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList lslv lspv 
+	      BinaryVariableDefinition
+
+	      # Capture dump availability information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Define standard mount points, and root volume group
+		set -A StandardMountPoints / /var /usr /tmp /opt /admin
+		RootVolumeGroup=$(${LSLV} $(${DF} -P / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $3}' 2>/dev/null) 2>/dev/null | ${SED} -n 's/^.*VOLUME GROUP: \{0,\}//p' 2>/dev/null)
+		RootVolumeDisk=$(${LSPV} ${RootVolumeGroup} 2>/dev/null | ${HEAD} -1 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+
+		for CurrentLogicalVolumeName in $(${LSPV} -l ${RootVolumeDisk} 2>/dev/null | ${SED} '1,2d' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null); do
+
+		  # Check all logical volume names against standard mount points, flagging any that are not in the list
+		  # Note: Swap, and any logical volumes not mounted are not considered during this check, and will not cause a YES response
+		  CurrentLogicalVolumeMountPoint="$(${DF} -P 2>/dev/null | ${GREP} "${CurrentLogicalVolumeName}" 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)"
+		  ValidMountPointStatus=0
+
+		  if [[ ! -z "${CurrentLogicalVolumeMountPoint}" ]]; then
+		    for CurrentStandardMountPoint in ${StandardMountPoints[*]}; do
+
+		      if [[ "${CurrentLogicalVolumeMountPoint}" = "${CurrentStandardMountPoint}" ]]; then
+			ValidMountPointStatus=1
+			break
+		      fi
+		    done
+
+		    if [[ ${ValidMountPointStatus} -eq 0 ]]; then
+		      set -A InvalidLogicalVolumeList -- "${InvalidLogicalVolumeList[@]}" "${CurrentLogicalVolumeMountPoint}"
+		    fi
+		  fi
+		done
+
+		# Final status report - Written this way to allow for future enhancements
+		if [[ ! -z ${InvalidLogicalVolumeList} ]]; then
+		  ApplicationFoundStatus=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList lvdisplay
+	      BinaryVariableDefinition
+
+	      # Capture dump availability information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Define standard mount points, and root volume group
+		set -A StandardMountPoints / /var /usr /tmp /opt /home /boot /dev
+		RootVolumeGroup=$(${DF} -lP / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} -F\- '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $NF}' 2>/dev/null)
+
+		for CurrentLogicalVolumeName in $(${LVDISPLAY} -Ca 2>/dev/null | ${GREP} -vi swap 2>/dev/null | ${AWK} -v RootVolumeGroup=${RootVolumeGroup} '($2==RootVolumeGroup){print $1}' 2>/dev/null); do
+
+		  # Check all logical volume names against standard mount points, flagging any that are not in the list
+		  # Note: Swap, and any logical volumes not mounted are not considered during this check, and will not cause a YES response
+		  CurrentLogicalVolumeMountPoint="$(${DF} -lP 2>/dev/null | ${GREP} "${CurrentLogicalVolumeName}" 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)"
+		  ValidMountPointStatus=0
+
+		  if [[ ! -z "${CurrentLogicalVolumeMountPoint}" ]]; then
+		    for CurrentStandardMountPoint in ${StandardMountPoints[*]}; do
+
+		      if [[ "${CurrentLogicalVolumeMountPoint}" = "${CurrentStandardMountPoint}" ]]; then
+			ValidMountPointStatus=1
+			break
+		      fi
+		    done
+
+		    if [[ ${ValidMountPointStatus} -eq 0 ]]; then
+		      set -A InvalidLogicalVolumeList -- "${InvalidLogicalVolumeList[@]}" "${CurrentLogicalVolumeMountPoint}"
+		    fi
+		  fi
+		done
+
+		# Final status report - Written this way to allow for future enhancements
+		if [[ ! -z ${InvalidLogicalVolumeList} ]]; then
+		  ApplicationFoundStatus=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_OS09_CMDS() {
+### OS09
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS09
+ToolObjective="Confirm Server Date and Date/Time Configuration"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+CurrentHardwareClock=NA
+CurrentNTPStatus=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_DATE~${CurrentHostname}~${HPSAMID}~${CurrentDate}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_TZ~${CurrentHostname}~${HPSAMID}~${CurrentTimezone}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_HWC~${CurrentHostname}~${HPSAMID}~${CurrentHardwareClock}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_NTP~${CurrentHostname}~${HPSAMID}~${CurrentNTPStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Current server date: ${CurrentDate} - Timezone: ${CurrentTimezone}"
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Current hardware date: ${CurrentHardwareClock}"
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Current NTP synchronization status: ${CurrentNTPStatus}"
+}
+
+# Define common commands
+CommonCommands() {
+# Grab current timezone information
+CurrentTimezone=$(${DATE} '+%Z' 2>/dev/null)
+
+# Generate date information from hardware clock
+
+# Custom binary(s) declaration
+set -A BinaryList hwclock
+BinaryVariableDefinition
+
+if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+  CurrentHardwareClock=$(${HWCLOCK} --show 2>/dev/null)
+
+  if [[ -z ${CurrentHardwareClock} ]]; then
+    CurrentHardwareClock=NA
+  fi
+fi
+
+# Verify that ntp has servers configured
+
+# Custom binary(s) declaration
+set -A BinaryList ntpq
+BinaryVariableDefinition
+
+if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+  if [[ ! -z $(${NTPQ} -pn 2>/dev/null) ]]; then
+    CurrentNTPStatus=YES
+  fi
+fi
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|RHEL|SunOS|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod CommonCommands
+
+# Function debugging
+set +x
+}
+
+AMS_OS10_CMDS() {
+### OS10
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS10
+ToolObjective="Confirm apps shutdown and restart with server reboot"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_OS11_CMDS() {
+### OS11
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS11
+ToolObjective="Reboot or power on server. System should come up without signigicant delay or critical error messages"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_OS12_CMDS() {
+### OS12
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS12
+ToolObjective="Turn on sar logging"
+
+# Specific local function declarations
+SARConfiguredStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${SARConfiguredStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - SAR logging configured: ${SARConfiguredStatus}"
+}
+
+# Define common commands
+CommonCommands() {
+# Check if sar log file directory exists, and if so, do sar entries exist. Test passes if at least one entry is found
+if [[ -d ${SarLogDirectory} ]]; then
+
+  for CurrentCrontabLocation in ${CurrentCrontabLocationList[@]}; do
+
+    for CurrentCrontabSarEntry in ${CurrentCrontabSarEntryList[@]}; do
+      if [[ ! -z $(${GREP} "${CurrentCrontabSarEntry}" "${CurrentCrontabLocation}" 2>/dev/null) ]]; then
+	SARConfiguredStatus=YES
+      fi
+    done
+  done
+fi
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Define standard crontab files
+	      set -A CurrentCrontabLocationList /usr/spool/cron/crontabs/root /usr/spoool/cron/crontabs/sys /usr/spool/cron/crontabs/adm
+
+	      # Define crontab sar entry lookup
+	      set -A CurrentCrontabSarEntryList /usr/lib/sa/sa1 /usr/lbin/sa/sa1
+
+	      # Define sar log file directory
+	      SarLogDirectory=/var/adm/sa
+
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Define standard crontab files
+	      set -A CurrentCrontabLocationList /usr/spool/cron/crontabs/root /usr/spool/cron/crontabs/sys /usr/spool/cron/crontabs/adm
+
+	      # Define crontab sar entry lookup
+	      set -A CurrentCrontabSarEntryList /usr/lib/sa/sa1
+
+	      # Define sar log file directory
+	      SarLogDirectory=/var/log/sa
+
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Define standard crontab files
+	      set -A CurrentCrontabLocationList /var/spool/cron/crontabs/root /var/spool/cron/crontabs/sys /var/spool/cron/crontabs/adm
+
+	      # Define crontab sar entry lookup
+	      set -A CurrentCrontabSarEntryList /usr/lib/sa/sa1
+
+	      # Define sar log file directory
+	      SarLogDirectory=/var/adm/sa
+
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Define standard crontab files
+	      set -A CurrentCrontabLocationList /etc/cron.d/sysstat
+
+	      # Define crontab sar entry lookup
+	      set -A CurrentCrontabSarEntryList /usr/lib64/sa/sa1
+
+	      # Define sar log file directory
+	      SarLogDirectory=/var/log/sa
+
+	      CommonCommands
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod CommonCommands CurrentCrontabLocationList CurrentCrontabSarEntryList
+
+# Function debugging
+set +x
+}
+
+AMS_OS13_CMDS() {
+### OS13
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS13
+ToolObjective="Check Kernel tuning"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_OS14_CMDS() {
+### OS14
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=OS14
+ToolObjective="Confirm unix/linux support staff have valid userids on server(Sudo, Jump Server) required to access from the HP network"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_NET01_CMDS() {
+### NET01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET01
+ToolObjective="Confirm FrontSide (Production) Nics are Teamed"
+
+# Specific local function declarations
+FrontSideNICTeamingStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${FrontSideNICTeamingStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - NIC's configured as teamed: ${FrontSideNICTeamingStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList lanscan
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's. Any NIC found with MASTER, STANDBY, SLAVE, FAILOVER will generate a positive result. Only one positive result
+	      # needed to pass test
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		if [[ ! -z $(${LANSCAN} 2>/dev/null | ${GREP} "^LinkAgg" 2>/dev/null | ${GREP} -i "up" 2>/dev/null) ]]; then
+		  FrontSideNICTeamingStatus=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList ifconfig
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's. Any NIC found with MASTER, STANDBY, SLAVE, FAILOVER will generate a positive result. Only one positive result
+	      # needed to pass test
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		for CurrentNICInput in $(${IFCONFIG} -a 2>/dev/null | ${GREP} -v 'LOOPBACK' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${SED} 's/:$//' 2>/dev/null); do
+		  if [[ ! -z $(${IFCONFIG} ${CurrentNICInput} 2>/dev/null | ${GREP} -i "mtu " 2>/dev/null | ${EGREP} 'VIRTUAL|STANDBY|usesrc' 2>/dev/null) ]]; then
+		    FrontSideNICTeamingStatus=YES
+		    break
+		  fi
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList lsdev
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's. Any NIC found with MASTER, STANDBY, SLAVE, FAILOVER will generate a positive result. Only one positive result
+	      # needed to pass test
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		if [[ ! -z $(${LSDEV} -Cc adapter 2>/dev/null | ${GREP} "Link Aggregation" 2>/dev/null) ]]; then
+		  FrontSideNICTeamingStatus=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList ifconfig
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's. Any NIC found with MASTER, STANDBY, SLAVE, FAILOVER will generate a positive result. Only one positive result
+	      # needed to pass test
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		for CurrentNICInput in $(${IFCONFIG} -a 2>/dev/null | ${GREP} 'Link encap:Ethernet' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null); do
+		  if [[ ! -z $(${IFCONFIG} ${CurrentNICInput} 2>/dev/null | ${GREP} -i "mtu:" 2>/dev/null | ${EGREP} 'MASTER|STANDBY|SLAVE|FAILOVER' 2>/dev/null) ]]; then
+		    FrontSideNICTeamingStatus=YES
+		    break
+		  fi
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_NET02_CMDS() {
+### NET02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET02
+ToolObjective="Confirm FrontSide NIC Settings"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+for CurrentInput in ${NICReport[*]}; do
+
+  # Specific local function declarations
+  CurrentNICName="$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F~ '{print $1}' 2>/dev/null)"
+  CurrentNICStatus="$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F~ '{print $2}' 2>/dev/null)"
+  CurrentNICIP=$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F~ '{print $3}' 2>/dev/null)
+  CurrentNICSpeed=$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F~ '{print $4}' 2>/dev/null)
+  CurrentNICDuplex=$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F~ '{print $5}' 2>/dev/null)
+  CurrentNICNetmask="$(print ${CurrentInput[*]} 2>/dev/null | ${AWK} -F~ '{print $6}' 2>/dev/null)"
+
+  # CSV output
+  set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_UP~${CurrentHostname}~${HPSAMID}~${CurrentNICName}~${CurrentNICStatus}"
+  set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_SPEED~${CurrentHostname}~${HPSAMID}~${CurrentNICName}~${CurrentNICSpeed}"
+  set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_DUPLEX~${CurrentHostname}~${HPSAMID}~${CurrentNICName}~${CurrentNICDuplex}"
+  set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_IP~${CurrentHostname}~${HPSAMID}~${CurrentNICName}~${CurrentNICIP}"
+  set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_MASK~${CurrentHostname}~${HPSAMID}~${CurrentNICName}~${CurrentNICNetmask}"
+
+  # Readable output
+  set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Interface: ${CurrentNICName} - IP: ${CurrentNICIP} - Netmask: ${CurrentNICNetmask}"
+  set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Interface: ${CurrentNICName} - Speed: ${CurrentNICSpeed} - Duplex: ${CurrentNICDuplex} - Status: ${CurrentNICStatus}"
+done
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList ifconfig lanscan
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's, and poll them for information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Specific local function declarations
+
+		for CurrentNICInput in $(${LANSCAN} -ip 2>/dev/null | ${AWK} '{printf "%s:%s\n", $1, $3}' 2>/dev/null); do
+
+		  # Specific local function declarations
+		  # This is needed for lanadmin when determining speed, and duplex
+		  CurrentNIC=$(print ${CurrentNICInput} 2>/dev/null | ${AWK} -F: '{print $1}' 2>/dev/null)
+		  CurrentNICPPA=$(print ${CurrentNICInput} 2>/dev/null | ${AWK} -F: '{print $2}' 2>/dev/null)
+
+		  # Set default values
+		  CurrentNICName=NA
+		  CurrentNICStatus=NA
+		  CurrentNICIP=NA
+		  CurrentNICSpeed=NA
+		  CurrentNICDuplex=NA
+		  CurrentNICNetmask=NA
+
+		  if [[ ! -z $(${IFCONFIG} ${CurrentNIC} 2>/dev/null | ${SED} -n 's/^.*<//;s/>.*//;s/,/ /g;1p' 2>/dev/null | ${GREP} -w 'UP' 2>/dev/null) ]]; then
+		    CurrentNICName=${CurrentNIC}
+		    CurrentNICStatus=UP
+		    CurrentNICIP=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n '/^.*inet/p' 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null)
+		    CurrentNICNetmask=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n '/^.*inet/p' 2>/dev/null | ${AWK} '{print $4}' 2>/dev/null)
+
+		    # Temporary till a better solution to tests that require multiple binaries
+		    set -A BinaryList lanadmin
+		    BinaryVariableDefinition
+
+		    # Capture list of all NIC's, and poll them for information
+		    if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		      
+		      # Check if current interface is virtual
+		      if [[ -z $(${LANADMIN} -x speed ${CurrentNICPPA} 2>/dev/null | ${AWK} -F: '{print $1}' 2>/dev/null | ${GREP} ERROR 2>/dev/null) ]]; then
+			CurrentNICSpeed=$(${LANADMIN} -x speed ${CurrentNICPPA} 2>/dev/null | ${AWK} -F'[= ]' '($1=="Speed"){print $4}' 2>/dev/null)
+			CurrentNICDuplex=$(${LANADMIN} -x speed ${CurrentNICPPA} 2>/dev/null | ${AWK} -F'[= ]' '($1=="Speed"){print $5}' 2>/dev/null)
+		      fi
+		    fi
+
+		  else CurrentNICName=${CurrentNICInput}
+		    CurrentNICStatus=DOWN
+		  fi
+
+		  # Combine all items for final report usage
+		  set -A NICReport -- "${NICReport[@]}" "${CurrentNICName}~${CurrentNICStatus}~${CurrentNICIP}~${CurrentNICSpeed}~${CurrentNICDuplex}~${CurrentNICNetmask}"
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList ifconfig
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's, and poll them for information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		for CurrentNICInput in $(${IFCONFIG} -a 2>/dev/null | ${EGREP} -v 'LOOPBACK|inet' 2>/dev/null | ${SED} 's/: flags.*$//' 2>/dev/null); do
+
+		  # Set default values
+		  CurrentNICName=NA
+		  CurrentNICStatus=NA
+		  CurrentNICIP=NA
+		  CurrentNICSpeed=NA
+		  CurrentNICDuplex=NA
+		  CurrentNICNetmask=NA
+
+		  if [[ ! -z $(${IFCONFIG} ${CurrentNICInput} 2>/dev/null | ${SED} -n 's/^.*<//;s/>.*//;s/,/ /g;1p' 2>/dev/null | ${GREP} -w 'UP' 2>/dev/null) ]]; then
+		    CurrentNICName=${CurrentNICInput}
+		    CurrentNICStatus=UP
+		    CurrentNICIP=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n '/^.*inet/p' 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null)
+		    CurrentNICNetmask=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n '/^.*inet/p' 2>/dev/null | ${AWK} '{print $4}' 2>/dev/null)
+
+		    # Temporary till a better solution to tests that require multiple binaries
+		    set -A BinaryList dladm
+		    BinaryVariableDefinition
+
+		    # Capture list of all NIC's, and poll them for information
+		    if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		      
+		      CurrentNICSpeed=$(${DLADM} show-dev 2>/dev/null | ${GREP} ${CurrentNICName} 2>/dev/null | ${SED} 's/Mbps.*.$//' 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)
+		      CurrentNICDuplex=$(${DLADM} show-dev 2>/dev/null | ${GREP} ${CurrentNICName} 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null)
+		    fi
+
+		  else CurrentNICName=${CurrentNICInput}
+		    CurrentNICStatus=DOWN
+		  fi
+
+		  # Combine all items for final report usage
+		  set -A NICReport -- "${NICReport[@]}" "${CurrentNICName}~${CurrentNICStatus}~${CurrentNICIP}~${CurrentNICSpeed}~${CurrentNICDuplex}~${CurrentNICNetmask}"
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList ifconfig
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's, and poll them for information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		for CurrentNICInput in $(${IFCONFIG} -lu 2>/dev/null | ${GREP} -v ^lo 2>/dev/null) $(${IFCONFIG} -ld 2>/dev/null | ${GREP} -v ^lo 2>/dev/null); do
+
+		  # Set default values
+		  CurrentNICName=NA
+		  CurrentNICStatus=NA
+		  CurrentNICIP=NA
+		  CurrentNICSpeed=NA
+		  CurrentNICDuplex=NA
+		  CurrentNICNetmask=NA
+
+		  if [[ ! -z $(${IFCONFIG} ${CurrentNICInput} 2>/dev/null | ${SED} -n 's/^.*<//;s/>.*//;s/,/ /g;1p' 2>/dev/null | ${GREP} -w 'UP' 2>/dev/null) ]]; then
+		    CurrentNICName=${CurrentNICInput}
+		    CurrentNICStatus=UP
+		    CurrentNICIP=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n '/^.*inet/p' 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null)
+		    CurrentNICNetmask=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n '/^.*inet/p' 2>/dev/null | ${AWK} '{print $4}' 2>/dev/null)
+
+		    # Temporary till a better solution to tests that require multiple binaries
+		    set -A BinaryList entstat
+		    BinaryVariableDefinition
+
+		    # Capture list of all NIC's, and poll them for information
+		    if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		      
+		      # Check if current interface is virtual
+		      if [[ -z $(${ENTSTAT} -d ${CurrentNICName} 2>/dev/null | ${SED} -n '/^Device Type:/p' 2>/dev/null | ${GREP} -i virtual 2>/dev/null) ]]; then
+			CurrentNICSpeed=$(${ENTSTAT} -d ${CurrentNICName} 2>/dev/null | ${SED} -n '/^Media Speed Running: /p' 2>/dev/null | ${AWK} -F'[: ]' '{print $5, $6}' 2>/dev/null)
+			CurrentNICDuplex=$(${ENTSTAT} -d ${CurrentNICName} 2>/dev/null | ${SED} -n '/^Media Speed Running: /p' 2>/dev/null | ${AWK} -F'[: ]' '{print $7, $8}' 2>/dev/null)
+		      fi
+		    fi
+
+		  else CurrentNICName=${CurrentNICInput}
+		    CurrentNICStatus=DOWN
+		  fi
+
+		  # Combine all items for final report usage
+		  set -A NICReport -- "${NICReport[@]}" "${CurrentNICName}~${CurrentNICStatus}~${CurrentNICIP}~${CurrentNICSpeed}~${CurrentNICDuplex}~${CurrentNICNetmask}"
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList ifconfig
+	      BinaryVariableDefinition
+
+	      # Capture list of all NIC's, and poll them for information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		for CurrentNICInput in $(${IFCONFIG} -a 2>/dev/null | ${GREP} 'Link encap:Ethernet' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null); do
+
+		  # Set default values
+		  CurrentNICName=NA
+		  CurrentNICStatus=NA
+		  CurrentNICIP=NA
+		  CurrentNICSpeed=NA
+		  CurrentNICDuplex=NA
+		  CurrentNICNetmask=NA
+
+		  if [[ ! -z $(${IFCONFIG} ${CurrentNICInput} 2>/dev/null | ${GREP} -i "mtu:" 2>/dev/null | ${GREP} -w 'UP' 2>/dev/null) ]]; then
+		    CurrentNICName=${CurrentNICInput}
+		    CurrentNICStatus=UP
+		    CurrentNICIP=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n 's/^ \{0,\}//g;/inet addr:/p' 2>/dev/null | ${AWK} -F'[: ]' '{print $3}' 2>/dev/null)
+		    CurrentNICNetmask=$(${IFCONFIG} ${CurrentNICName} 2>/dev/null | ${SED} -n 's/^ \{0,\}//g;/inet addr:/p' 2>/dev/null | ${AWK} -F'[: ]' '{print $9}' 2>/dev/null)
+
+		    # Temporary till a better solution to tests that require multiple binaries
+		    set -A BinaryList ethtool
+		    BinaryVariableDefinition
+
+		    # Capture list of all NIC's, and poll them for information
+		    if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		      CurrentNICSpeed=$(${ETHTOOL} ${CurrentNICName} 2>/dev/null | ${SED} -n 's/^[ \t]\{0,\}//g;/^Speed:/p' 2>/dev/null | ${AWK} -F'[: ]' '{print $3}' 2>/dev/null)
+		      CurrentNICDuplex=$(${ETHTOOL} ${CurrentNICName} 2>/dev/null | ${SED} -n 's/^[ \t]\{0,\}//g;/^Duplex:/p' 2>/dev/null | ${AWK} -F'[: ]' '{print $3}' 2>/dev/null)
+		    fi
+
+		  else CurrentNICName=${CurrentNICInput}
+		    CurrentNICStatus=DOWN
+		  fi
+
+		  # Combine all items for final report usage
+		  set -A NICReport -- "${NICReport[@]}" "${CurrentNICName}~${CurrentNICStatus}~${CurrentNICIP}~${CurrentNICSpeed}~${CurrentNICDuplex}~${CurrentNICNetmask}"
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod NICReport
+
+# Function debugging
+set +x
+}
+
+AMS_NET03_CMDS() {
+### NET03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET03
+ToolObjective="Confirm backend(Mgt, Tools, BUR) NICs are teamed"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_NET04_CMDS() {
+### NET04
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET04
+ToolObjective="Confirm backend NIC settings(Speed, Duplex, and Netmask)"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_NET05_CMDS() {
+### NET05
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET05
+ToolObjective="Confirm Default Gateway & Routing"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+for CurrentInput in ${GatewayReport[*]}; do
+
+  # CSV output
+  set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentInput}"
+
+  # Readable output
+  set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Default gateway: ${CurrentInput}"
+done
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX|SunOS|AIX|ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList netstat
+	      BinaryVariableDefinition
+
+	      # Capture list of all gateways
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		for CurrentGatewayInput in $(${NETSTAT} -rn 2>/dev/null | ${GREP} -w "UG" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null); do
+		  if [[ ! -z $(print ${CurrentGatewayInput} 2>/dev/null | ${EGREP} "default|0.0.0.0" 2>/dev/null) ]]; then
+		    set -A GatewayReport -- "${GatewayReport[@]}" ${CurrentGatewayInput}
+		  fi
+		done
+	      fi
+
+	      # Set gateway report to NA if none are found
+	      if [[ -z ${GatewayReport} ]]; then
+		set -A GatewayReport NA
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod GatewayReport
+
+# Function debugging
+set +x
+}
+
+AMS_NET06_CMDS() {
+### NET06
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET06
+ToolObjective="Confirm Remote Console is configured correctly(Acessible, Required Functionality)"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_NET07_CMDS() {
+### NET07
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET07
+ToolObjective="Confirm support staff can access server, and Remote Console from the HP Network. Confirm file transfer to/from server"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_NET08_CMDS() {
+### NET08
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET08
+ToolObjective="Confirm if internal firewall needs to be active; if so, cofirm settings are appropriate"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_NET09_CMDS() {
+### NET09
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET09
+ToolObjective="Confirm SMTP Relay"
+
+# Specific local function declarations
+CurrentSMTPStatus=NO
+
+# Local report template
+ReportUsage() {
+
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentSMTPStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - ${CurrentSMTPVerboseStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX|SunOS|AIX|ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A ConfigurationOptions authwarnings needmailhelo needexpnhelo novrfy noexpn
+	      SendmailConfigurationFile=/etc/mail/sendmail.cf
+
+	      # Check to see if sendmail is running, and if configuration is correct
+	      if [[ ! -z $(${PS} -e 2>/dev/null | ${GREP} -w "sendmail" 2>/dev/null) ]]; then
+		set -A SMTPReport -- "${SMTPReport[@]}" "Sendmail is running,"
+
+		# Configuration check
+		if [[ -s ${SendmailConfigurationFile} ]]; then
+		  SendmailPrivacyOptions="$(${GREP} '^O PrivacyOptions' ${SendmailConfigurationFile} 2>/dev/null)"
+
+		  if [[ -z $(print ${SendmailPrivacyOptions} 2>/dev/null | ${GREP} "goaway" 2>/dev/null) ]]; then
+		    for CurrentConfigurationOption in ${ConfigurationOptions[*]}; do
+
+		      if [[ -z $(print ${SendmailPrivacyOptions} 2>/dev/null | ${GREP} ${CurrentConfigurationOption} 2>/dev/null) ]]; then
+
+			# This is for future enhancement
+			set -A MissingConfigurationOptionList -- "${MissingConfigurationOptionList[@]}" ${CurrentConfigurationOption}
+		      fi
+		    done
+
+		    # Generate report from option check
+		    if [[ -z ${MissingConfigurationOptionList} ]]; then
+		      set -A SMTPReport -- "${SMTPReport[@]}" "and is configured correctly."
+		      CurrentSMTPStatus=YES
+
+		    else set -A SMTPReport -- "${SMTPReport[@]}" "but is not configured correctly."
+		    fi
+
+		  else set -A SMTPReport -- "${SMTPReport[@]}" "and is configured correctly."
+		    CurrentSMTPStatus=YES
+		  fi
+
+		else set -A SMTPReport -- "${SMTPReport[@]}" "but not configured correctly."
+		fi
+
+
+	      else set -A SMTPReport -- "${SMTPReport[@]}" "Sendmail is not running"
+		CurrentSMTPStatus=YES
+	      fi
+
+	      # Compile final report
+	      CurrentSMTPVerboseStatus="${SMTPReport[*]}"
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod SMTPReport
+
+# Function debugging
+set +x
+}
+
+AMS_NET10_CMDS() {
+### NET10
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=NET10
+ToolObjective="Confirm \"Call Home\" setup(if available)"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DSK01_CMDS() {
+### DSK01 
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DSK01
+ToolObjective="Mirrored/Raid5 Root Drive"
+
+# Specific local function declarations
+CheckStatus=0
+RootDiskMirrored=NA
+#RootDiskVolumeName=NA
+#RootDiskPrimaryVolume=NA
+#RootDiskMirrorVolume=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${RootDiskMirrored}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Root disk mirrored: ${RootDiskMirrored}"
+# Removed for the time being. Will look at re-adding after testing on a mirrored system
+# set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Root volume name: ${RootDiskVolumeName} - Primary volume: ${RootDiskPrimaryVolume} - Mirror volume: ${RootDiskMirrorVolume}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList lvdisplay
+	      BinaryVariableDefinition
+
+	      # Check for mirror. Additional checks may come in the future
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ $(${LVDISPLAY} $(${DF} -P 2>/dev/null | ${GREP} "\/$" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) 2>/dev/null | ${GREP} "Mirror copies" 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null) -gt 0 ]]; then
+		  RootDiskMirrored=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of mirror
+	      VolumeManagerType=$(${DF} -k / 2>/dev/null | ${GREP} -v "^File" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $3}' 2>/dev/null)
+	      VolumeManagerRoot=$(${DF} -k / 2>/dev/null | ${GREP} -v "^File" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $NF}' 2>/dev/null)
+	      VolumeManagerRootFileSystem=$(${DF} -k / 2>/dev/null | ${GREP} -v "^File" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList metastat
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ ${VolumeManagerType} = "md" ]]; then
+		  if [[ $(${METASTAT} ${VolumeManagerRootFileSystem} 2>/dev/null | ${GREP} "${VolumeManagerRoot}:" 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null) = "Mirror" ]]; then
+		    RootDiskMirrored=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList vxprint
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ ${VolumeManagerType} = "vx" ]]; then
+		    if [[ $(${VXPRINT} -g rootdg ${VolumeManagerRootFileSystem} 2>/dev/null | ${GREP} mirror 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null | ${AWK} '{print $1}' FS=- 2>/dev/null) = "rootmirror" ]]; then
+		      RootDiskMirrored=YES
+		    fi
+		  fi
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList lslv lspv
+	      BinaryVariableDefinition
+
+	      # Check for mirror. Additional checks may come in the future
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		RootVolumeGroup=$(${LSLV} $(${DF} -P / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $3}' 2>/dev/null) 2>/dev/null | ${SED} -n 's/^.*VOLUME GROUP: \{0,\}//p' 2>/dev/null)
+
+		if [[ $(${LSPV} 2>/dev/null | ${GREP} -c ${RootVolumeGroup} 2>/dev/null) -gt 1 ]]; then
+		  RootDiskMirrored=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList lvs
+	      BinaryVariableDefinition
+
+	      # Check for mirror. Additional checks may come in the future
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		RootVolume=$(${DF} -lP / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} -F'[ -]' '{print $2}' 2>/dev/null)
+
+		if [[ ! -z $(${LVS} 2>/dev/null | ${GREP} ${RootVolume} 2>/dev/null | ${AWK} '{print $3}' 2>/dev/null | ${EGREP} '^m|^M' 2>/dev/null) ]]; then
+		  RootDiskMirrored=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_DSK02_CMDS() {
+### DSK02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DSK02
+ToolObjective="Confirm all application and data drives are mirrored, or using raid 5"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DSK03_CMDS() {
+### DSK03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DSK03
+ToolObjective="Confirm disk status can be monitored from OS"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${ReadableOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentAbilityStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}: ${CurrentAbilityStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX|AIX|SunOS ) RunCommands() {
+		      CurrentAbilityStatus=YES
+		    } ;;
+
+ ORACLE|RHEL|SUSE ) RunCommands() {
+		      CurrentAbilityStatus=NO
+		    } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_DSK04_CMDS() {
+### DSK04 
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DSK04
+ToolObjective="Confirm Alternate Boot disk and NVRAM settings in place"
+
+# Specific local function declarations
+CheckStatus=0
+AlternateRootDisk=NA
+#RootDiskVolumeName=NA
+RootVolumePrimaryDisk=NA
+RootVolumeAlternateDisk=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${AlternateRootDisk}"
+
+# Readable output
+ set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Primary disk: ${RootVolumePrimaryDisk} - Alternate disk: ${RootVolumeAlternateDisk} - Configured correctly: ${AlternateRootDisk}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList setboot
+	      BinaryVariableDefinition
+
+	      # Check for mirror. Additional checks may come in the future
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		RootVolumeGroup=$(${DF} -lP / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $3}' 2>/dev/null)
+
+		RootVolumePrimaryDisk=$(${SETBOOT} 2>/dev/null | ${AWK} '($1=="Primary"){print $5}' 2>/dev/null | ${SED} 's/(//;s/)$//' 2>/dev/null)
+		RootVolumeAlternateDisk=$(${SETBOOT} 2>/dev/null | ${AWK} '($1=="Alternate"){print $5}' 2>/dev/null | ${SED} 's/(//;s/)$//' 2>/dev/null)
+
+		if [[ ! -z ${RootVolumeAlternateDisk} ]]; then
+		  AlternateRootDisk=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of multipathing software(ie multipath, powerpath, or veritas)(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList lustatus lufslist
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  RootVolumePrimaryDiskName=$(${LUSTATUS} 2>/dev/null | ${GREP} -i "^PRI" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+		  RootVolumeAlternateDiskName=$(${LUSTATUS} 2>/dev/null | ${GREP} -i "^ALT" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+
+		  if [[ $(${LUSTATUS} 2>/dev/null | ${GREP} -i "^ALT" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) = "yes" ]]; then
+		    RootVolumePrimaryDisk=$(${LUFSLIST} ${RootVolumePrimaryDiskName} 2>/dev/null | ${GREP} ' / ' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+		    RootVolumeAlternateDisk=$(${LUFSLIST} ${RootVolumeAlternateDiskName} 2>/dev/null | ${GREP} ' / ' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+		    AlternateRootDisk=YES
+		    CheckStatus=1
+
+		  elif [[ $(${LUSTATUS} 2>/dev/null | ${GREP} -i "^ALT" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) != "yes" ]]; then
+		    RootVolumePrimaryDisk=$(${LUFSLIST} ${RootVolumePrimaryDiskName} 2>/dev/null | ${GREP} ' / ' 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+		    AlternateRootDisk=NO
+		    CheckStatus=1
+		  fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList lslv lspv
+	      BinaryVariableDefinition
+
+	      # Check for mirror. Additional checks may come in the future
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		RootVolumeGroup=$(${LSLV} $(${DF} -P / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $3}' 2>/dev/null) 2>/dev/null | ${SED} -n 's/^.*VOLUME GROUP: \{0,\}//p' 2>/dev/null)
+
+		RootVolumePrimaryDisk=$(${LSPV} 2>/dev/null | ${SED} -n "/${RootVolumeGroup}/{p;q;}" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+		RootVolumeAlternateDisk=$(${LSPV} 2>/dev/null | ${SED} -n "/altinst_${RootVolumeGroup}/{p;q;}" 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+
+		if [[ ! -z ${RootVolumeAlternateDisk} ]]; then
+		  AlternateRootDisk=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      set -A BinaryList pvdisplay
+	      BinaryVariableDefinition
+
+	      # Check for mirror. Additional checks may come in the future
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		RootVolumeGroup=$(${DF} -lP / 2>/dev/null | ${GREP} -v "^[^\/]" 2>/dev/null | ${AWK} -F'[ -]' '{print $1}' 2>/dev/null | ${AWK} -F\/ '{print $NF}' 2>/dev/null)
+
+		RootVolumePrimaryDisk=$(${PVDISPLAY} -C --noheadings 2>/dev/null | ${GREP} ${RootVolumeGroup} 2>/dev/null | ${GREP} -v alt 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+		RootVolumeAlternateDisk=$(${PVDISPLAY} -C --noheadings 2>/dev/null | ${GREP} ${RootVolumeGroup} 2>/dev/null | ${GREP} alt 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+
+		if [[ ! -z ${RootVolumeAlternateDisk} ]]; then
+		  AlternateRootDisk=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting this information at this time
+
+	      PrimaryMethod
+	      } ;;
+
+     LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod NICReport
+
+# Function debugging
+set +x
+}
+
+AMS_DSK05_CMDS() {
+### DSK05
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DSK05
+ToolObjective="Confirm Alternate Boot script Running"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+AlternateBootScriptStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${AlternateBootScriptStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm alternate boot script running: ${AlternateBootScriptStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  SunOS|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList crontab
+	      BinaryVariableDefinition
+
+	      # Capture dump available information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		${CRONTAB} -l 2>/dev/null | ${GREP} -v ^# 2>/dev/null | while read CurrentLine; do
+
+		  if [[ ! -z $(print ${CurrentLine} 2>/dev/null | ${EGREP} 'daily|ossync|alternate_boot|create-alt-bootdrive-ufsdump.ksh|make_contingency|lusync.sh|luupdate' 2>/dev/null) ]]; then
+		    AlternateBootScriptStatus=YES
+		    break
+		  fi
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  ORACLE|RHEL|SUSE ) # Defined primary and alternate methods
+	    RunCommands() {
+	      AlternateBootScriptStatus=NA
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_DSK06_CMDS() {
+### DSK06
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DSK06
+ToolObjective="Confirm Redundant SAN connections"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DSK07_CMDS() {
+### DSK07
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DSK07
+ToolObjective="Confirm DMP/Failover configuration"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+CheckStatus=0
+CurrentMultipathInstallationStatus=NO
+CurrentMultipathType=NONE
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentMultipathInstallationStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Multipathing software found: ${CurrentMultipathType} - Configured: ${CurrentMultipathInstallationStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of multipathing software(ie hpvm, powerpath, or veritas)(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList ioscan
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ ! -z $(${IOSCAN} -F -m dsf 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null) ]]; then
+		  CurrentMultipathType=HPVM
+		  CurrentMultipathInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList powermt
+		set -A CommonBinaryDirectoryLocations /etc
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ -z $(${POWERMT} display 2>/dev/null) ]]; then
+		    CurrentMultipathType=PowerPath
+		    CurrentMultipathInstallationStatus=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		  if [[ -d /dev/vx/dmp ]]; then
+		    CurrentMultipathType="Veritas VxVM"
+		    CurrentMultipathInstallationStatus=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of multipathing software(ie multipath, powerpath, or veritas)(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList stmsboot
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -z $(${STMSBOOT} -L 2>/dev/null | ${GREP} 'not enabled' 2>/dev/null) ]]; then
+		  CurrentMultipathType=MPxIO
+		  CurrentMultipathInstallationStatus=YES
+		  CheckStatus=1
+		fi
+
+	      elif [[ ${BinaryVariableDefinitionErrorStatus} -eq 1 ]]; then
+		if [[ ! -z $(${GREP} "^mpxio-disable" /kernel/drv/fp.conf 2>/dev/null | ${GREP} -i "no" 2>/dev/null) || ! -z $(${GREP} "^mpxio-disable" /kernel/drv/scsi_vhci.conf 2>/dev/null | ${GREP} -i "no" 2>/dev/null) ]]; then
+		  CurrentMultipathType=MPxIO
+		  CurrentMultipathInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList powermt
+		set -A CommonBinaryDirectoryLocations /etc
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ -z $(${POWERMT} display 2>/dev/null) ]]; then
+		    CurrentMultipathType=PowerPath
+		    CurrentMultipathInstallationStatus=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		if [[ -d /dev/vx/dmp ]]; then
+		  CurrentMultipathType="Veritas VxVM"
+		  CurrentMultipathInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of multipathing software(ie multipath, powerpath, or veritas)(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList lspath
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ ! -z $(${LSPATH} -F "path_id name status" 2>/dev/null | ${GREP} Enabled 2>/dev/null | ${GREP} -v ^0 2>/dev/null) ]]; then
+		  CurrentMultipathType=MPIO
+		  CurrentMultipathInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList powermt
+		set -A CommonBinaryDirectoryLocations /etc
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ -z $(${POWERMT} display 2>/dev/null) ]]; then
+		    CurrentMultipathType=PowerPath
+		    CurrentMultipathInstallationStatus=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		  if [[ -d /dev/vx/dmp ]]; then
+		    CurrentMultipathType="Veritas VxVM"
+		    CurrentMultipathInstallationStatus=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  ORACLE|RHEL|SUSE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of multipathing software(ie multipath, powerpath, or veritas)(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList multipath
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -z $(${MULTIPATH} 2>/dev/null | ${GREP} 'kernel driver not loaded' 2>/dev/null) ]]; then
+		  CurrentMultipathType=Multipath
+		  CurrentMultipathInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList powermt
+		set -A CommonBinaryDirectoryLocations /etc
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  if [[ -z $(${POWERMT} display 2>/dev/null) ]]; then
+		    CurrentMultipathType=PowerPath
+		    CurrentMultipathInstallationStatus=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		  if [[ -d /dev/vx/dmp ]]; then
+		    CurrentMultipathType="Veritas VxVM"
+		    CurrentMultipathInstallationStatus=YES
+		    CheckStatus=1
+		  fi
+		fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_BUR01_CMDS() {
+### BUR01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=BUR01
+ToolObjective="Confirm Backup Agents Installed and Configured"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+ConfigurationStatus=NO
+CurrentTool=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${ConfigurationStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - ${ReportStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|SunOS|RHEL|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList netstat
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Specific local function declarations
+		ConfigurationStatus=YES
+		CurrentTool="Data Protector"
+
+		if [[ -z $(${NETSTAT} -na 2>/dev/null | ${GREP} omni 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null | ${GREP} -i "listen" 2>/dev/null) ]]; then
+		  ConfigurationStatus=NO
+		  CurrentTool=NA
+		fi
+	      fi
+
+	      if [[ ${CurrentTool} = NA ]]; then
+
+		# Specific local function declarations
+		set -A InputTargets /usr/lpp/Tivoli_Management_Agent.client/bin /opt/tivoli/tsm/client/ba/bin
+
+		# Capture root login permission status
+		for CurrentInput in ${InputTargets[*]}; do
+
+		  if [[ -s "${CurrentInput}/dsm.sys" && -s "${CurrentInput}/dsm.opt" ]]; then
+		    ConfigurationStatus=YES
+		    CurrentTool="TSM"
+		    break
+		  fi
+		done
+	      fi
+
+	      # Combine results for final report
+	      if [[ ${ConfigurationStatus} = NA ]]; then
+		ReportStatus="No backup software found"
+
+	      else ReportStatus="${CurrentTool} installed and configured: ${ConfigurationStatus}"
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod InputTargets
+
+# Function debugging
+set +x
+}
+
+AMS_BUR02_CMDS() {
+### BUR02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=BUR02
+ToolObjective="Validate scheduled backups"
+
+# Specific local function declarations
+CheckStatus=0
+AlternateMethodUsage=0
+ScheduledRunStatus=NA
+CurrentTool=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${ScheduledRunStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - ${ReportStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|SunOS|RHEL|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList netstat
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Check for running listener, and pull any completed status's, looking for the previous day and current date
+		if [[ ! -z $(${NETSTAT} -na 2>/dev/null | ${GREP} omni 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null | ${GREP} -i "listen" 2>/dev/null) ]]; then
+
+		  # Specific local function declarations
+		  CurrentTool="Data Protector"
+		  ScheduledRunStatus=NO
+
+		  # Custom binary(s) declaration
+		  set -A BinaryList omnistat
+		  set -A CommonBinaryDirectoryLocations /opt/omni/bin /usr/omni/bin
+		  BinaryVariableDefinition
+
+		  if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		    if [[ ! -z $(${OMNISTAT} -previous -user root -last 2 2>/dev/null | ${TAIL} -1 2>/dev/null | ${GREP} " Completed" 2>/dev/null) ]]; then
+		      ScheduledRunStatus=YES
+		      CheckStatus=1
+
+		    else CheckStatus=1
+		    fi
+		  else CheckStatus=1
+		  fi
+		fi
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+
+		# Specific local function declarations
+		set -A InputTargets /usr/lpp/Tivoli_Management_Agent.client/bin /opt/tivoli/tsm/client/ba/bin
+
+		# Current date information
+		CurrentMonth=$(${DATE} +%m)
+		CurrentDay=$(${DATE} +%d)
+		CurrentYearShort=$(${DATE} +%y)
+		CurrentYearLong=$(${DATE} +%Y)
+		CurrentDateShort="${CurrentMonth}/${CurrentDay}/${CurrentYearShort}"
+		CurrentDateLong="${CurrentMonth}/${CurrentDay}/${CurrentYearLong}"
+
+		# Get yesterday's date information
+		if [[ ${CurrentDay} -eq 1 ]]; then
+		  case ${CurrentMonth} in
+		    01 ) CurrentDay=31; CurrentMonth=12; let CurrentYearShort=${CurrentYearShort}-1; let CurrentYearLong=${CurrentYearLong}-1 ;;
+		    02 ) CurrentDay=31; CurrentMonth=1 ;;
+		    03 ) CurrentMonth=02
+			  if ((${CurrentYearShort} % 4)); then
+			    CurrentDay=28
+			  else CurrentDay=29
+			  fi ;;
+		    04 ) CurrentDay=31; CurrentMonth=3 ;;
+		    05 ) CurrentDay=30; CurrentMonth=4 ;;
+		    06 ) CurrentDay=31; CurrentMonth=5 ;;
+		    07 ) CurrentDay=31; CurrentMonth=6 ;;
+		    08 ) CurrentDay=31; CurrentMonth=7 ;;
+		    09 ) CurrentDay=31; CurrentMonth=8 ;;
+		    10 ) CurrentDay=30; CurrentMonth=9 ;;
+		    11 ) CurrentDay=31; CurrentMonth=10 ;;
+		    12 ) CurrentDay=30; CurrentMonth=11 ;;
+		  esac
+		else let CurrentDay=${CurrentDay}-1
+		fi
+
+		YesterdaysDateShort="${CurrentMonth}/${CurrentDay}/${CurrentYearShort}" 
+		YesterdaysDateLong="${CurrentMonth}/${CurrentDay}/${CurrentYearLong}"
+		set -A CurrentValidDateList ${CurrentDateShort} ${CurrentDateLong} ${YesterdaysDateShort} ${YesterdaysDateLong}
+
+		for CurrentInput in ${InputTargets[@]}; do
+		  if [[ -a "${CurrentInput}/dsmsched.log" ]]; then
+		    CurrentValidInput="${CurrentInput}/dsmsched.log"
+		    CurrentTool=TSM
+
+		    # Cycle through all valid dates for a match. If match is found, end further testing
+		    for CurrentDateInput in ${CurrentValidDateList[*]}; do
+		      if [[ $(${GREP} "Successful incremental" ${CurrentValidInput} 2>/dev/null | ${TAIL} -1 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) = ${CurrentDateInput} ]]; then
+			ScheduledRunStatus=YES
+			CheckStatus=1
+			break
+		      fi
+		    done
+
+		    if [[ ${ScheduledRunStatus} = YES ]]; then
+		      break
+		    fi
+
+		  elif [[ -a "${CurrentInput}/logs/dsmsched.log" ]]; then
+		    CurrentValidInput="${CurrentInput}/dsmsched.log"
+		    CurrentTool=TSM
+
+		    # Cycle through all valid dates for a match. If match is found, end further testing
+		    for CurrentDateInput in ${CurrentValidDateList[*]}; do
+		      if [[ $(${GREP} "Successful incremental" ${CurrentValidInput} 2>/dev/null | ${TAIL} -1 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null) = ${CurrentDateInput} ]]; then
+			ScheduledRunStatus=YES
+			CheckStatus=1
+			break
+		      fi
+		    done
+
+		    if [[ ${ScheduledRunStatus} = YES ]]; then
+		      break
+		    fi
+		  fi
+		done
+	      fi
+
+	      # Combine results for final report
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		ReportStatus="No supported backup software found"
+
+	      else ReportStatus="Scheduled backups using: ${CurrentTool} - Backups ran successfully(yesterday and/or today): ${ScheduledRunStatus}"
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod InputTargets CurrentValidDateList
+
+# Function debugging
+set +x
+}
+
+AMS_BUR03_CMDS() {
+### BUR03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=BUR03
+ToolObjective="Confirm OS Recovery Backups exist, and are functional"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_TLS01_CMDS() {
+### TLS01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=TLS01
+ToolObjective="Confirm Opsware SAS or HPSA Agent installed & functional"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+CurrentStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm Opsware SAS or HPSA Agent installed & functional: ${CurrentStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|SunOS|RHEL|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Capture agent information, and status
+	      if [[ ! -z $(${PS} -ef 2>/dev/null | ${GREP} -v grep 2>/dev/null | ${GREP} opsware 2>/dev/null) ]]; then
+		CurrentStatus=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_TLS02_CMDS() {
+### TLS02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=TLS02
+ToolObjective="Confirm Opsware AMS-ATE agent installed and functional"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+CurrentStatus=NO
+CurrentTool=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - ${CurrentTool}: ${CurrentStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|SunOS|RHEL|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Capture agent information, and status
+	      if [[ ! -z $(${PS} -ef 2>/dev/null | ${GREP} -v grep 2>/dev/null | ${GREP} lw_agt.py 2>/dev/null) ]]; then
+		CurrentStatus=YES
+		CurrentTool=DDMI
+
+	      elif [[ ! -z $(${PS} -ef 2>/dev/null | ${GREP} -v grep 2>/dev/null | ${GREP} aiclient 2>/dev/null) ]]; then
+		CurrentStatus=YES
+		CurrentTool=ATE
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_TLS03_CMDS() {
+### TLS03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=TLS03
+ToolObjective="Confirm SNMP configured per Tools and Automation Requirements"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+ConfigurationStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${ConfigurationStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm SNMP configured per Tools and Automation Requirements: ${ConfigurationStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|SunOS|RHEL|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A InputTargets /etc/snmpd.conf /etc/snmp/snmpd.conf /etc/snmp/conf/snmpd.conf
+
+	      # Capture root login permission status
+	      for CurrentInput in ${InputTargets[*]}; do
+
+		if [[ ! -z $(${GREP} -v ^# ${CurrentInput} 2>/dev/null | ${GREP} "edsr7" 2>/dev/null) ]]; then
+		  ConfiguredStatus=YES
+		  break
+		fi
+	      done
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod InputTargets
+
+# Function debugging
+set +x
+}
+
+AMS_TLS04_CMDS() {
+### TLS04
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=TLS04
+ToolObjective="Confirm Monitoring agents installed & functional (CA or HPOM)"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+CurrentStatus=NA
+CurrentVersion=NA
+CurrentTool=NA
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentStatus}"
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}_NAME~${CurrentHostname}~${HPSAMID}~${CurrentTool} ${CurrentVersion}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm monitoring agent is running: ${CurrentStatus}"
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Monitoring tool: ${CurrentStatus} - Version: ${CurrentVersion}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|RHEL|AIX|SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList opcagt
+	      set -A CommonBinaryDirectoryLocations /opt/OV/bin
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Specific local function declarations
+		CurrentStatus=YES
+		CurrentVersion=$($OPCAGT} -version 2>/dev/null)
+		CurrentTool=HPOM
+
+		# Check hpom tool status, and version
+		${OPTCAGT} -status 2>/dev/null | ${GREP} -vi "buffering" 2>/dev/null | while read CurrentInput; do
+
+		  if [[ -z $(print ${CurrentInput} 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null | ${GREP} -i "running" 2>/dev/null) ]]; then
+		    CurrentStatus=NO
+		    break
+		  fi
+		done
+
+	      elif [[ ${BinaryVariableDefinitionErrorStatus} -ne 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList awservices
+		set -A CommonBinaryDirectoryLocations /tools/ca/3.1/services/bin /ca_uni/atech/services/bin
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		  # Specific local function declarations
+		  CurrentStatus=YES
+		  CurrentVersion=$(${AWSERVICES} version 2>/dev/null | ${GREP} Version 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null)
+		  CurrentTool="Unicenter TNG"
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_TLS05_CMDS() {
+### TLS05
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=TLS05
+ToolObjective="If batch scheduling is required, confirm agent is running and connected"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_TLS06_CMDS() {
+### TLS06
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=TLS06
+ToolObjective="Confirm AntiVirus installed & functioning"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_CLS01_CMDS() {
+### CLS01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=CLS01
+ToolObjective="Vendor software support"
+
+# Specific local function declarations
+CheckStatus=0
+AlternateMethodUsage=0
+CurrentClusterInstalledStatus=NO
+# Removed the version at this time, this will be re-added in the next release when levels are introduced
+#CurrentClusterVersion=NA
+CurrentClusterType=NONE
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentClusterInstalledStatus}"
+
+# Readable output
+#set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Cluster software found: ${CurrentClusterType} - Version: ${CurrentClusterVersion}"
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Cluster software found: ${CurrentClusterType}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of clustering software(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList cmviewcl
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		CurrentClusterType="ServiceGuard"
+		#CurrentClusterVersion=
+		CurrentClusterInstallationStatus=YES
+		CheckStatus=1
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList hastatus
+		set -A CommonBinaryDirectoryLocations /opt/VRTSvcs/bin
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  CurrentClusterType="Veritas Cluster"
+		  #CurrentClusterVersion=
+		  CurrentClusterInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of clustering software(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList scstat
+	      set -A CommonBinaryDirectoryLocations /usr/cluster/bin
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		CurrentClusterType="Sun Cluster"
+		#CurrentClusterVersion=
+		CurrentClusterInstallationStatus=YES
+		CheckStatus=1
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList hastatus
+		set -A CommonBinaryDirectoryLocations /opt/VRTSvcs/bin
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  CurrentClusterType="Veritas Cluster"
+		  #CurrentClusterVersion=
+		  CurrentClusterInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of clustering software(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList clstat
+	      set -A CommonBinaryDirectoryLocations /usr/sbin/cluster
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		CurrentClusterType="AIX Cluster"
+		#CurrentClusterVersion=
+		CurrentClusterInstallationStatus=YES
+		CheckStatus=1
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList hastatus
+		set -A CommonBinaryDirectoryLocations /opt/VRTSvcs/bin
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  CurrentClusterType="Veritas Cluster"
+		  #CurrentClusterVersion=
+		  CurrentClusterInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  ORACLE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of clustering software(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList clustat
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		CurrentClusterType="Red Hat Cluster"
+		#CurrentClusterVersion=
+		CurrentClusterInstallationStatus=YES
+		CheckStatus=1
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList hastatus
+		set -A CommonBinaryDirectoryLocations /opt/VRTSvcs/bin
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  CurrentClusterType="Veritas Cluster"
+		  #CurrentClusterVersion=
+		  CurrentClusterInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+	      
+	      # Custom binary(s) declaration
+	      set -A BinaryList cmviewcl
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		CurrentClusterType="ServiceGuard"
+		#CurrentClusterVersion=
+		CurrentClusterInstallationStatus=YES
+		CheckStatus=1
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  SUSE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Check for existance of clustering software(Check most common to least common solution)
+
+	      # Custom binary(s) declaration
+	      set -A BinaryList crm_mon
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		CurrentClusterType="SUSE Cluster"
+		#CurrentClusterVersion=
+		CurrentClusterInstallationStatus=YES
+		CheckStatus=1
+	      fi
+
+	      if [[ ${CheckStatus} -eq 0 ]]; then
+		# Custom binary(s) declaration
+		set -A BinaryList hastatus
+		set -A CommonBinaryDirectoryLocations /opt/VRTSvcs/bin
+		BinaryVariableDefinition
+
+		if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		  CurrentClusterType="Veritas Cluster"
+		  #CurrentClusterVersion=
+		  CurrentClusterInstallationStatus=YES
+		  CheckStatus=1
+		fi
+	      fi
+	      
+	      # Custom binary(s) declaration
+	      set -A BinaryList cmviewcl
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		CurrentClusterType="ServiceGuard"
+		#CurrentClusterVersion=
+		CurrentClusterInstallationStatus=YES
+		CheckStatus=1
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_CLS02_CMDS() {
+### CLS02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=CLS02
+ToolObjective="Cluster Tested & Certified"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_CLS03_CMDS() {
+### CLS03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=CLS03
+ToolObjective="Cluster Monitoring"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_SEC01_CMDS() {
+### SEC01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC01
+ToolObjective="Confirm ePCM or ESM Agent Installed"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+AgentStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${AgentStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm ePCM port 1827 is open and listening: ${AgentStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|RHEL|AIX|SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList netstat
+	      BinaryVariableDefinition
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture port status
+		if [[ -z $(${NETSTAT} -na 2>/dev/null | ${GREP} 1827 2>/dev/null | ${GREP} -i listen 2>/dev/null) ]]; then
+		  AgentStatus=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting duplicate uid information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod InputTargets
+
+# Function debugging
+set +x
+}
+
+AMS_SEC02_CMDS() {
+### SEC02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC02
+ToolObjective="Check current audit scan, and ensure no non-compliant issues; If found, confirm they are covered under a corresponding BCJ"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_SEC03_CMDS() {
+### SEC03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC03
+ToolObjective="Confirm sudo installed & configured"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+SudoStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${SudoStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm sudo installed & configured: ${SudoStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  ORACLE|SUSE|RHEL|AIX|SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList sudo
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      set -A InputTargets /etc/sudoers /usr/local/etc/sudoers
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture sudo status
+		for CurrentInput in ${InputTargets[*]}; do
+
+		  if [[ -a ${CurrentInput} ]]; then
+		    SudoStatus=YES
+		    break
+		  fi
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting duplicate uid information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod InputTargets
+
+# Function debugging
+set +x
+}
+
+AMS_SEC04_CMDS() {
+### SEC04
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC04
+ToolObjective="Confirm root ssh login is disabled"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+PermitRootLoginStatus=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${PermitRootLoginStatus}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm root ssh login is disabled: ${PermitRootLoginStatus}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList nawk
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      set -A InputTargets /etc/ssh/sshd_config /etc/opt/ssh/sshd_config
+	      TargetLine=PermitRootLogin
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture root login permission status
+		for CurrentInput in ${InputTargets[*]}; do
+
+		  if [[ ! -z $(${NAWK} -v Target=${TargetLine} '($1==Target){print $NF}' ${CurrentInput} 2>/dev/null | ${GREP} -i "no" 2>/dev/null) ]]; then
+		    PermitRootLoginStatus=YES
+		    break
+		  fi
+		done
+	      fi
+	      }
+
+	      # No alternate method for getting duplicate uid information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+  ORACLE|SUSE|RHEL|AIX|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A InputTargets /etc/ssh/sshd_config /etc/opt/ssh/sshd_config
+	      TargetLine=PermitRootLogin
+
+		# Capture root login permission status
+		for CurrentInput in ${InputTargets[*]}; do
+
+		  if [[ ! -z $(${AWK} -v Target=${TargetLine} '($1==Target){print $NF}' ${CurrentInput} 2>/dev/null | ${GREP} -i "no" 2>/dev/null) ]]; then
+		    PermitRootLoginStatus=NO
+		    break
+		  fi
+		done
+	      }
+
+	      # No alternate method for getting duplicate uid information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod InputTargets
+
+# Function debugging
+set +x
+}
+
+AMS_SEC05_CMDS() {
+### SEC05
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC05
+ToolObjective="Confirm telnet & ftp are disabled"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+CurrentServicesDisabled=YES
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${CurrentServicesDisabled}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Confirm telnet & ftp are disabled: ${CurrentServicesDisabled}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+      AIX|SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      set -A InputTargets ftpd telnetd
+
+		# Capture input targets status
+		for CurrentInput in ${InputTargets[*]}; do
+
+		  if [[ ! -z $(${PS} -e 2>/dev/null | ${GREP} -i "${CurrentInput}" 2>/dev/null) ]]; then
+
+		    # Added this way for future enhancements
+		    set -A InvalidServicesList -- "${InvalidServicesList[@]}" "${CurrentInput},"
+		  fi
+		done
+
+		# Compile results into final report
+		if [[ ! -z ${InvalidServicesList} ]]; then
+		  CurrentServicesDisabled=NO
+
+		  # Added for future enhancements
+#		  set -A FinalStatusReport "Services enabled: $(print ${InvalidServicesList[*]} 2>/dev/null | ${SED} 's/,$//' 2>/dev/null)"
+		fi
+	      }
+
+	      # No alternate method for getting duplicate uid information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList chkconfig
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      set -A InputTargets ftp telnet
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture input targets status
+		for CurrentInput in ${InputTargets[*]}; do
+
+		  if [[ ! -z $(${CHKCONFIG} --list ${CurrentInput} 2>/dev/null | ${AWK} '{print $NF}' 2>/dev/null | ${GREP} -i "on" 2>/dev/null) ]]; then
+
+		    # Added this way for future enhancements
+		    set -A InvalidServicesList -- "${InvalidServicesList[@]}" "${CurrentInput},"
+		  fi
+		done
+
+		# Compile results into final report
+		if [[ ! -z ${InvalidServicesList} ]]; then
+		  CurrentServicesDisabled=NO
+
+		  # Added for future enhancements
+#		  set -A FinalStatusReport "Services enabled: $(print ${InvalidServicesList[*]} 2>/dev/null | ${SED} 's/,$//' 2>/dev/null)"
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting duplicate uid information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod InvalidServicesList FinalStatusReport
+
+# Function debugging
+set +x
+}
+
+AMS_SEC06_CMDS() {
+### SEC06
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC06
+ToolObjective="Ensure password fields are not empty"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${#EmptyPasswordsFound[*]}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Userid's with empty passwords found: ${#EmptyPasswordsFound[*]}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+      AIX|SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList logins
+	      BinaryVariableDefinition
+
+	      # Capture accounts with empty passwords
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		for CurrentUserIDInput in $(${LOGINS} -p 2>/dev/null); do
+		  set -A EmptyPasswordsFound -- "${EmptyPasswordsFound[@]}" "${CurrentUserIDInput}"
+		done
+	      fi
+	      }
+
+	      PrimaryMethod
+	    } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/shadow
+
+	      # Capture accounts with empty passwords
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -a ${InputTarget} ]]; then
+		  for CurrentUserIDInput in $(${EGREP} -v '^\+|^#' ${InputTarget} 2>/dev/null | ${AWK} -F: '{print $1}' 2>/dev/null); do
+		    if [[ -z $(${GREP} ^"\<${CurrentUserIDInput}\>" ${InputTarget} 2>/dev/null | ${AWK} -F: '{print $2}' 2>/dev/null) ]]; then
+		      set -A EmptyPasswordsFound -- "${EmptyPasswordsFound[@]}" "${CurrentUserIDInput}"
+		    fi
+		  done
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting blank/empty password information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod EmptyPasswordsFound
+
+# Function debugging
+set +x
+}
+
+AMS_SEC07_CMDS() {
+### SEC07
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC07
+ToolObjective="Ensure GRUB boot loader has password"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+GrubPasswordSet=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${GrubPasswordSet}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Grub bootloader password set: ${GrubPasswordSet}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  AIX|SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+	      # Needs to be here to prevent errors on these OS's
+	      GrubPasswordSet=NA
+	    } ;;
+
+      ORACLE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/boot/grub/grub.conf
+
+	      # Capture accounts with empty passwords
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -a ${InputTarget} ]]; then
+		  if [[ ! -z $(${GREP} ^"password --md5" ${InputTarget} 2>/dev/null | ${AWK} '{print $3}' 2>/dev/null) ]]; then
+		    GrubPasswordSet=YES
+		  fi
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting grub password information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      SUSE ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/boot/grub/menu.lst
+
+	      # Capture accounts with empty passwords
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		if [[ -a ${InputTarget} ]]; then
+		  if [[ ! -z $(${GREP} ^"password --md5" ${InputTarget} 2>/dev/null | ${AWK} '{print $3}' 2>/dev/null) ]]; then
+		    GrubPasswordSet=YES
+		  fi
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting grub password information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_SEC08_CMDS() {
+### SEC08
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC08
+ToolObjective="Ensure no duplicate uid"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${#DuplicateUidsFound[*]}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Duplicate uid's found: ${#DuplicateUidsFound[*]}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+      SunOS|HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList logins
+	      BinaryVariableDefinition
+
+	      # Capture duplicate uid information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		set -A DuplicateUidsFound -- "${DuplicateUidsFound[@]}" $(${LOGINS} -d 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+
+	      fi
+	      }
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList logins uniq
+	      BinaryVariableDefinition
+
+	      # Capture duplicate uid information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		set -A DuplicateUidsFound -- "${DuplicateUidsFound[@]}" $(${LOGINS} -ox 2>/dev/null | ${AWK} -F: '{printf "%s %s\n", $1, $2}' 2>/dev/null | ${UNIQ} -f 1 -d 2>/dev/null | ${AWK} '{print $1}' 2>/dev/null)
+
+	      fi
+	      }
+
+	      PrimaryMethod
+	    } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList getent uniq
+	      BinaryVariableDefinition
+
+	      # Capture duplicate uid information
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+		set -A DuplicateUidsFound -- "${DuplicateUidsFound[@]}" $(${GETENT} passwd 2>/dev/null | ${AWK} -F: '{printf "%s %s\n", $1, $3}' 2>/dev/null | ${UNIQ} -f 1 -D 2>/dev/null | ${SED} 's/ /:/' 2>/dev/null)
+
+	      fi
+	      }
+
+	      # No alternate method for getting duplicate uid information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod DuplicateUidsFound
+
+# Function debugging
+set +x
+}
+
+AMS_SEC09_CMDS() {
+### SEC09
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC09
+ToolObjective="Ensure automatic system session timeout"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+SessionTimeoutUsage=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${SessionTimeoutUsage}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Automatice session time-out configured: ${SessionTimeoutUsage}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  AIX|SunOS|HP-UX|ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/profile
+
+	      # Capture authomatic session timeout usage information
+	      if [[ ! -z $(${GREP} "^[^#]*TMOUT=[0-9]\{1,\}" ${InputTarget} 2>/dev/null) ]]; then
+		SessionTimeoutUsage=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_SEC10_CMDS() {
+### SEC10
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC10
+ToolObjective="Ensure max invalid password login attempts is configured"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+MaxInvalidLoginsUsage=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${MaxInvalidLoginsUsage}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Maximum invalid login attempts configured: ${MaxInvalidLoginsUsage}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+      HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/default/security
+	      TargetValue=AUTH_MAXTRIES
+
+	      # Capture max invalid logins attempts information
+	      if [[ ! -z $(${AWK} -F= -v Target=${TargetValue} '($1==Target){print $2}' ${InputTarget} 2>/dev/null | ${TAIL} -1 2>/dev/null) ]]; then
+		MaxInvalidLoginsUsage=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList nawk
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      InputTarget=/etc/default/login
+	      TargetValue=RETRIES
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture max invalid logins attempts information
+		if [[ ! -z $(${NAWK} -F= -v Target=${TargetValue} '($1==Target){print $2}' ${InputTarget} 2>/dev/null | ${TAIL} -1 2>/dev/null) ]]; then
+		  MaxInvalidLoginsUsage=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList lssec
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      InputTarget=/etc/security/user
+	      TargetValue=loginretries
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture max invalid logins attempts information
+		if [[ ! -z $(${LSSEC} -c -f ${InputTarget} -s default -a ${TargetValue} 2>/dev/null | ${GREP} -v ^# 2>/dev/null | ${AWK} -F: '{print $2}' 2>/dev/null) ]]; then
+		  MaxInvalidLoginsUsage=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/pam.d/system-auth
+	      PrimaryTargetLine="^auth[[:space:]]\{1,\}required[[:space:]]\{1,\}pam_tally.so[[:space:]]\{1,\}"
+	      SecondaryTargetLine="^auth[[:space:]]\{1,\}required[[:space:]]\{1,\}pam_tally2.so[[:space:]]\{1,\}"
+	      TargetValue="deny"
+
+	      # Capture max invalid logins attempts information - primary line
+	      if [[ ! -z $(${GREP} "${PrimaryTargetLine}" ${InputTarget} 2>/dev/null | ${GREP} "${TargetValue}=[0-9][[:space:]]\{1,\}" 2>/dev/null) ]]; then
+		MaxInvalidLoginsUsage=YES
+
+	      # Capture max invalid logins attempts information - secondary line
+	      elif [[ ! -z $(${GREP} "${SecondaryTargetLine}" ${InputTarget} 2>/dev/null | ${GREP} "${TargetValue}=[0-9][[:space:]]\{1,\}" 2>/dev/null) ]]; then
+		MaxInvalidLoginsUsage=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_SEC11_CMDS() {
+### SEC11
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC11
+ToolObjective="Ensure maximum password history is configured"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+MaxPasswordHistory=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${MaxPasswordHistory}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Password history maximum configured: ${MaxPasswordHistory}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+      HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/default/security
+	      TargetValue=PASSWORD_HISTORY_DEPTH
+
+	      # Capture max password history retention information
+	      if [[ ! -z $(${AWK} -F= -v Target=${TargetValue} '($1==Target){print $2}' ${InputTarget} 2>/dev/null | ${TAIL} -1 2>/dev/null) ]]; then
+		MaxPasswordHistory=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList nawk
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      InputTarget=/etc/default/passwd
+	      TargetValue=HISTORY
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture max password history retention information
+		if [[ ! -z $(${NAWK} -F= -v Target=${TargetValue} '($1==Target){print $2}' ${InputTarget} 2>/dev/null | ${TAIL} -1 2>/dev/null) ]]; then
+		  MaxPasswordHistory=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList lssec
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      InputTarget=/etc/security/user
+	      TargetValue=histsize
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture max password history retention information
+		if [[ ! -z $(${LSSEC} -c -f ${InputTarget} -s default -a ${TargetValue} 2>/dev/null | ${GREP} -v ^# 2>/dev/null | ${AWK} -F: '{print $2}' 2>/dev/null) ]]; then
+		  MaxPasswordHistory=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/pam.d/system-auth
+	      PrimaryTargetLine="^password[[:space:]]\{1,\}sufficient[[:space:]]\{1,\}pam_unix.so[[:space:]]\{1,\}"
+	      TargetValue="remember"
+
+	      # Capture max password history retention information
+	      if [[ ! -z $(${GREP} "${PrimaryTargetLine}" ${InputTarget} 2>/dev/null | ${GREP} "${TargetValue}=[0-9]\{1,\}" 2>/dev/null) ]]; then
+		MaxPasswordHistory=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_SEC12_CMDS() {
+### SEC12
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=SEC12
+ToolObjective="Ensure password aging is configured"
+
+# Specific local function declarations
+AlternateMethodUsage=0
+MaxPasswordExpirationConfigured=NO
+
+# Local report template
+ReportUsage() {
+# CSV output
+set -A CSVOutputResult -- "${CSVOutputResult[@]}" "${ToolID}~${CurrentHostname}~${HPSAMID}~${MaxPasswordExpirationConfigured}"
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Password aging is configured: ${MaxPasswordExpirationConfigured}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+      HP-UX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/default/security
+	      TargetValue=PASSWORD_MAXDAYS
+
+	      # Capture max password expiration setting
+	      if [[ ! -z $(${AWK} -F= -v Target=${TargetValue} '($1==Target){print $2}' ${InputTarget} 2>/dev/null | ${TAIL} -1 2>/dev/null) ]]; then
+		MaxPasswordExpirationConfigured=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      SunOS ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList nawk
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      InputTarget=/etc/default/passwd
+	      TargetValue=MAXWEEKS
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture max password expiration setting
+		if [[ ! -z $(${NAWK} -F= -v Target=${TargetValue} '($1==Target){print $2}' ${InputTarget} 2>/dev/null | ${TAIL} -1 2>/dev/null) ]]; then
+		  MaxPasswordExpirationConfigured=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      AIX ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Custom binary(s) declaration
+	      set -A BinaryList lssec
+	      BinaryVariableDefinition
+
+	      # Specific local function declarations
+	      InputTarget=/etc/security/user
+	      TargetValue=maxage
+
+	      if [[ ${BinaryVariableDefinitionErrorStatus} -eq 0 ]]; then
+
+		# Capture max password expiration setting
+		if [[ ! -z $(${LSSEC} -c -f ${InputTarget} -s default -a ${TargetValue} 2>/dev/null | ${GREP} -v ^# 2>/dev/null | ${AWK} -F: '{print $2}' 2>/dev/null) ]]; then
+		  MaxPasswordExpirationConfigured=YES
+		fi
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+      ORACLE|SUSE|RHEL ) # Defined primary and alternate methods
+	    RunCommands() {
+
+	      PrimaryMethod() {
+	      # Specific local function declarations
+	      InputTarget=/etc/login.defs
+	      PrimaryTargetLine="^PASS_MAX_DAYS"
+
+	      # Capture max password expiration setting
+	      if [[ ! -z $(${GREP} "${PrimaryTargetLine}[[:space:]]\{1,\}" ${InputTarget} 2>/dev/null | ${AWK} '{print $2}' 2>/dev/null | ${GREP} "[0-9]\{1,\}" 2>/dev/null) ]]; then
+		MaxPasswordExpirationConfigured=YES
+	      fi
+	      }
+
+	      # No alternate method for getting information at this time
+
+	      PrimaryMethod
+	    } ;;
+
+    LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  RunCommands
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+unset -f RunCommands PrimaryMethod AlternateMethod
+
+# Function debugging
+set +x
+}
+
+AMS_DOC01_CMDS() {
+### DOC01
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DOC01
+ToolObjective="Confirm server is registered in ADMS/ESL, and techinical data is being populated from AMS/ATE"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DOC02_CMDS() {
+### DOC02
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DOC02
+ToolObjective="Confirm server information is correct in ADMS/ESL(Server Support, Application, Database, Account Escalations, and Ticket Info)"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DOC03_CMDS() {
+### DOC03
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DOC03
+ToolObjective="Document network path information to servers and consoles"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DOC04_CMDS() {
+### DOC04
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DOC04
+ToolObjective="Confirm all techincal specifications are documented(ADMS, ESL, or Team Sharepoint Site)"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DOC05_CMDS() {
+### DOC05
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DOC05
+ToolObjective="Record Remote Console Login information(Credentials, Root Password) in the team password spreadsheet"
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+AMS_DOC06_CMDS() {
+### DOC06
+
+# Function debugging
+FunctionDebug
+
+# Item header declaration
+ToolID=DOC06
+ToolObjective="Document any major issues, and notify Project Manager, Account SDM, Unix/Linux Team Lead, and Manager via email"
+GroupID=DOC
+
+# Specific local function declarations
+
+# Local report template
+ReportUsage() {
+# CSV output
+
+# Readable output
+set -A ReadableOutputResult -- "${ReadableOutputResult[@]}" "${ToolID} - Manual Process: ${ToolObjective}"
+}
+
+# Define commands based upon OS
+case ${OSName} in
+  LIST ) print "Tool ID: ${ToolID} - Group ID: $(print ${ToolID} 2>/dev/null | ${SED} 's/[0-9]//g' 2>/dev/null) - Manual Process - Objective: ${ToolObjective}" ;;
+esac
+
+### Local main function body
+if [[ ${ListMode} -eq 0 ]]; then
+  ReportUsage
+  StatusOutput
+fi
+
+# Clean-up
+
+# Function debugging
+set +x
+}
+
+##### Group/Include/Exclude option handling - DO NOT MODIFY
+##### NOTE: Option ordering is GROUP->INCLUDE->EXCLUDE->FINAL
+GroupIncludeExcludeHandling() {
+# Specific local function declarations
+InvalidEntryErrorStatus=0
+
+### Generate list of all items available for use, for the current OS
+set -A BaseRunList $(functions | ${SED} 's/^function //' 2>/dev/null | ${GREP} ^AMS_* 2>/dev/null | ${SED} 's/(.*//g' 2>/dev/null)
+
+### Group handling section
+if [[ ! -z ${UserGroupInput} ]]; then
+
+  # Get list of all tool groups
+  for CurrentInput in ${BaseRunList[*]}; do
+    GroupTempHolder=$(print ${CurrentInput} 2>/dev/null | ${SED} 's/^AMS_//;s/[0-9]//g;s/_CMDS//' 2>/dev/null)
+
+    if [[ -z $(print ${GroupTempList[*]} 2>/dev/null | ${GREP} "${GroupTempHolder}" 2>/dev/null) ]]; then
+      set -A GroupTempList -- "${GroupTempList[@]}" ${GroupTempHolder}
+    fi
+  done
+
+  # Check user group input for invalid entries
+  for CurrentInput in ${UserGroupInput[*]}; do
+
+    if [[ -z $(print ${GroupTempList[*]} 2>/dev/null | ${GREP} "${CurrentInput}" 2>/dev/null) ]]; then
+      set -A InvalidGroupList -- "${InvalidGroupList[@]}" ${CurrentInput}
+      InvalidEntryErrorStatus=1
+    fi  
+  done
+
+  # Add user items to modified run list
+  if [[ -z ${InvalidGroupList} ]]; then
+    for CurrentBaseRunInput in ${BaseRunList[*]}; do
+      for CurrentGroupInput in ${UserGroupInput[*]}; do
+
+	if [[ ! -z $(print ${CurrentBaseRunInput} 2>/dev/null | ${GREP} "${CurrentGroupInput}" 2>/dev/null) ]]; then  
+	  set -A GroupRunList -- "${GroupRunList[@]}" ${CurrentBaseRunInput}
+	  break
+	fi
+      done
+    done
+  fi
+fi
+
+### Include handling section
+# Check user include input for invalid entries
+if [[ ! -z ${UserIncludeInput} ]]; then
+  for CurrentInput in ${UserIncludeInput[*]}; do
+
+    if [[ -z $(print ${BaseRunList[*]} 2>/dev/null | ${GREP} "${CurrentInput}" 2>/dev/null) ]]; then
+      set -A InvalidIncludeList -- "${InvalidIncludeList[@]}" ${CurrentInput}
+      InvalidEntryErrorStatus=1
+    fi
+  done
+
+  # Add user items to modified run list
+  if [[ -z ${InvalidIncludeList} ]]; then
+    set -A IncludeRunList -- "${IncludeRunList[@]}" $(print ${UserIncludeInput[*]} 2>/dev/null)
+  fi
+fi
+
+### Exclude handling section
+# Check user exclude input for invalid entries
+if [[ ! -z ${UserExcludeInput} ]]; then
+  for CurrentInput in ${UserExcludeInput[*]}; do
+
+    if [[ -z $(print ${BaseRunList[*]} 2>/dev/null | ${GREP} "${CurrentInput}" 2>/dev/null) ]]; then
+      set -A InvalidExcludeList -- "${InvalidExcludeList[@]}" ${CurrentInput}
+      InvalidEntryErrorStatus=1
+    fi
+  done
+
+  # Add user items to modified run list
+  if [[ -z ${InvalidExludeList} ]]; then
+    set -A ExcludeRunList -- "${ExcludeRunList[@]}" $(print ${UserExcludeInput[*]} 2>/dev/null)
+  fi
+fi
+
+### Merge all items to create final run list
+if [[ ${InvalidEntryErrorStatus} -eq 0 ]]; then
+
+  # Combine group and include entries
+  if [[ ! -z ${UserGroupInput} || ! -z ${UserIncludeInput} || ! -z ${UserExcludeInput} ]]; then
+    set -A MergedRunList -- "${MergedRunList[@]}" ${GroupRunList[*]} ${IncludeRunList[*]}
+
+    # Remove duplicated entires from merged run list
+    for CurrentInput in ${MergedRunList[*]}; do
+
+      if [[ -z $(print ${AdjustedRunList[*]} 2>/dev/null | ${GREP} "${CurrentInput}" 2>/dev/null) ]]; then
+	set -A AdjustedTempList -- "${AdjustedTempList[@]}" ${CurrentInput}
+      fi
+    done
+
+
+    # Remove entries found in exclude list
+    for CurrentAdjustedRunInput in ${AdjustedTempList[*]}; do
+      EntryFound=0
+
+      for CurrentExcludeInput in ${ExcludeRunList[*]}; do
+
+	if [[ ! -z $(print ${CurrentAdjustedRunInput} 2>/dev/null | ${GREP} "${CurrentExcludeInput}" 2>/dev/null) ]]; then  
+	  EntryFound=1
+	  break
+	fi
+      done
+
+      if [[ ${EntryFound} -eq 0 ]]; then  
+	set -A FinalRunList -- "${FinalRunList[@]}" ${CurrentAdjustedRunInput}
+      fi
+    done
+
+  else set -A FinalRunList $(print ${BaseRunList[*]})
+  fi
+fi
+
+### Check, format and report any user input issues. Abort check if any are found
+if [[ ${InvalidEntryErrorStatus} -eq 1 ]]; then
+
+  if [[ ! -z ${InvalidGroupList} ]]; then
+    set -A ErrorStatusTemp -- "${ErrorStatusTemp[@]}" "Invalid Group Entries: ${InvalidGroupList[*]},"
+  fi
+  
+  if [[ ! -z ${InvalidIncludeList} ]]; then
+    set -A ErrorStatusTemp -- "${ErrorStatusTemp[@]}" "Invalid Include Entries: ${InvalidIncludeList[*]},"
+  fi
+  
+  if [[ ! -z ${InvalidExcludeList} ]]; then
+    set -A ErrorStatusTemp -- "${ErrorStatusTemp[@]}" "Invalid Exclude Entries: ${InvalidExcludeList[*]}"
+  fi
+
+  # Collate all formatted data, and output report
+  print "Invalid user inputs: $(print ${ErrorStatusTemp[*]} 2>/dev/null | ${SED} 's/,$//' 2>/dev/null)"
+  UsageMessage
+  exit 1
+fi
+}
+
+##### Run Body - DO NOT MODIFY
+### Run log output routine
+LogCheck
+GroupIncludeExcludeHandling
+
+# Run final list of all selected tools
+for MainRunInput in "${FinalRunList[@]}"; do
+  ${MainRunInput} 
+done
+
+##### Show total run time for script
+print "Script running time: ${SECONDS} seconds - Total items run: ${RunCount}"
+
+##### Exit Status
+exit ${ScriptExitStatus}

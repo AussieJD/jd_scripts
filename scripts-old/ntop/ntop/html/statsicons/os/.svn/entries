@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2482"
+   name=""
+   committed-date="2004-05-31T12:42:05.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/html/statsicons/os"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="604"
+   name="irix.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="aa459ce863d577e7fb46a42474350a17"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="amiga.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="b58b27e173007b4590889221a924e4bb"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="2340"
+   name="linux.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2004-02-23T11:17:32.000000Z"
+   checksum="17e06ef71ce7eb4841a7d9cd85fcfcb8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="novell.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="29abe259c74b3335c508f1048d502704"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="2193"
+   name="cisco.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2004-01-01T10:07:20.000000Z"
+   checksum="030abb77aeaf00766ae62063f39ebcf3"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="mac.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="19d93e14ebb311d1cbd358dd20cf8337"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="aix.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="bb9afe2ba9b87699c20dfafbedee1154"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="os2.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="489d2454cbd1282080e01189b0e35520"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="2482"
+   name="sun.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2004-05-31T12:42:05.000000Z"
+   checksum="ec5d59efadf70bf8267c88e7aa0a1f58"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="be.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="f433c87aedb7ab34373beaeabb5fc919"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="hp.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="786a1793e345db77fa305f9aca460427"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="2340"
+   name="bsd.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2004-02-23T11:17:32.000000Z"
+   checksum="ce15fee6a12a34b3a2f8e3df629a3478"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+<entry
+   committed-rev="604"
+   name="windows.gif"
+   text-time="2008-01-04T00:43:03.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="3be96d7ffaa7215c2ef711236c4d59e1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:43:03.000000Z"/>
+</wc-entries>

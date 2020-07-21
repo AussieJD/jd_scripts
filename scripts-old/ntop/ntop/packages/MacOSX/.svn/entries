@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2428"
+   name=""
+   committed-date="2004-03-23T10:23:32.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/packages/MacOSX"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="604"
+   name="License.txt"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="f1be371e24cf79816266dbeea176b947"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:18.000000Z"/>
+<entry
+   committed-rev="1047"
+   name="ltconfig"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2002-07-11T09:03:41.000000Z"
+   checksum="ff656c28005c36044739c6ceaa1deaa8"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:21.000000Z"/>
+<entry
+   committed-rev="2428"
+   name="ntop.package.pmsp"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2004-03-23T10:23:32.000000Z"
+   checksum="5374bcd4e57cb520e571aba8a865b6e6"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:21.000000Z"/>
+<entry
+   committed-rev="604"
+   name="ReadMe.txt"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2002-01-02T08:17:18.000000Z"
+   checksum="213ffb21195e51f80a7c553bb18076ab"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:21.000000Z"/>
+<entry
+   committed-rev="1047"
+   name="ltmain.sh"
+   text-time="2008-01-04T00:41:24.000000Z"
+   committed-date="2002-07-11T09:03:41.000000Z"
+   checksum="5130cf5ff6d081e19011093e34d358e4"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:24.000000Z"/>
+</wc-entries>

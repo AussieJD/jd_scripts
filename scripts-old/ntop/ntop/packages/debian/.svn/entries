@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="3386"
+   name=""
+   committed-date="2007-12-16T10:49:26.648227Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/packages/debian"
+   last-author="torquati"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="3284"
+   name="control"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-09-04T22:23:24.983796Z"
+   checksum="4cfdc1161a748941d967f50def60b7c7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:14.000000Z"/>
+<entry
+   committed-rev="3170"
+   name="README.target"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="f86d30c3cc7e12329a8721c2d6734998"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:14.000000Z"/>
+<entry
+   committed-rev="3247"
+   name="postinst"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-07-16T17:14:39.287246Z"
+   checksum="da1c93fc27ccb8edba8a7d6ad1416062"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:14.000000Z"/>
+<entry
+   committed-rev="3201"
+   name="postrm"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-06-13T15:34:14.000000Z"
+   checksum="cbe22ea7f13c54975a3482fb11f8f6d7"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:14.000000Z"/>
+<entry
+   committed-rev="3170"
+   name="preinst"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="54143f024b5dde77d847e7373a2ac37b"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:14.000000Z"/>
+<entry
+   committed-rev="3217"
+   name="prerm"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-07-11T07:08:41.000000Z"
+   checksum="bf852395ff75731b551352e83d37b777"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3386"
+   name="changelog"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-12-16T10:49:26.648227Z"
+   checksum="1b8009a45414e0681a5f9e4269afdd4e"
+   last-author="torquati"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3170"
+   name="docs"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="a165b0c48efd38c3c2725a282922c6f1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3284"
+   name="rules"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-09-04T22:23:24.983796Z"
+   checksum="4766a515a481f32efd1afe1a377a1302"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3386"
+   name="substvars"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-12-16T10:49:26.648227Z"
+   checksum="670170f1b8c17b2d672400eec5d817f9"
+   last-author="torquati"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3170"
+   name="README"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="add2d1142497ac44d3c0ec13c54af3a1"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3170"
+   name="dirs"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="04375893cfb5e7959846378a0c4b2e6a"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3386"
+   name="files"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-12-16T10:49:26.648227Z"
+   checksum="e09af0fee504410b69b90a3b981ad19e"
+   last-author="torquati"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3170"
+   name="conffiles"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="d41d8cd98f00b204e9800998ecf8427e"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:15.000000Z"/>
+<entry
+   committed-rev="3170"
+   name="COPYRIGHT"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="94d55d512a9ba36caa9b7df079bae19f"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+<entry
+   name="etc"
+   kind="dir"/>
+<entry
+   committed-rev="3170"
+   name="README.Debian"
+   text-time="2008-01-04T00:41:16.000000Z"
+   committed-date="2007-05-14T21:26:17.000000Z"
+   checksum="62929ee2fdc3d139f6a68254e2829eed"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:41:16.000000Z"/>
+</wc-entries>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2622"
+   name=""
+   committed-date="2004-12-03T07:59:28.000000Z"
+   url="https://svn.ntop.org/svn/ntop/trunk/ntop/utils/rrd-alarm"
+   last-author="deri"
+   kind="dir"
+   uuid="a02cd0c1-8e76-42e1-a119-56f9641475e2"
+   repos="https://svn.ntop.org/svn/ntop"
+   revision="3393"/>
+<entry
+   committed-rev="2622"
+   name="rrd_alarm.c"
+   text-time="2008-01-04T00:44:12.000000Z"
+   committed-date="2004-12-03T07:59:28.000000Z"
+   checksum="c68cad8cf9fe98eb93535c5db3466caf"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:12.000000Z"/>
+<entry
+   name="conf"
+   kind="dir"/>
+<entry
+   name="doc"
+   kind="dir"/>
+<entry
+   committed-rev="2622"
+   name="Makefile"
+   text-time="2008-01-04T00:44:12.000000Z"
+   committed-date="2004-12-03T07:59:28.000000Z"
+   checksum="22b55df0aebff4e5e2d868cda878d20c"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:12.000000Z"/>
+<entry
+   committed-rev="2622"
+   name="README"
+   text-time="2008-01-04T00:44:12.000000Z"
+   committed-date="2004-12-03T07:59:28.000000Z"
+   checksum="216c07f5ac2d402c88ba87de95ff1f23"
+   last-author="deri"
+   kind="file"
+   prop-time="2008-01-04T00:44:12.000000Z"/>
+</wc-entries>

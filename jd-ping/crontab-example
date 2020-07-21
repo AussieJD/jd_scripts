@@ -1,0 +1,6 @@
+*/2 * * * * /Volumes/data/Users/jon/scripts/jd-ping/graph.sh
+*/1 * * * * /Volumes/data/Users/jon/scripts/jd-ping/update.sh
+*/2 * * * * /Volumes/data/Users/jon/scripts/jd-ping/graph2.sh
+*/1 * * * * /Volumes/data/Users/jon/scripts/jd-ping/update2.sh
+*/2 * * * * /Volumes/data/Users/jon/scripts/jd-ping/graph3.sh
+*/1 * * * * /Volumes/data/Users/jon/scripts/jd-ping/update3.sh

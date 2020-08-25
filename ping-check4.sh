@@ -2,7 +2,7 @@
 #
 # /Users/jon/OneDrive/1. JD's Onedrive Files/01_JD_Docs/_Computer-specific/_scripts master
 
-##clear
+clear
 
 #echo $LINES_TO_SHOW lines...
 [ ! "$1" ] && echo "usage: $0 <lines to show> " && exit 0
@@ -18,6 +18,11 @@ LOGFILE_FOLDER_ONLINE=$DIR/_data
 BAR=bar1.sh
 BARLENGTH=1			# 1=one to one, 2 = divide by 2, 3=divide by 3 .. etc..
 BAR_ZOOM_IN=5			# multiply "small" results to get better graphs
+lag=20				# looptime
+lag_1min=$(( "60" / lag ))
+lag_5min=$(( "300" / lag ))
+lag_10min=$(( "600" / lag ))
+lag_30min=$(( "1800" / lag ))
 #
 NAME1="Router"; IP1=192.168.1.254; ZOOM1=5
 NAME2="AIMESH"; IP2=192.168.1.193; ZOOM2=5
@@ -34,9 +39,9 @@ NAME4="Google"; IP4=8.8.8.8; ZOOM4=1
 
 MAXAGE=$(bc <<< '30*24*60*60') # seconds in 30 days
 # file age in seconds = current_time - file_modification_time.
-FILEAGE=$(( $(date +%s) - $(stat -f "%m" "$LOGFILE_TRANSFER_KEY")))
-#echo Max="$MAXAGE"
-#echo FILEAGE="$FILEAGE"
+#FILEAGE=$(( $(date +%s) - $(stat -f "%m" "$LOGFILE_TRANSFER_KEY")))
+FILEAGE=$(( $(date +%s) - $(stat --format=%Z "$LOGFILE_TRANSFER_KEY")))
+printf "MaxAGE="$MAXAGE" FileAGE="$FILEAGE" \n"
 if [ "$FILEAGE" -lt "$MAXAGE" ] 
  then
 	echo "... leaving logs in local folder"
@@ -60,7 +65,7 @@ while true
 	do
 ##1		echo "$count1" $i
 		myping=$(ping -t 2 -c 1 "$i" | grep -E '(icmp_seq)'| awk -F"=" '{print $4}'|cut -d" " -f1 |cut -d. -f1 | bc)
-		#myping=$(ping -t 2 -c 1 "$i" | grep -E '(icmp_seq)'| awk -F"=" '{print $4}'|cut -d" " -f1 |cut -d. -f1 | bc)
+		#myping=$(ping -t 2 -c 1 "${i}_IP" | grep -E '(icmp_seq)'| awk -F"=" '{print $4}'|cut -d" " -f1 |cut -d. -f1 | bc)
 ##2		echo  myping=$myping
 		if [ "$myping" ] 
 		 then
@@ -97,11 +102,33 @@ while true
 
 	goog_total_records=$( grep -vc "xxx" < "$LOGFILE_FOLDER_LOCAL/${IP4}.log" )
 	goog_total_sum=$( sum=0;for i in $(cat "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_1min=$( sum=0;for i in $(tail -"$lag_1min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_5min=$( sum=0;for i in $(tail -"$lag_5min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_10min=$( sum=0;for i in $(tail -"$lag_10min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_30min=$( sum=0;for i in $(tail -"$lag_30min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
 	goog_average=$(( goog_total_sum / goog_total_records ))
+	goog_average_1min=$(( goog_total_sum_1min / lag_1min ))
+	goog_average_5min=$(( goog_total_sum_5min / lag_5min ))
+	goog_average_10min=$(( goog_total_sum_10min / lag_10min ))
+	goog_average_30min=$(( goog_total_sum_30min / lag_30min ))
 	[ -f "$BASE2/$BAR" ]   && goog_av_bar=$($BASE2/$BAR "$goog_average" "$BARLENGTH")
 	goog_av_bar=$( echo "${goog_av_bar}" | sed 's/|/>/g' )
 
 # print all
+	clear
+#	
+	echo ""
+	echo " ============ Now     ================================================================"
+	echo ""
+	for j in "$IP1" "$IP2" "$IP3" "$IP4" ;
+	do
+		tail -1 "$LOGFILE_FOLDER_LOCAL"/"$j".log
+	done
+	echo ""
+	echo " ============ Summary ================================================================"
+	echo ""
+
+#
 	printf "%-53s %-40s < [ average: %-3s ms] \n" "$NAME1 ---" "$router_av_bar" "$router_average"
 	tail -"$LINES_TO_SHOW" "$LOGFILE_FOLDER_LOCAL"/"${IP1}".log
 	printf "%-53s %-40s \n" "$NAME1 ---" "$router_av_bar" 
@@ -117,12 +144,12 @@ while true
 	printf "%-53s %-40s \n" "$NAME3 ---" "$internode_av_bar" 
 	echo
 	
-	printf "%-53s %-40s < [ average: %-3s ms] \n" "$NAME4 ---" "$goog_av_bar" "$goog_average"
+	printf "%-53s %-40s < [ average (ms): %-3s | %-4s | %-4s | %-4s | %-4s ] \n" "$NAME4 ---" "$goog_av_bar" "$goog_average_1min" "$goog_average_5min" "$goog_average_10min" "$goog_average_30min" "$goog_average"
 	tail -"$LINES_TO_SHOW" "$LOGFILE_FOLDER_LOCAL"/"${IP4}".log
 	printf "%-53s %-40s \n" " ---" "$goog_av_bar" 
 
-	sleep 10
-	clear
+	sleep "$lag"
+	
 done
 
 

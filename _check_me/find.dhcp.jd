@@ -1,0 +1,6 @@
+# ping all DHCP addresses to see who is on 
+#
+for i in `ypcat hosts | grep 129.158.93 | grep dhcp | sort | awk '{print $1}'`
+do
+ping $i 1
+done

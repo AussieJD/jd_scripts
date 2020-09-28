@@ -1,0 +1,25 @@
+# script to change the .XXX extension of files in a directory
+#
+# ..will ask for .XXX to look for and XXX to change to..!!!
+#
+# .. expected use for graphics.
+#
+echo
+echo " script to change the .XXX extension of files in a directory"
+echo " Enter to start script... <ctrl+c> to end "
+read
+echo " Enter .XXX extension ie.. JPG (no *dot* )to look for "
+read EXT
+echo old xtension is  - ${EXT}
+echo " Enter .XXX extension ie.. jpg to change to "
+read EXTNEW
+echo new xtension is  - ${EXTNEW}
+LIST=`ls *.${EXT}`
+#echo $LIST
+for i in $LIST 
+do
+echo item $i
+echo "$i" | awk -F. '{ print $2 }'
+j=`echo "$i" | awk -F. '{ print $1 }'`
+mv $i $j.${EXTNEW}
+done

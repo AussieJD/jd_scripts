@@ -1,0 +1,4 @@
+for bruce in `cat /home/staff/jon/loanbruce.list | awk -F, '{ print $1 }'`
+do
+	name $bruce | grep Aus
+done

@@ -1,0 +1,3 @@
+echo " Enter name (or part of name for Aus) "
+read NAME
+name $NAME | grep Aus

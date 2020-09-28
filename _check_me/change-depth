@@ -1,0 +1,15 @@
+# script to change the .JPG extension to .jpg
+#
+#find . -depth | grep .JPG > /tmp/list.out
+#for oldname in `cat /tmp/list.out`
+# do                                                          
+#        echo oldname=$oldname                                      
+#	length=`echo $oldname | wc -m`
+#	length2=`expr $length  - 3`
+#	echo $length
+#	echo $length2
+#        newname="`echo ${oldname} | awk -F"JP" '{ print $2 }'`.jpg"
+#        echo newname=$newname                                
+#	mv $oldname $newname
+#sleep 3
+# done

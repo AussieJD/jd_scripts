@@ -1,0 +1,7 @@
+# command to list all folders in current directory
+COUNT=1
+ls -l | grep drw | awk '{print $9}' > /tmp/dirs2.log.$COUNT
+for l in /tmp/dirs2.log.$COUNT
+do
+cd $l 
+

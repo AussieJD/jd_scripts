@@ -1,0 +1,4 @@
+#!/bin/ksh
+#
+title=$*
+echo $title

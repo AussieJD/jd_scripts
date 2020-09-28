@@ -1,0 +1,8 @@
+clear
+echo ""
+echo Logging into williams console. Please log-out ASAP.
+echo " ... (if screen appears to freeze, hit ENTER )"
+echo ""
+echo ""
+echo ""
+telnet saconsole 5010

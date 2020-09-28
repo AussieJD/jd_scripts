@@ -1,0 +1,10 @@
+# script to ping all entries for the demonet in williams:/etc/hosts
+#
+echo "..must be on williams to run this script"
+LIST=`more /etc/hosts | grep 192.9.251 | grep -v "#192" | awk '{print $1 }`
+#LIST=`more /etc/hosts | grep 192.9.251 | grep -v "#192" | awk '{print $1, $2}`
+#echo $LIST is the list
+echo $LIST
+#for i in `more /etc/hosts | grep 192.9.251 | grep -v "#192" | awk '{print $1}'`
+#do ping $i
+#done

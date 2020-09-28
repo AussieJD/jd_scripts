@@ -1,0 +1,4 @@
+xhost +
+rlogin williams
+dtterm
+exit

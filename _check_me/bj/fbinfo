@@ -1,0 +1,285 @@
+#!/bin/ksh
+
+VERSION=1.2
+DATE=11-NOV-96
+
+##	@(#)fbinfo	1.2
+##	Written by Dave Tong, SunSoft, March 1996
+##
+##	V1.2	96/11/11
+##	Differentiates between 67Mz and 75MHz Creator 3D
+##	Recognises cg8 (or RasterFlex) and SouthLand's MGX
+##	
+##	V1.1	96/05/09
+##	Recognises bw2, cg3, cg6, cg12, cg14, gt, leo, ffb (Creator and Creator 3D)
+##	Reports current resolution and other useful info.
+##	
+##	Please send feedback to fbinfo@skaro.eng.sun.com
+##
+##	Download the latest version of this program from
+##		http://sunsolve.uk/FAQ/fbinfo
+##	or	http://c3-a.snvl1.sfba.home.com/fbinfo
+
+##	KNOWN BUGS:
+##
+##	TZX:	It's not possible to distinguish a TZX from a ZX,
+##			as prtconf reports the model incorrectly
+##	GX:		Certain early boards don't report the rev number. 
+##
+##	Also the screen resolution reported is that set at boot time; this is
+##	not necessarily the current resolution in the case of some devices.
+
+#	Temporary files
+
+PRTCONF="/tmp/prtconf.$$"
+THISFB="/tmp/janus.$$"
+
+#	Need to get at arch, prtconf/devinfo etc.
+
+PATH=`echo $PATH`:/usr/kvm:/usr/bin:/usr/sbin:/usr/etc
+
+FBLIST=""
+
+##
+##	get_fb_info
+##
+##	Scan the file for the next frame buffer.
+##	Extract relevent information.
+##
+##	SBUS		SBus slot (or upa port) that the FB occupies
+##	RESOLUTION	WIDTHxHEIGHT
+##	FAMILY		Card family name, eg cgsix
+##	TYPE		Specific card, eg TGX Plus
+##
+##	Other info:
+##	REV			Chip Revision for cgsix series.
+##	MEMORY		Amount of video memory for GX, SX, TCX
+##	WIDTH		Resolution Width (pixels)
+##	HEIGHT		Resolution Height (pixels)
+##
+
+get_fb_info() {
+
+# Some cards prefix family name with SUNW,
+
+	FAMILY=`grep name $THISFB | head -1 | sed -e "s/\' *$//g" -e "s/.*\'[A-Z,]*//g"`
+	let SBUS="16#`grep reg $THISFB | head -1 | sed -e 's/.*: *//g' -e 's/\..*//g'`"
+	let WIDTH="16#`grep 'width' $THISFB | grep -v blit | head -1 | sed 's/.*: *//g'`"
+	let HEIGHT="16#`grep 'height' $THISFB | head -1 | sed 's/.*: *//g'`"
+
+	RESOLUTION="$WIDTH"x"$HEIGHT"
+	MEMORY="Undetermined"
+
+	case $FAMILY in
+		bwtwo)		TYPE="Monochrome"	;;
+		cgthree)	TYPE="CG3"			;;
+		cgeight)	TYPE="CG8/RasterOps"			;;
+		cgtwelve)	TYPE=GS				;;
+		gt)			TYPE=GT				;;
+
+		mgx)
+			case `grep fb_size: $THISFB | head -1` in
+				*00400000)	MEMORY="4M" ;;
+				*)		MEMORY="Undetermined" ;;
+			esac
+			let SBUS="16#`grep slot $THISFB | head -1 | sed -e 's/.*: *//g' -e 's/\..*//g'`"
+			TYPE="SouthLand Media MGX with $MEMORY memory"
+			;;
+
+# GX family. Chip Rev 11 indicates TGX; earlier indicates GX.
+# Some early machines (SS1, SS1+) don't report chip rev
+# so I assume it's a GX (Who'd put a TGX in a SS1?)
+# 4M denotes a (T)GX+
+# 2M denotes a Classic/LX with onboard VSIMM.
+
+		cgsix)
+			let REV="16#`grep chiprev $THISFB | head -1 | sed 's/.*: *0*//g'`"
+			case $REV in 
+				0)		TYPE="GX (assumed)" ;;
+				[1-4])	TYPE="Double width GX" ;;
+				[5-9])	TYPE="GX" ;;
+				11)     TYPE="TGX" ;;
+
+# Never seen rev 10 before, or anything later than rev11
+
+				*)		TYPE="Unknown TGX" ;;
+			esac
+
+			let MEMORY="16#`grep vmsize $THISFB | head -1 | sed 's/.*: *0*//g'`"
+			case $MEMORY in
+				2)      TYPE="$TYPE with 1M VSIMM" ;;
+				4)      TYPE="$TYPE Plus" ;;
+				*) ;;
+			esac
+			;;
+
+# SX. Note:	Resolution info for cgfourteen1 MAY BE INCORRECT
+#			due to a possible bug in prtconf
+
+		cgfourteen)
+			case `grep reg: $THISFB | head -1` in
+				*.00400000)	MEMORY="4M" ;;
+				*.00800000)	MEMORY="8M" ;;
+				*)		MEMORY="Undetermined" ;;
+			esac
+			TYPE="SX with $MEMORY VSIMM"
+			;;
+
+# ZX and Turbo ZX alias Leo.
+# prtconf SHOULD report TZX as model:  'SUNW,501-2503' but doesn't seem to.
+
+
+		leo)
+			case `grep model $THISFB | head -1` in
+			    *501-1845*)	TYPE=ZX		;;
+			    *501-2503*)	TYPE=TZX	;;
+			    *)			TYPE="Unknown ZX"		;;
+			esac
+			;;
+
+# TCX, available in SS5 as S24 (24 bit version)
+# or in SS4 as 8 bit version.
+
+		tcx)
+			if [ `head -16 $THISFB | grep tcx-8-bit` ]
+			then
+				TYPE="TCX (8 bit)"
+				let MEMORY="16#`grep vram $THISFB | head -1 | sed 's/.*: *0*//g'`"
+			else
+				TYPE="TCX (S24)"
+			fi
+			;;
+
+# FFB - the new kid in town, and the meanest.
+
+		ffb)
+			case `grep board_type $THISFB | head -1` in
+				*0008)	TYPE="FFB 67MHz Single buffered"	;;
+				*000b)	TYPE="FFB 67MHz Double buffered"	;;
+				*001b)	TYPE="FFB 75MHz Double buffered"	;;
+				*)		TYPE="FFB (type not recognised)"	;;
+			esac
+			SBUS=`grep upa-portid $THISFB | head -1 | sed -e "s/.*00//g"`
+			;;
+
+# God only knows what this is!
+
+		*)
+			TYPE=$FAMILY
+			echo
+			echo "This version of fbinfo does not recognise \"$FAMILY\"."
+			echo "A newer version may be available from http://sunsolve.uk/FAQ/fbinfo"
+			echo "or http://c3-a.snvl1.sfba.home.com/"
+			echo
+			;;
+	esac
+
+	echo "$FAMILY@$SBUS	is $TYPE	$RESOLUTION"
+
+	if [ "$FBLIST" = "" ]
+	then
+		FBLIST="$FAMILY@$SBUS"
+	else
+		FBLIST="$FBLIST $FAMILY@$SBUS"
+	fi
+}
+
+##	look_for_fbs
+##
+##	scan the prtconf/devinfo output and look for frame buffers.
+##	A frame buffer entry contains the keyword "display".
+##	The complete entry starts at the word "Node"
+##	and ends at the next blank line.
+
+look_for_fbs() {
+	LENGTH=`cat $PRTCONF | wc -l`
+
+# Get the line number for each line containing the DISPLAY keyword
+
+	for i in `grep -n display $PRTCONF | sed "s/:.*//"`
+	do
+
+# Find the last NODE prior to that DISPLAY
+
+		STARTLINE=`head -$i $PRTCONF | grep -n Node | tail -1`
+		let STARTLINENO="`echo $STARTLINE | sed 's/:.*//g'`"
+		let REST="$LENGTH-$STARTLINENO"
+
+# Create a new file, starting at this Node.
+# By using head -1 we can ignore any crud that comes later
+
+		tail -$REST $PRTCONF > $THISFB
+
+		get_fb_info
+#		rm $THISFB
+	done
+}
+
+##	Here's the main loop
+
+main() {
+##	If invoked with an argument then assume that refers
+##	to the output of prtconf -vp from a machine with
+##	an unknown frame buffer.
+
+	if [ -f "$1" ] 
+	then
+		CMD="cat $1"
+		echo "Reading configuration file $1"
+	elif [ `uname -r | sed "s/\..*//g"` = "4" ]
+	then
+		if [ `arch` != "sun4" ]
+		then
+			echo "Sorry. This only works on SPARC."
+			exit
+		fi
+	
+		CMD="/usr/etc/devinfo -vp"
+	else
+		if [ -n "$1" ] 
+		then
+			case $1 in
+			-v)
+				echo "$0 Version $VERSION dated $DATE"
+				echo "Written and maintained by david.tong@eng.sun.com"
+				echo "Copyright 1996 Sun Microsystems Inc."
+				echo
+				echo "Download latest version from http://sunsolve.uk/FAQ/fbinfo "
+				echo "or http://c3-a.snvl1.sfba.home.com/fbinfo" 
+				echo
+					;;
+			*)
+				echo "usage: $0 [-v] [filename]"
+				exit 
+					;;
+			esac
+		fi
+
+		if [ `uname -p` != "sparc" ]
+		then
+			echo "Sorry. This only works on SPARC."
+			exit
+		fi
+
+		CMD="/usr/sbin/prtconf -vp"
+	fi
+
+	$CMD > $PRTCONF
+	look_for_fbs
+	rm $PRTCONF
+
+	if [ "$FBLIST" = "" ]
+	then
+		echo "No frame buffers found."
+	fi
+}
+
+##	Check to make sure we're running ksh and not sh.
+
+((i=1))
+if [ $i ]
+then
+	main $*
+else 
+	/bin/ksh $0 $*
+fi

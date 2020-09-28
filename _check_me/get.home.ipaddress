@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+# Query modems and get JD's home connection IP address
+#

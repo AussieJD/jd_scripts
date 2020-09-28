@@ -1,0 +1,6 @@
+#export TERM=vt220
+export TERM=vt100
+MAILBOX=/net/adelaide/var/mail/brodie
+#MAILBOX=/home/staff/brodie/mail/private  
+echo Executing 'elm' with $MAILBOX mailbox...
+local/bin/elm -f $MAILBOX

@@ -1,0 +1,71 @@
+#!/bin/ksh
+#
+## Global Variables
+#
+COUNT1=0
+TIME1=10
+SYSNAME=`uname -a | awk '{ print $2 }'`
+DISKLIST=$HOME/bin/rate.of.writing-disks.2.check
+last=1
+current=1
+diff2=0
+#
+## Start script
+#
+echo " Seconds between checks \t(10) .>\c"
+read TIME2
+if [ "$TIME2" = "" ]
+then
+        SAMPLETIME=$TIME1
+else
+        SAMPLETIME=$TIME2
+fi
+while true
+do
+	clear;echo "\n JD's Disk Activity Monitor      v1.0\tJun 2001" 
+	echo "======================================================================="
+	echo " -- monitoring $SYSNAME\c "
+	echo " every $SAMPLETIME seconds \n"
+#	VAR3=`df -kl | grep -v Filesystem | grep $VAR1 | awk '{ print $4 }'`
+	echo "Available \t last\tcurrent\t change\t rate"
+	echo "Space (Mb)\t (Mb)\t  (Mb)\t  (Mb)\t (kb/s)  "
+	echo "=======\t\t=======\t=======\t=======\t======="
+ for i in `cat $DISKLIST | grep -v "#" | awk '{ print $1 }'`
+ do
+	NAME=`cat $DISKLIST | grep $i | awk '{ print $2 }'`
+	current=`df -kl | grep $i | awk '{ print $4 }'`
+ if [ "$current" -gt "$last" ]
+  then
+	diff=$(($current-$last))
+	space=growing
+  else
+	diff=$(($last-$current))
+	space=shrinking
+ fi
+ if [ "$COUNT1" = "0" ]
+  then
+	diff=0
+ fi
+#
+#	changerate = the total transferred / sample time 
+	CHANGERATE=$(($diff/$SAMPLETIME))
+ if [ "$COUNT1" = "0" ]
+  then
+	changerate2=0
+  else
+	changerate2=$(($diff2/($SAMPLETIME*$COUNT1)))
+ fi
+	echo "$(($current/1000))\t\t $(($last/1000))\t $(($current/1000))\t $(($diff/1000))\t  $CHANGERATE"
+ done
+	echo "\n ..elapsed time = $(($COUNT1*$SAMPLETIME)), total change = $(($diff2/1000)) kb"
+	echo " ..average rate of change = $(($changerate2/1000)) kb/s "
+	echo " ..amount of free space is $space "
+	echo "\n" 
+	echo "======================================================================="
+	last=$current
+	diff2=$(($diff2+$diff))
+	sleep ${SAMPLETIME}
+	COUNT1=$(($COUNT1+1))
+done
+echo the end
+

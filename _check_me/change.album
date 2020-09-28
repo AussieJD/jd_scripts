@@ -1,0 +1,10 @@
+#
+#
+LIST=`ls *.JPG`
+for i in $LIST 
+do
+echo item $i
+echo "$i" | awk -F. '{ print $2 }'
+j=`echo "$i" | awk -F. '{ print $1 }'`
+mv $i $j.jpg
+done

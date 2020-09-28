@@ -1,0 +1,12 @@
+#!/bin/ksh
+#
+# starts vncviewer with options...
+#
+#
+clear
+echo "Choose session to start "
+echo " -- jdpci:0 -- "
+echo " -- 129.158.93.77:0 -- "
+echo " ....> \c"
+read choice
+/export/vnc/*5/vncviewer $choice

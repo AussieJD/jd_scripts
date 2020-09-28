@@ -1,0 +1,80 @@
+#!/bin/sh -f
+#
+# update:	21/09/2000 GEM - changed ps to list only user owned processes
+#
+
+if [ -z "$inshelltool" -a -x $OPENWINHOME/bin/shelltool ]; then
+	inshelltool=yes export inshelltool
+	exec $OPENWINHOME/bin/shelltool -Wl "Killing Window" \
+		-Wh 20 -Ww 65 -Wp 300 200 $0 $*
+fi
+
+PROG=$1 
+USER=`whoami`
+
+bibi() {
+	echo "\nHit <RETURN> to exit\c"
+	read ans
+	exit
+}
+
+cat << !
+This script will kill ALL instances of $PROG running
+on your workstation.  
+
+!
+echo "Do you wish to continue (Y/n) ? \c"
+read ans
+
+if [ "$ans" = "n" -o "$ans" = "N" ]; then
+	bibi
+fi
+
+echo 
+
+#PID=`ps -e | awk '/'$PROG'/ { print $1 }'`
+PIDS=`ps -u $USER | awk '/'$PROG'/ { print $1 }'`
+if [ -z "$PIDS" ]; then
+	echo "No instances of $PROG found running on your workstation"
+	bibi
+fi
+
+echo "About to try a normal kill on these processes:\n$PIDS".
+echo "Are you sure (Y/n) ? \c"
+read ans
+if [ "$ans" = "n" -o "$ans" = "N" ]; then
+	bibi
+fi
+
+echo
+
+set -x
+kill -15 $PIDS
+set +x
+sleep 5
+
+#PIDS=`ps -e | awk '/'$PROG'/ { print $1 }'`
+PIDS=`ps -u $USER | awk '/'$PROG'/ { print $1 }'`
+if [ -z "$PIDS" ]; then
+	bibi
+fi
+
+echo
+echo "Some processes didn't die."
+echo "About to try a MEGA-kill on these processes:\n$PIDS".
+echo "Are you sure (Y/n) ? \c"
+read ans
+if [ "$ans" = "n" -o "$ans" = "N" ]; then
+	bibi
+fi
+
+echo
+
+set -x
+kill -9 $PIDS
+set +x
+
+
+echo "Done."
+
+bibi

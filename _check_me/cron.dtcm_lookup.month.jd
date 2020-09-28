@@ -1,0 +1,6 @@
+#!/bin/ksh
+#
+#	usage	mail a months birthdays to me at the start of every week
+#
+/usr/dt/bin/dtcm_lookup -v month | mailx -s "JDs Birthdays etc..." jd51229@adelaide
+

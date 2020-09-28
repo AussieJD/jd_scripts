@@ -1,0 +1,43 @@
+# JD's monthly backups 
+# - designed to be run from CRON
+#
+# Revised:
+#
+#	07-Oct-98 jd			# created from cron.backups.weekly
+#
+#
+# Notes:
+#	suggested loop to use one sub-script only
+#	  see ./bj/reading.sh
+#
+#
+#	Backed up by this script..
+#	one 	- $HOME/jdnet
+#
+############################################################################
+# global properties
+#
+DATE1=`date +%m-%d-%h-%a-%y`
+BACKUPSTORE=/u1/backups/${DATE1}	# place to store backups 
+DATE=`date +%d.%m.%y`			# a date desriptor for filenames 06.08.98 
+MONTH=`date +%m`                	# month tag for front of file for sorting 08
+echo " Started Backup at `date`\n"
+mkdir ${BACKUPSTORE}
+#
+#
+############################################################################
+# one ################
+
+BACKUPNAME=mail.old				# file name base
+BACKUPDIR=/home/staff/jon/Mail/old		# directory to be backed up
+#
+# tar up the specified backup directory and then compress
+
+tar cvfhr $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar $BACKUPDIR
+compress $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar
+
+
+############################################################################
+chmod -R 775 /u1/backups/*
+echo "\n Finished Backup at `date`"
+#The End.

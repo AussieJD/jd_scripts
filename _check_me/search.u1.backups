@@ -1,0 +1,16 @@
+echo 'enter search string .... ' 
+read SEARCH 
+cd /u1/backups
+for i in * 
+  do 
+  cd $i 
+  pwd
+  echo
+    for j in *
+      do
+      echo ..scanning `pwd`'/'$j
+      zcat $j | tar tvf - | grep $SEARCH | more 
+    done
+  echo
+  cd .. 
+done

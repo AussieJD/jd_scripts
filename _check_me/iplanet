@@ -1,0 +1,10 @@
+#!/bin/ksh
+#
+display1=`uname -n`
+display2=`echo $DISPLAY`
+display=$display1$display2
+#
+#dtterm -display $display -geometry 90x25+10+2 -background lightgreen -title "eye ($display)" -e "demonet eye" &
+#dtterm -display $display -geometry 90x25+10+480 -background lightblue -title "planet ($display)" -e "demonet planet" &
+demonet eye lightgreen 90x25+10+2
+demonet planet lightblue 90x25+10+480

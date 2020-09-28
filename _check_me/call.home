@@ -1,0 +1,34 @@
+#!/bin/ksh
+#
+#  Usage:	call.home
+#
+#  By:		jon.driscoll	26-April-2000
+#
+#  Function:	Examine the modem pool and find JD's home machine's logged in IP address
+#		and then give the option to telnet to it!
+#
+#######################
+#
+clear
+echo "\n"
+echo "... probing modem-pool for JD's home machine (coyote) ....."
+echo "\n... this may take 10-15 seconds!\n"
+IDENTIFIER=JD
+grep $IDENTIFIER /net/williams/export/WWW/sunsa/docs/modems.html > /dev/null 2>&1
+  if [ !${?} -eq 0 ]
+           then echo " JD's home machine is NOT dialed in! Oops."
+		echo "  (the modem sometimes drops out! Bummer!) "
+		echo " I usually dial in in the morning and evening, \n  so it'll probobly be back up soon! "
+            	echo "\n ..exiting "; exit 0
+  fi	
+
+#IPADDRESS=`modems | grep $IDENTIFIER | awk '{ print $2 }'`
+IPADDRESS=`cat /net/williams/export/WWW/sunsa/docs/modems.html | grep $IDENTIFIER |(awk -F" " ' { print $6 }')|(awk -F":" ' { print $0 }')`
+echo "...found JD's machine logged in at $IPADDRESS"
+echo "Do you want to telnet to it? (y/n)...[n]> \c"
+read ANSWER1
+  if [ "$ANSWER1" = "y" ];then echo " ..telnet'ing"
+        telnet $IPADDRESS
+    else echo "\n ..goodbye! "; exit 0
+  fi
+echo "...thanks for visiting JD's home machine. Goodbye."

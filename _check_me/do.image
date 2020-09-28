@@ -1,0 +1,5 @@
+if [ -f /home/staff/jon/bin/image.stuff ] ;then 
+cat /home/staff/jon/bin/image.stuff
+elif [ -f /export/home/jon/bin/image.stuff ];then 
+cat /export/home/jon/bin/image.stuff 
+fi

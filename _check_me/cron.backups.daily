@@ -1,0 +1,60 @@
+# This script is designed to be run from cron DAILY.
+# FROM JON CRONTABS *not root*
+# It includes anything that needs to be run every day
+# in a maintenance style.
+#
+# Created by :	jon driscoll 07-Jul-1998
+#
+# Changes:	-
+#
+#
+# Contents:
+#		- copy $HOME/.netscape/bookmarks.html
+#		  to /sunsa/export/WWW/sunsa/docs/se/jon for browsing
+#
+#
+#
+#
+#
+# Requirements:	
+#		- $HOME = /home/staff/jd51229
+#			- $HOME/jdnet = sunsa:/export/WWW/sunsa/docs/se/jon
+#
+#
+#
+#
+#
+#
+#############################################################
+#############################################################
+#
+#
+cp $HOME/.netscape/bookmarks.html /net/sunsa.aus/export/WWW/sunsa/docs/se/jon/jdbookmarks_auto.html
+chmod 775 $HOME/jdnet/jdbookmarks_auto.html
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# The End!
+#
+
+

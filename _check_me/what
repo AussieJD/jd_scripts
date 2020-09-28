@@ -1,0 +1,10 @@
+#!/bin/ksh
+#
+# echo the correct syntax for setting a display variable
+#
+name=`uname -n`
+displ=`echo $DISPLAY`
+echo "export DISPLAY=$name$displ"
+ip=`ypcat hosts | grep $name | head -1 | cut -f1`
+echo "export DISPLAY=$ip$displ"
+

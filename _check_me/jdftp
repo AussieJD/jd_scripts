@@ -1,0 +1,48 @@
+#! /bin/sh
+# ftpfile: get a file ($2) from an ftp site ($1), or interpret a url 
+# to do the same
+PATH=$PATH:/usr/local/bin
+
+progname=`basename $0`
+url=0
+case $# in
+    0) 1>&2 echo "$progname: usage $progname ftpsite file or $progname url"; exit 1;;
+esac
+
+url=`echo $1|sed 's/\(ftp:\/\/\).*/\1/'`
+case $url in
+    "ftp://") isurl=1 ;;
+    "*") 1>&2 echo "$progname: usage $progname ftpsite file"; exit 1;;
+esac
+if [ "$isurl" -gt 0 ]
+then
+    SOURCE=`echo $1|sed 's/ftp:\/\/\([^/]*\)\/.*/\1/'`
+    FILE=`echo $1|sed 's/ftp:\/\/\([^/]*\)\/\(.*\)/\2/'`
+else
+    SOURCE=$1
+    FILE=$2
+fi
+
+case $USER in
+    "") USER='paul' ;;
+esac
+
+
+BFILE=`basename $FILE`
+if [ -f /tmp/$FILE ]
+then
+    op='reget'
+else
+    op='get'
+fi
+
+case $SOURCE in
+    ftp.demon.co.uk) ftpuser='tiny1'; ftppassword='PrinzEugen' ;;
+    *) ftpuser='anonymous'; ftppassword="$USER@" ;;
+esac
+
+ftp -n $SOURCE <<EndFTP
+user $ftpuser $ftppassword
+binary
+$op $FILE /tmp/$BFILE
+EndFTP

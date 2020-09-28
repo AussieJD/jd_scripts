@@ -1,0 +1,6 @@
+# start a clock with a specific timezone
+clock -TZ US/Eastern -geometry 150x80+1100+100 &
+clock -TZ US/Pacific -geometry 150x80+1100+210 &
+clock -TZ Australia/West -geometry 150x80+1100+320 &
+clock -TZ Australia/South -geometry 150x80+1100+430 &
+clock -TZ Australia/NSW -geometry 150x80+1100+540 &

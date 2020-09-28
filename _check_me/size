@@ -1,0 +1,23 @@
+#!/bin/ksh
+#
+#	check size of a file using du -ks
+#	every X seconds
+#
+if [ $# -ne 2 ]
+ then
+        echo "usage: size <what-to-size> <time> (in seconds)"
+        exit 1
+ else
+	FILE=$1
+	TIME=$2
+	COUNT=0
+	while true
+	 do
+		mins=`expr ${COUNT} / 60`
+		echo "$COUNT seconds ($mins)"
+		du -ks $FILE
+		sleep $TIME
+		COUNT=`expr $COUNT + $TIME`
+	
+	 done
+fi

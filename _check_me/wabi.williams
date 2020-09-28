@@ -1,0 +1,3 @@
+echo " Must be on williams as jon ... ENTER to continue, CTRL+C to end"
+read
+/opt/SUNWwabi/bin/wabi

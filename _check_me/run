@@ -1,0 +1,9 @@
+clear
+#ls $HOME/bin | more
+for i in `ls $HOME/bin`
+ do
+	echo "$i :\c"
+	usage=`grep -i usage $HOME/bin/$i`
+	echo "\t$usage"
+done
+echo "type grep.bin to search for a string in /bin"

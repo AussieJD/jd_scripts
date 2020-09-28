@@ -1,0 +1,64 @@
+date			Monday August 10 11:11:52 CST 1998
+date +%d-%h-%Y		10-Aug-1998
+date +%Y-%a-%d-%h.%R	1999-Thu-16-Dec.17:32
+--------------------------------------------------
+date +%a		Mon
+date +%b		Aug
+date +%c		Mon 10 Aug 1998 11:04:45 AM CST
+date +%d		10  - day of month - 2digits
+date +%e		10  - day of month - 1 digit
+date +%f		-
+date +%g		-
+date +%h		Aug
+date +%i		-
+date +%j		222		(day no. in year = day 222 of 365..)
+date +%k		11
+date +%l		11
+date +%m		08
+date +%n		- (adds a carriage return)
+date +%o		-
+date +%p		AM
+date +%q		-
+date +%r		11:15:20 AM
+date +%s		-
+date +%t		- (tab carrier/spacer)
+date +%u		2		???????
+date +%v		-
+date +%w		1		???????
+date +%x		10//08//98
+date +%y		98
+date +%z		-
+---------------------------------------------------------------
+
+date +%A		Monday
+date +%B		August
+date +%C		Monday August 10 11:27:59 CST 1998
+date +%D		08/10/98
+date +%E		-
+date +%F		-
+date +%G		-
+date +%H		11
+date +%I		11
+date +%J		-
+date +%K		-
+date +%L		-
+date +%M		30
+date +%N		-
+date +%O		-
+date +%P		-	
+date +%Q		-
+date +%R		11:30
+date +%S		58  (seconds)
+date +%T		11:31:49
+date +%U		32  	?????
+date +%V		33   	????
+date +%W		32  	??????
+date +%X		11:35:28 AM
+date +%Y		1998
+date +%Z		CST
+
+
+
+date +%d.%M.%y		10.03.98
+
+

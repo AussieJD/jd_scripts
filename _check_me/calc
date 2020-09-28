@@ -1,0 +1,7 @@
+#!/bin/sh
+     #calc: use bc to calculate any legal bc mathematical expression
+     case $2 in
+         "") SCALE=2 ;;
+         *) SCALE=$2 ;;
+     esac
+     (echo scale=$SCALE;echo "$1")|bc

@@ -1,0 +1,8 @@
+for i in `ls *.JPG`
+do
+echo item $i
+echo "$i" | awk -F. '{ print $2 }'
+j=`echo "$i" | awk -F. '{ print $1 }'`
+echo $i would become $j.jpg
+#mv $i $j.jpg
+done

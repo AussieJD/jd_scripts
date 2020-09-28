@@ -1,0 +1,43 @@
+#!/bin/ksh
+#
+# Created       j.driscoll      4-Oct-2001
+#
+# Usage:	this script will display a master menu of all other menu's 
+#		in $HOME. It will identify the other menu's by name...
+#		ie. menu.sh
+#
+## VARIABLES ################
+
+name=$0			# the name of this script
+dir=`pwd`		# the current directory
+basedir=$HOME/bin	# where this script lives
+
+## SCRIPT ###################
+# Clear screen and start menu
+#
+while true
+do
+clear
+echo ""
+echo "\tWelcome to jd-menu. Please choose an option below."
+echo "\t======================================================="
+echo ""
+echo ""
+#
+# List options and read result
+#
+echo "\n\t\t1. rdist syncronisation"
+echo "\n\t\t2. edit menu "
+echo "\n\t\t9. Quit"
+echo "\n\t\tEnter selection [9] : \c"
+read ans2
+if [ "$ans2" = "" ]; then ans=9; else ans=$ans2; fi
+case $ans in
+        1)      clear;cd $HOME/driscoll;./rdist.menu;;
+        2)      cd $basedir;vi $name;cd $dir;;
+        9)      clear;
+                exit 0;;
+        *)      echo "Invalid selection, no action taken, exiting...";;
+esac
+done
+#the enddone

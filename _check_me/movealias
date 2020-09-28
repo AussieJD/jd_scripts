@@ -1,0 +1,14 @@
+#!/bin/ksh
+#
+# script to grab alias entries from a .mailrc file and provide a basic format for import into
+#  Netscape address book!
+#
+## variables
+#
+BASE="/home/staff/jon"
+FILENAME=".mailrc"
+OUTFILE="address-out"
+#
+## cat the file, then use awk to output the required *.ldif file
+#
+cat $BASE/$FILENAME | grep alias | awk '{ print "dn: cn=",$2,",mail=",$3,"\ncn: ",$2,"\nxmozillanickname: ",$2,"\nmail: ",$3,"\nxmozillausehtmlmail: FALSE\nxmozillauseconferenceserver: 0\ngivenname: ",$2,"\n" }' > $BASE/$OUTFILE.ldif

@@ -1,0 +1,18 @@
+#!/bin/ksh
+#
+# start a custom dtterm, an optionally start a shell script within it
+#
+colour=lightgreen
+geom=90x25+10+2
+clear
+echo "\n Telnet to Demonet - \c"
+name=$1
+colour2=$2
+height=$3
+file=$4
+[ $colour2 ] && colour=$colour2
+if [ ! $name ] ;then echo " usage: jdterm {name colour height script}\n";exit 0;fi
+#address=`more $HOME/demonet.hosts | grep $name | awk '{print $1}'`
+#name2=`more $HOME/demonet.hosts | grep $name | awk '{print $2}'`
+#echo " telnet'ing to $name2 ($address)"
+dtterm -geometry 90x$height+10+2 -bd $colour -background $colour -title "$name" -e $file

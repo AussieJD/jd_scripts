@@ -1,0 +1,62 @@
+#!/bin/ksh
+#
+# Created	j.driscoll	6-Jul-2001
+#
+# Usage:	this script will poll the modem annex for a login
+#		by jd (51229) and report the IP address of the connection
+#		options provided to user..
+#		- telnet 
+#		- ftp
+#		- rlogin
+#		- continuous ping
+#
+#
+### variables
+clear
+ID=51229
+#
+### Script
+finger @adl-ann-1 | grep $ID > /dev/null 2>&1
+if [ !${?} -eq 0 ]
+ then echo "
+ JD's machine is not dialled in at the moment, 
+ please try again later.";
+ exit 0
+else
+ ip=129.158.93.`finger @adl-ann-1 |grep jd51229|cut -d"." -f4`
+while true
+do
+#
+# Clear screen and start
+#
+clear
+echo ""
+echo "\tFound login for JD. Please choose an option below."
+echo "\t======================================================="
+echo ""
+echo ""
+#
+# List options and read result
+#
+echo "\n\t\t1. telnet to JD's machine "
+echo "\n\t\t2. rlogin to JD's machine"
+echo "\n\t\t3. ftp to JD's machine"
+echo "\n\t\t4. ping JD's machine - 5 pings only"
+echo "\n\t\t9. Quit"
+echo "\n\t\tEnter selection [9] : \c"
+read ans2
+if [ "$ans2" = "" ]; then ans=9; else ans=$ans2; fi
+case $ans in
+        1)      telnet $ip;;
+	2)	rlogin $ip;;
+        3)      ftp $ip;;
+        4)      ping -s $ip 56 5; echo " Enter to continue \c"
+		read prompt;;
+        9)      clear;
+                exit 0;;
+        *)      echo "Invalid selection, no action taken, exiting...";;
+esac
+done
+
+fi
+#The end!

@@ -1,0 +1,7 @@
+#!/bin/ksh
+
+export SYBASE=/net/williams/export/applic/sybase_lt
+export DSQUERY=ADELAIDE
+
+$SYBASE/bin/isql -w 255 -Usa -P""
+#$SYBASE/bin/isql

@@ -1,0 +1,8 @@
+#Mounted slice	description (no / )
+##########################
+#/dev/dsk/c0t0d0s3 export
+#/dev/dsk/c1t1d0s0 root
+#/dev/dsk/c0t0d0s0 root-new
+#/dev/dsk/c2t5d0s6 install
+#adelaide:/export/home/staff/jon staff
+adelaide:/export/share/User/jd51229 share

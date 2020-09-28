@@ -1,0 +1,18 @@
+#!/bin/ksh
+#
+# Read $HOME/demonet.hosts for keyword and telnet to it through firewall.
+#
+colour=lightgreen
+geom=90x25+10+2
+clear
+echo "\n Telnet to Demonet - \c"
+name=$1
+colour2=$2
+geom2=$3
+[ $colour2 ] && colour=$colour2
+[ $geom2 ] && geom=$geom2
+if [ ! $name ] ;then echo " usage demonet {machinename}\n";exit 0;fi
+address=`more $HOME/demonet.hosts | grep $name | awk '{print $1}'`
+name2=`more $HOME/demonet.hosts | grep $name | awk '{print $2}'`
+echo " telnet'ing to $name2 ($address)"
+dtterm -geometry $geom -bd $colour -background $colour -title "$name2 ($address)" -e telnet $address&

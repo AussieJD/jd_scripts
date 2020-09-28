@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/usr/openwin/bin/xterm -geometry 40x12 -fn 8x13bold -T "Disk Space Usage" \
+	-e /usr/dist/local/exe/usage.pl

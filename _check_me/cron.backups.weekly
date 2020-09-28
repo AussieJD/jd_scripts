@@ -1,0 +1,108 @@
+# JD's daily backups 
+# - designed to be run from CRON
+#
+# Revised:
+#	19-Jun-98 jd 			# incorporated multiple script format
+#
+#	10-Aug-98 jd			# added backup directories by date
+#					  and took away month from start of names
+#					  ie. now mailbak.12.8.98 not 08.mailbak....
+#
+#	07-Oct-98 jd			# removed bi-weekly cron entry - now once a week
+#					# removed $HOME/Mail from weekly - now /old = monthly
+#
+#	15-Nov-98 jd			# added weekly backup of 'crontab -l'
+#
+#
+#
+#
+# Notes:
+#	suggested loop to use one sub-script only
+#	  see ./bj/reading.sh
+#
+#
+#	Backed up by this script..
+#	one 	- $HOME/jdnet
+#	two 	- $HOME/graphics
+#	three 	- $HOME/jon/contacts.jd
+#	four 	- $HOME/jon/modloan.jd
+#	five 	- $HOME/bin
+#
+############################################################################
+# global properties
+#
+DATE1=`date +%m-%d-%h-%a-%y`
+BACKUPSTORE=/u1/backups/${DATE1}	# place to store backups 
+DATE=`date +%d.%m.%y`			# a date desriptor for filenames 06.08.98 
+MONTH=`date +%m`                	# month tag for front of file for sorting 08
+echo " Started Backup at `date`\n"
+mkdir ${BACKUPSTORE}
+#
+############################################################################
+# crontab backups ################
+#
+crontab -l > /home/staff/jon/jon/cronbaks/crontab.jd.${DATE}
+
+#
+############################################################################
+# one ################
+
+BACKUPNAME=jon.jdnet			# file name base
+BACKUPDIR=/home/staff/jon/jdnet		# directory to be backed up
+#
+# tar up the specified backup directory and then compress
+
+tar cvfhr $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar $BACKUPDIR
+compress $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar
+
+############################################################################
+# two ################
+
+BACKUPNAME=jon.graphics			# file name base
+BACKUPDIR=/home/staff/jon/graphics	# directory to be backed up
+#
+# tar up the specified backup directory and then compress
+
+tar cvfhr $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar $BACKUPDIR
+compress $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar
+
+############################################################################
+# three ################
+
+BACKUPNAME=contacts.jd         			#  file name base
+BACKUPDIR=/home/staff/jon/jon/contacts.jd	# directory to be backed up
+#
+# tar up the specified backup directory and then compress
+
+tar cvfhr $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar $BACKUPDIR
+compress $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar
+
+
+############################################################################
+# four ################
+
+BACKUPNAME=modloan.jd         		# place to store backups
+BACKUPDIR=/home/staff/jon/jon/modloan.jd	# directory to be backed up
+#
+# tar up the specified backup directory and then compress
+
+tar cvfhr $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar $BACKUPDIR
+compress $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar
+
+
+############################################################################
+# five ################
+
+BACKUPNAME=jon.bin         		# place to store backups
+BACKUPDIR=/home/staff/jon/bin		# directory to be backed up
+#
+# tar up the specified backup directory and then compress
+
+tar cvfhr $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar $BACKUPDIR
+compress $BACKUPSTORE/${BACKUPNAME}.${DATE}.tar
+
+
+############################################################################
+chmod -R 775 /u1/backups/*
+echo "\n Finished Backup at `date`"
+#The End.

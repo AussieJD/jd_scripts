@@ -1,0 +1,6 @@
+#!/bin/ksh
+# this script starts acroexch FROM WILLIAMS..
+# thus user must be on williams to use!
+echo " this will only work if you are on williams"
+echo " type rw if on peabody as jon"
+/export/opt/A*/bin/acroexch

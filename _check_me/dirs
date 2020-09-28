@@ -1,0 +1,2 @@
+# command to list all folders in current directory
+ls -l | grep drw | awk '{print $9}'

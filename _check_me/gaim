@@ -1,0 +1,13 @@
+#!/usr/bin/ksh
+#
+#
+if [ -f /.homesystem ]
+then
+	echo "Home system..."
+	APPDIR=/usr/local/apps/gaim
+else
+	echo "Work system..."
+	APPDIR=$HOME/james/apps/gaim
+fi
+cd $APPDIR
+./bin/gaim

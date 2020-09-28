@@ -1,0 +1,141 @@
+#!/bin/sh
+#
+# Create an index.html for a directory of photos
+#
+# pjh 13 Mar 00  - create & use index.dat file to order
+# pjh 23 Feb 00  - use javascript to display large pics
+# pjh 19 Jul 99  - updated template
+# pjh 19/12/97
+
+umask 022
+
+title=$*
+date=`date "+%e %B %Y"`
+INDEXMODE=0
+col=1
+count=1
+
+# sub to create a single table cell
+makecell()
+{
+	pic=$1
+	subtitle=$2
+
+	if [ -f ${pic} -o -f big/${pic} ]; then
+  	  [ ! -f big/${pic} ] && /bin/mv -f ${pic} big/${pic}
+  	  [ ! -f ${pic} ] && imscale -scale 0.3 big/${pic} ${pic}
+  
+  	  [ ${col} -eq 1 ] && echo "<TR VALIGN=top>" >> index.html
+  	
+#  	  echo "<TD><A HREF=\"JavaScript:Disp('big/${pic}','${subtitle}',640,480);\"><IMG BORDER=0 SRC=\"${pic}\"></A><BR><B><FONT SIZE=-1>${subtitle}</FONT></B></TD>" >> index.html
+  	  echo "<TD><A HREF=\"JavaScript:Disp('big/${pic}','${subtitle}');\"><IMG BORDER=0 SRC=\"${pic}\"></A><BR><B><FONT SIZE=-1>${subtitle}</FONT></B></TD>" >> index.html
+  
+  	  count=`expr ${count} + 1`
+  	  col=`expr ${col} + 1`
+  	  if [ ${col} -gt 4 ]; then
+  		col=1
+  		echo "</TR>" >> index.html
+  	  fi
+	else
+	  echo "** Unable to find ${pic} or big/${pic}.. ignoring"
+	fi
+}
+# create the directory for the big photos
+[ ! -d big ] && /bin/mkdir big
+[ -f index.html ] && /bin/mv -f index.html index_old.html
+[ -f index.dat ] && INDEXMODE=1 && touch index.dat
+
+# preamble
+/bin/cat >index.html <<!Preamble 
+<HTML>
+<HEAD>
+<TITLE>$title</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+
+BaseWidth=900;
+NewWindowWidth=BaseWidth-50;
+NewWindowHeight=Math.floor(BaseWidth*0.80)-50;
+MaxWidth=NewWindowWidth-30;
+MaxHeight=NewWindowHeight-30;
+
+
+function Disp(FileName,Title,Wo,Ho){
+  Ratio=Math.min(MaxWidth/Wo,MaxHeight/Ho);
+    if(Ratio>1)Ratio=1;
+  W=Math.floor(Wo*Ratio);
+  H=Math.floor(Ho*Ratio);
+  mW=window.open("","NewWindow","width="+NewWindowWidth+",Height="+NewWindowHeight);
+  mW.focus();
+  mW.document.open();
+  mW.document.write("<TITLE>"+FileName+"</TITLE>");
+  mW.document.write("<BODY BGCOLOR='GoldenRod'>");
+  mW.document.write("<CENTER><FONT COLOR=#8080ff SIZE=+1>"+Title+"</FONT></CENTER>");
+  mW.document.write("<TABLE BORDER=0 WIDTH="+MaxWidth+" HEIGHT="+MaxHeight+" CELLSPACING=0>");
+  mW.document.write("<TR><TD ALIGN=CENTER VLAIGN=MIDDLE>");
+  mW.document.write("<A HREF='JavaScript:window.close();'>");
+  mW.document.write("<IMG SRC="+FileName+" WIDTH="+W+" HEIGHT="+H+" BORDER=0>");
+
+  mW.document.write("</A><BR><CENTER><I>Click on picture to close window</I></CENTER>");
+  mW.document.write("</A><BR><CENTER><I>Hold Shift + Click on picture to save image</I></CENTER>");
+  mW.document.write("</TABLE>");
+  mW.document.close();
+}
+
+</SCRIPT>
+</HEAD>
+
+<BODY BGCOLOR="goldenrod">
+<BR>
+
+<CENTER>
+<B><I><FONT COLOR=:#8080ff" SIZE=7>$title</FONT></I></B>
+</CENTER>
+
+<BR><P><BR><HR>
+
+<CENTER><I>Click on picture to enlarge</I></CENTER><BR>
+<TABLE CELLPADDING=5>
+!Preamble
+
+if [ $INDEXMODE = 0 ]; then
+
+  # generate a line for each
+  for pic in `ls *jpg *gif *.JPG *.GIF`
+  do
+  	echo "${pic}\t${count}. ${pic}" >> index.dat
+  	makecell ${pic} "${count}. ${pic}"
+  done
+  
+
+else
+
+  cat index.dat | while read pic subtitle
+  do
+	if [ $pic = "#title" ]; then
+		echo "</TR>\n<TR><TD COLSPAN=4><FONT COLOR="#8080ff"><B>${subtitle}</B></FONT></TD></TR>" >> index.html
+		col=1
+	else
+		makecell ${pic} "${subtitle}"
+	fi
+  done
+
+
+fi
+  
+  [ ${col} -ne 1 ] && echo "</TR>" >> index.html
+/bin/cat >>index.html <<!Footer
+</TABLE>
+<P><A HREF="../index.html">[Back]</A></P>
+
+
+<HR>
+<P><I>Updated by:</I><BR>
+<A HREF="mailto:jon.driscoll@Aus.Sun.COM">Jon Driscoll</A> (jon.driscoll@Aus.Sun.COM)<BR>
+Last Modified: ${date}<BR>
+</BODY>
+</HTML>
+!Footer
+
+	
+
+

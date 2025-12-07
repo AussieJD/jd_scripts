@@ -25,9 +25,10 @@ lag_10min=$(( "600" / lag ))
 lag_30min=$(( "1800" / lag ))
 #
 NAME1="Router"; IP1=192.168.1.254; ZOOM1=5
-NAME2="AIMESH"; IP2=192.168.1.193; ZOOM2=5
-NAME3="Internode"; IP3=192.231.203.132; ZOOM3=3
-NAME4="Google"; IP4=8.8.8.8; ZOOM4=1
+NAME2="AIMESH"; IP2=192.168.1.104; ZOOM2=5
+NAME3="ReadyNAS"; IP3=192.168.1.99; ZOOM3=5
+NAME4="Internode"; IP4=192.231.203.132; ZOOM4=3
+NAME9="Google"; IP9=8.8.8.8; ZOOM9=1
 
 # prepare log folder
 [ ! -d "$LOGFILE_FOLDER_LOCAL" ] && mkdir "$LOGFILE_FOLDER_LOCAL"
@@ -61,7 +62,7 @@ while true
 
 
 ##1	count1=1
-	for i in "$IP1" "$IP2" "$IP3" "$IP4" ;
+	for i in "$IP1" "$IP2" "$IP3" "$IP4" "$IP9";
 	do
 ##1		echo "$count1" $i
 		myping=$(ping -t 2 -c 1 "$i" | grep -E '(icmp_seq)'| awk -F"=" '{print $4}'|cut -d" " -f1 |cut -d. -f1 | bc)
@@ -94,18 +95,24 @@ while true
 	[ -f "$BASE2/$BAR" ]   && aimesh_av_bar=$($BASE2/$BAR "$aimesh_average" "$BARLENGTH")
 	aimesh_av_bar=$( echo "${aimesh_av_bar}" | sed 's/|/>/g' )
 
-	internode_total_records=$( grep -vc "xxx" < "$LOGFILE_FOLDER_LOCAL/${IP3}.log" )
-	internode_total_sum=$( sum=0;for i in $(cat "$LOGFILE_FOLDER_LOCAL/${IP3}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	readynas_total_records=$( grep -vc "xxx" < "$LOGFILE_FOLDER_LOCAL/${IP3}.log" )
+	readynas_total_sum=$( sum=0;for i in $(cat "$LOGFILE_FOLDER_LOCAL/${IP3}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	readynas_average=$(( readynas_total_sum / readynas_total_records ))
+	[ -f "$BASE2/$BAR" ]   && readynas_av_bar=$($BASE2/$BAR "$readynas_average" "$BARLENGTH")
+	readynas_av_bar=$( echo "${readynas_av_bar}" | sed 's/|/>/g' )
+
+	internode_total_records=$( grep -vc "xxx" < "$LOGFILE_FOLDER_LOCAL/${IP4}.log" )
+	internode_total_sum=$( sum=0;for i in $(cat "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
 	internode_average=$(( internode_total_sum / internode_total_records ))
 	[ -f "$BASE2/$BAR" ]   && internode_av_bar=$($BASE2/$BAR "$internode_average" "$BARLENGTH")
 	internode_av_bar=$( echo "${internode_av_bar}" | sed 's/|/>/g' )
 
-	goog_total_records=$( grep -vc "xxx" < "$LOGFILE_FOLDER_LOCAL/${IP4}.log" )
-	goog_total_sum=$( sum=0;for i in $(cat "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
-	goog_total_sum_1min=$( sum=0;for i in $(tail -"$lag_1min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
-	goog_total_sum_5min=$( sum=0;for i in $(tail -"$lag_5min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
-	goog_total_sum_10min=$( sum=0;for i in $(tail -"$lag_10min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
-	goog_total_sum_30min=$( sum=0;for i in $(tail -"$lag_30min" "$LOGFILE_FOLDER_LOCAL/${IP4}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_records=$( grep -vc "xxx" < "$LOGFILE_FOLDER_LOCAL/${IP9}.log" )
+	goog_total_sum=$( sum=0;for i in $(cat "$LOGFILE_FOLDER_LOCAL/${IP9}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_1min=$( sum=0;for i in $(tail -"$lag_1min" "$LOGFILE_FOLDER_LOCAL/${IP9}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_5min=$( sum=0;for i in $(tail -"$lag_5min" "$LOGFILE_FOLDER_LOCAL/${IP9}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_10min=$( sum=0;for i in $(tail -"$lag_10min" "$LOGFILE_FOLDER_LOCAL/${IP9}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
+	goog_total_sum_30min=$( sum=0;for i in $(tail -"$lag_30min" "$LOGFILE_FOLDER_LOCAL/${IP9}.log"| awk -F" " '{print $4}' | grep -v xxx) ; do sum=$(( "$sum" + "$i" ));done;echo "$sum" )
 	goog_average=$(( goog_total_sum / goog_total_records ))
 	goog_average_1min=$(( goog_total_sum_1min / lag_1min ))
 	goog_average_5min=$(( goog_total_sum_5min / lag_5min ))
@@ -117,10 +124,10 @@ while true
 # print all
 	clear
 #	
+	echo " LOGFILE_FOLDER_LOCAL=$LOGFILE_FOLDER_LOCAL | LOGFILE_FOLDER_ONLINE=$LOGFILE_FOLDER_ONLINE"
+	echo " ============ Now  $mytime   ========================================================"
 	echo ""
-	echo " ============ Now     ================================================================"
-	echo ""
-	for j in "$IP1" "$IP2" "$IP3" "$IP4" ;
+	for j in "$IP1" "$IP2" "$IP3" "$IP4" "$IP9";
 	do
 		tail -1 "$LOGFILE_FOLDER_LOCAL"/"$j".log
 	done
@@ -139,13 +146,20 @@ while true
 	printf "%-53s %-40s \n" "$NAME2 ---" "$aimesh_av_bar" 
 	echo
 	
-	printf "%-53s %-40s < [ average: %-3s ms] \n" "$NAME3 ---" "$internode_av_bar" "$internode_average"
+	printf "%-53s %-40s < [ average: %-3s ms] \n" "$NAME3 ---" "$readynas_av_bar" "$readynas_average"
 	tail -"$LINES_TO_SHOW" "$LOGFILE_FOLDER_LOCAL"/"${IP3}".log
 	printf "%-53s %-40s \n" "$NAME3 ---" "$internode_av_bar" 
 	echo
 	
-	printf "%-53s %-40s < [ average (ms): %-3s | %-4s | %-4s | %-4s | %-4s ] \n" "$NAME4 ---" "$goog_av_bar" "$goog_average_1min" "$goog_average_5min" "$goog_average_10min" "$goog_average_30min" "$goog_average"
+	printf "%-53s %-40s < [ average: %-3s ms] \n" "$NAME4 ---" "$internode_av_bar" "$internode_average"
 	tail -"$LINES_TO_SHOW" "$LOGFILE_FOLDER_LOCAL"/"${IP4}".log
+	printf "%-53s %-40s \n" "$NAME4 ---" "$readynas_av_bar" 
+	echo
+	
+	printf "%-53s %-40s < [ average (ms): %-4s | %-4s | %-5s | %-5s | %-7s ] \n" "$NAME9 ---" "$goog_av_bar" "1min" "5min" "10min" "30min" "forever"
+	printf "%-53s %-58s %-4s | %-4s | %-5s | %-5s | %-7s ] \n" "------ ---" "$goog_av_bar" "$goog_average_1min" "$goog_average_5min" \
+		"$goog_average_10min" "$goog_average_30min" "$goog_average"
+	tail -"$LINES_TO_SHOW" "$LOGFILE_FOLDER_LOCAL"/"${IP9}".log
 	printf "%-53s %-40s \n" " ---" "$goog_av_bar" 
 
 	sleep "$lag"

@@ -1,0 +1,10 @@
+/Volumes/JD_SSD_1TB
+/Volumes/MT_500G
+/Volumes/MT_1TB_SPARE_180MB_s
+/Volumes/JD_Data_RAID_3.0TB
+/Volumes/MT JD_DATA_1.0TB_Local
+/Volumes/JD_Data_Misc_2.0TB
+/Volumes/JD_Data_RAID_1.5TB
+/Volumes/MT 1.5TB naked
+/Volumes/500G 2.5in SATA MT
+/Volumes/JD_Data_RAID - Master Documents

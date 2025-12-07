@@ -1,0 +1,38 @@
+# create flash archive on ausy19
+D1=`date +%Y-%m-%d`
+flarcreate -S -n ausy19-full \
+-x /u02 \
+-x /em \
+-x /em2 \
+/em2/UVH/ausy19-$D1.flar
+
+# copy flar to UVH farm
+
+# create zone
+zonecfg -z ausy19 -f zone.create.ausy19
+
+# install branded OS from flash archive
+zoneadm -z ausy19 install -p -a /migration3/ausy19.flar
+
+# /etc/inittab
+#UVH#fmc:234:off:/opt/IBM/db2/V8.FP6/bin/db2fmcd
+
+cd /migration3/zones/ausy19/root/etc/rc2.d
+mv S50isisd _UVH_S50isisd
+mv S70nddconfig _UVH_S70nddconfig
+mv S74xntpd _UVH_S74xntpd
+mv S88sendmail _UVH_S88sendmail
+mv S94vxnm-vxnetd _UVH_S94vxnm-vxnetd
+mv S95vxvm-recover _UVH_S95vxvm-recover
+mv S96net-tune _UVH_S96net-tune
+mv S96vxrsyncd _UVH_S96vxrsyncd
+mv S99audit _UVH_S99audit
+mv S99dsmcsched _UVH_S99dsmcsched
+
+cd /migration3/zones/ausy19/root/etc/rc3.d
+mv S99routes _UVH_S99routes
+
+# boot
+zoneadm -z ausy19 boot; zlogin -C ausy19
+
+# The End!

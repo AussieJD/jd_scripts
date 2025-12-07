@@ -1,0 +1,119 @@
+# data ##############################
+
+root password hash: bmXGggGdvDr1I
+
+
+# migration commands ###############
+
+
+## block01a - on auszvuvh001
+ssh aubwsacc003 
+ifconfig ce3:1 plumb
+ifconfig ce3:1 139.73.190.123 netmask 255.255.255.0 broadcast + up
+#
+ifconfig -a
+ifconfig bge0 down
+ifconfig bge0:1 down
+ifconfig bge1 down
+ifconfig bge1:1 down
+ifconfig ce0 down
+ifconfig ce1 down
+ifconfig ce2 down
+ifconfig -a
+
+
+
+## block01b - on aubwsacc003
+df -k | grep UVH
+[ ! -d /export/home/cz0qk6/UVH ] && mkdir /export/home/cz0qk6/UVH
+mount 139.73.190.120:/migration5 /export/home/cz0qk6/UVH
+df -k | grep UVH
+#
+
+
+## block01c - on aubwsacc003
+#create flash archive: (on physical) 4.9G 7m16s
+D1=`date +%Y-%m-%d`
+flarcreate -S -n aubwsacc003-full \
+-x /export/home/cz0qk6/UVH \
+-x /cust \
+-x /lc \
+-x /var/acc \
+-x /export/home \
+/export/home/cz0qk6/UVH/vcc/outage1/aubwsacc003-$D1.flasharchive
+#
+
+## block01c - on aubwsacc003
+umount /export/home/cz0qk6/UVH
+rmdir /export/home/cz0qk6/UVH
+df -k | grep UVH
+#
+
+## block02a - on auszvuvh001
+#create zone:
+#zonecfg -z aubwsacc003 -f /UVH/etc/zone-create.aubwsacc003
+zonecfg -z aubwsacc003 info
+#
+
+#zonename: aubwsacc003
+#zonepath: /zones/aubwsacc003
+#brand: solaris8 autoboot: false
+#bootargs: -m verbose
+#pool:
+#limitpriv:
+#scheduling-class:
+#ip-type: exclusive
+#hostid:
+#net:
+#        address: 30.4.113.32/24
+#        physical: igb0
+#        defrouter: 30.4.113.1
+#
+
+## block 03a - on auszvuvh001
+#install branded OS from flash archive:
+cd /migration5/vcc/outage1/
+zoneadm -z aubwsacc003 install -p -a /migration5/vcc/outage1/aubwsacc003-		#<tab complete>
+
+## block 04a - on auszvuvh001
+# /etc/inittab
+#UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+## block 04b - on auszvuvh001
+# /etc/rc2.d
+cd /zones/aubwsacc003/root/etc/rc2.d
+mv S50isisd _UVH_S50isisd
+mv S68net-tune _UVH_S68net-tune
+mv S70nddconfig _UVH_S70nddconfig
+mv S74xntpd _UVH_S74xntpd
+mv S94vxnm-vxnetd _UVH_S94vxnm-vxnetd
+mv S95vxvm-recover _UVH_S95vxvm-recover
+mv S96vxrsyncd _UVH_S96vxrsyncd
+mv S99dsmcsched _UVH_S99dsmcsched
+mv S99routes _UVH_S99routes
+
+#mv S99eds.audit _UVH_S99eds.audit
+#mv S99sneep _UVH_S99sneep
+#mv S88sendmail _UVH_S88sendmail
+
+cd /zones/aubwsacc003/root/etc/rc3.d
+
+#mv S999UnicenterAT _UVH_S999UnicenterAT
+
+#
+## block 04c - on auszvuvh001
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+#
+## block 04d
+# hostname files (for exclusive IP)
+# only need physical / primaries - as IPMP not required
+
+
+## block 05a - on auszvuvh001
+# boot
+zoneadm -z aubwsacc003 boot; zlogin -C aubwsacc003
+#
+
+# The End!

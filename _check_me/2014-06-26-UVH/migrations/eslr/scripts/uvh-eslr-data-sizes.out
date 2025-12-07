@@ -1,0 +1,19 @@
+x aubwsgipw100 / 4.4G
+1 aubwsgipw100 /var 6.5G
+1 aubwsgipw100 /opt 6.6G
+1 aubwsgipw100 /vl01 4.1G
+1 aubwsgipw100 /vl03 269M
+1 aubwsgipw100 /vl02 31G
+
+x aubwsgipw101 / 4.6G
+1 aubwsgipw101 /var 4.7G
+1 aubwsgipw101 /opt 3.4G
+1 aubwsgipw101 /vl01 7.5G
+1 aubwsgipw101 /vl03 70M
+1 aubwsgipw101 /vl02 38G
+
+2 aubwsgipw100 /va01 17G
+2 aubwsgipw100 /vb03 79G
+2 aubwsgipw100 /vb04 40G
+3 aubwsgipw100 /vb01 336G
+2 aubwsgipw100 /vb02 6.5G

@@ -1,0 +1,103 @@
+#
+ssh aubwsacc018
+bash
+df -k | grep UVH
+
+[ ! -d /export/home/cz0qk6/UVH ] && mkdir /export/home/cz0qk6/UVH
+mount 139.73.190.120:/migration5/vcc/outage2 /export/home/cz0qk6/UVH
+
+#create flash archive: (on physical) 4.6G 6m44s
+D1=`date +%Y-%m-%d`
+flarcreate -S -n aubwsacc018-full \
+-x /export/home/cz0qk6/UVH \
+-x /cust \
+-x /lc \
+-x /var/acc \
+-x /altvar \
+-x /altopt \
+-x /altroot \
+-x /export/home \
+/export/home/cz0qk6/UVH/aubwsacc018-$D1.flasharchive
+
+umount /export/home/cz0qk6/UVH
+rmdir /export/home/cz0qk6/UVH
+df -k | grep UVH
+
+###############
+
+root password hash:
+3qG5iatYiLMCs
+
+#create zone command file:
+#        create -t SUNWsolaris8
+#        set zonepath=/migration3/zones/aubwsacc018
+#        set autoboot=false
+#        set bootargs="-m verbose"
+#        add net
+#        set address=30.4.113.41/24
+#        set physical=igb0
+#        set defrouter=30.4.113.1
+#        end
+#        verify
+#        commit
+
+create zone:
+zonecfg -z aubwsacc018 -f /net/30.4.113.20/UVH/etc/zone-create.aubwsacc018test
+
+# zonecfg -z aubwsacc018 info
+zonename: aubwsacc018
+zonepath: /migration3/zones/aubwsacc018
+brand: solaris8
+autoboot: false
+bootargs: -m verbose
+pool:
+limitpriv:
+scheduling-class:
+ip-type: shared
+hostid:
+net:
+        address: 30.4.113.41/24
+        physical: igb0
+        defrouter: 30.4.113.1
+
+install branded OS from flash archive:
+zoneadm -z aubwsacc018 install -p -a /migration5/vcc/outage2/aubwsacc018-			# <tab>
+
+/etc/inittab
+  #UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+cd /zones/aubwsacc018/root/etc/rc2.d
+mv S01vxfsldlic _UVH_S01vxfsldlic
+mv S50isisd _UVH_S50isisd
+mv S68net-tune _UVH_S68net-tune
+mv S69ndd_baseline _UVH_S69ndd_baseline
+mv S70nddconfig _UVH_S70nddconfig
+mv S74xntpd _UVH_S74xntpd
+mv S94vxnm-vxnetd _UVH_S94vxnm-vxnetd
+mv S95vxvm-recover _UVH_S95vxvm-recover
+mv S96vxrsyncd _UVH_S96vxrsyncd
+mv S99dsmcsched _UVH_S99dsmcsched
+mv S99eds.audit _UVH_S99eds.audit
+mv S99routes _UVH_S99routes
+cd /zones/aubwsacc018/root/etc/rc3.d
+
+# final removed
+# rc2.d
+#mv S88sendmail _UVH_S88sendmail
+#mv S99sneep _UVH_S99sneep
+
+# rc3.d
+#mv S999UnicenterAT _UVH_S999UnicenterAT
+
+
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+# etc/hostnames
+
+# netmasks
+
+# defaultrouter
+
+
+# The End!

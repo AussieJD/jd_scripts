@@ -1,0 +1,115 @@
+#
+ssh aubwsacc006
+bash
+df -k | grep UVH
+
+ifconfig ce5:1 plumb
+ifconfig ce5:1 139.73.190.127 netmask 255.255.255.0 broadcast + up
+
+## test login to "new" interface
+# from auszvuvh001
+ssh 139.73.190.127
+
+# modify NFS share entries on 001
+add 139.73.190.127 to /migration5 in /etc/dfs/dfstab
+shareall
+
+# disable production network interfaces
+ifconfig -a
+ifconfig ce5 down
+# verify connectivity through ce5:1
+ifconfig ce0 down
+ifconfig ce0:1 down
+ifconfig ce1 down
+ifconfig ce3 down
+ifconfig -a
+
+
+[ ! -d /export/home/cz0qk6/UVH ] && mkdir /export/home/cz0qk6/UVH
+mount 139.73.190.120:/migration5 /export/home/cz0qk6/UVH
+
+#create flash archive: (on physical) 13G 18m51s
+D1=`date +%Y-%m-%d`
+flarcreate -S -n aubwsacc006-full \
+-x /export/home/cz0qk6/UVH \
+-x /app \
+-x /1a \
+-x /2a \
+-x /export/home \
+/export/home/cz0qk6/UVH/vcc/outage1/aubwsacc006-$D1.flasharchive
+
+umount /export/home/cz0qk6/UVH
+rmdir /export/home/cz0qk6/UVH
+df -k | grep UVH
+
+###############
+
+root password hash:
+XC7CkmivVA4j2
+
+#check zone command file:
+cat /UVH/etc/zone-create.aubwsacc006
+
+
+create zone:
+zonecfg -z aubwsacc006  -f /UVH/etc/zone-create.aubwsacc006
+zonecfg -z aubwsacc006 info
+
+ 
+#install branded OS from flash archive:
+zoneadm -z aubwsacc006 install -p -a /migration5/vcc/outage1/aubwsacc006-	# tab complete
+
+#
+## edits
+
+
+# /etc/inittab
+
+  #UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+# rc
+
+cd /zones/aubwsacc006/root/etc/rc2.d
+
+mv S01VXFSLDLIC _UVH_S01VXFSLDLIC
+mv S50isisd _UVH_S50isisd
+mv S68net-tune _UVH_S68net-tune
+mv S70llt _UVH_S70llt
+mv S70nddconfig _UVH_S70nddconfig
+mv S74xntpd _UVH_S74xntpd
+mv S92gab _UVH_S92gab
+mv S94vxnm-vxnetd _UVH_S94vxnm-vxnetd
+mv S95net-tune _UVH_S95net-tune
+mv S95vxvm-recover _UVH_S95vxvm-recover
+mv S96vxrsyncd _UVH_S96vxrsyncd
+mv S97vxfen _UVH_S97vxfen
+mv S99dsmcsched _UVH_S99dsmcsched
+mv S99eds.audit _UVH_S99eds.audit
+
+#mv S88sendmail _UVH_S88sendmail
+#mv S99sneep _UVH_S99sneep
+
+cd /zones/aubwsacc006/root/etc/rc3.d
+
+#mv S999UnicenterAT _UVH_S999UnicenterAT
+mv S99routes _UVH_S99routes
+
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+mv backup.hostname.ce9 _UVH_backup.hostname.ce9
+mv hostname.ce0 _UVH_hostname.ce0
+mv hostname.ce1 _UVH_hostname.ce1
+mv hostname.ce3 _UVH_hostname.ce3
+mv hostname.ce5 _UVH_hostname.ce5
+
+echo "aubwsacc006" > /zones/aubwsacc006/root/etc/hostname.aggr1305003      # 139.73.187.70
+echo "aubwsacc006-mgmt" > /zones/aubwsacc006/root/etc/hostname.aggr1306003      # 139.73.190.26
+
+#
+## boot me 
+zoneadm -z aubwsacc006 boot;zlogin -C aubwsacc006
+
+
+#
+# The End!

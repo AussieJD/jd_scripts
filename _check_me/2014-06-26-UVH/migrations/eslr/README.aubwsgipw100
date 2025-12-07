@@ -1,0 +1,70 @@
+#
+create NFS mounts: (on physical)
+ - mkdir /export/home/cz0qk6/UVH
+ - mount 139.73.184.130:/migration1 /export/home/cz0qk6/UVH
+
+create flash archive: (on physical)
+flarcreate -S -I -n aubwsgipw100-full \
+-x /export/home/cz0qk6/UVH \
+-x /vl01 \
+-x /vl02 \
+-x /vl03 \
+-x /va01 \
+-x /vb01 \
+-x /vb02 \
+-x /vb03 \
+-x /vb04 \
+/export/home/cz0qk6/UVH/eslr/aubwsgipw100/aubwsgipw100-test-2014-05-05.flasharchive
+
+root password hash:
+$1$apeGMJXt$5NN0FuKfe0xVl/v5cTMbK.
+
+hostid
+83a8df23
+
+create zone command file:
+
+see make command file in migration-notes/scripts
+
+create zone:
+zonecfg -z aubwsgipw100 -f /UVH/etc/zone-create.aubwsgipw100
+
+# zonecfg -z aubwsgipw100 info
+
+install OS from flash archive:
+zoneadm -z aubwsgipw100 install -p -a /migration1/eslr/aubwsgipw100/aubwsgipw100-test-2014-05-05.flasharchive
+
+/etc/inittab
+#UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+cd /zones/aubwsgipw100/root/etc/rc2.d
+mv S45vxpbx_exchanged _UVH_S45vxpbx_exchanged
+mv S50vxvail _UVH_S50vxvail
+mv S70nddconfig _UVH_S70nddconfig
+mv S73isisd _UVH_S73isisd
+mv S750vxpal.gridnode _UVH_S750vxpal.gridnode
+mv S75vxpal.StorageAgent _UVH_S75vxpal.StorageAgent
+mv S760vxpal.actionagent _UVH_S760vxpal.actionagent
+#mv S79opsware-agent _UVH_S79opsware-agent
+mv S92vxdcli _UVH_S92vxdcli
+mv S99dsmcsched _UVH_S99dsmcsched
+#mv S99sneep _UVH_S99sneep
+
+cd /zones/aubwsgipw100/root/etc/rc3.d
+#mv S999UnicenterAT _UVH_S999UnicenterAT
+
+#Services
+svcs -a | grep maint
+svcadm disable svc:/network/pcm:default
+svcadm disable svc:/system/vxfs/vxfsldlic:default
+svcadm disable svc:/system/auditd:default
+
+svcadm disable sendmail
+svcadm disable ntp
+svcadm disable svc:/network/sendmail-client:default
+
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+
+# The End!

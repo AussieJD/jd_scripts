@@ -1,0 +1,28 @@
+#!/bin/sh
+
+USER=cz0qk6
+#USER=root
+
+LIST=" \
+aubwsgipw100 \
+aubwsgipw101"
+
+for i in $LIST
+do
+	if [ _"$1" = _-get ]
+	then
+		if [ _"$2" = _ ] ; then echo "get what?" ; exit 1 ; fi
+		F=`echo "$i" | sed "s/.*\(.\)/\1/"`
+		CMD="scp $USER@$i:$2 $F"
+	elif [ _"$1" = _-put ]
+	then
+		if [ _"$2" = _ ] ; then echo "put what?" ; exit 1 ; fi
+		if [ _"$3" = _ ] ; then F="$2" ; else F="$3" ; fi
+		CMD="scp $2 $USER@$i:$F"
+	else
+		CMD="ssh $USER@$i $@"
+	fi
+	echo ""
+	echo "$CMD"
+	$CMD
+done

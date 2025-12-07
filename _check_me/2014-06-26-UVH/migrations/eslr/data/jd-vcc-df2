@@ -1,0 +1,106 @@
+
+ssh fz6v7m@aubwsacc003 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+003 root /dev/vx/dsk/bootdg/rootvol 8263373 1295727 6885013    16%    /
+003 root /dev/vx/dsk/bootdg/var 8263373 2201787 5978953    27%    /var
+003 root /dev/vx/dsk/bootdg/opt 8263373 1220887 6959853    15%    /opt
+003 cust /dev/vx/dsk/rootdg/cust 28983862 22853460 5840564    80%    /cust
+003 lc /dev/vx/dsk/rootdg/lc  246511   73510  148350    34%    /lc
+003 export-home /dev/vx/dsk/bootdg/home 4133838 1686174 2406326    42%    /export/home
+003 var-acc /dev/vx/dsk/rootdg/acc 4128430 1169744 2917402    29%    /var/acc
+
+ssh fz6v7m@aubwsacc004 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+004 root /dev/vx/dsk/bootdg/rootvol 8258597 1652802 6523210    21%    /
+004 root /dev/vx/dsk/bootdg/var 8258597 4819159 3356853    59%    /var
+004 root /dev/vx/dsk/bootdg/opt 8258597 3758844 4417168    46%    /opt
+004 lc /dev/vx/dsk/rootdg/lc  246511  133205   88655    61%    /lc
+004 cust /dev/vx/dsk/rootdg/cust 30965686 21111398 9544632    69%    /cust
+004 var-acc /dev/vx/dsk/rootdg/acc 4128430 2157651 1929495    53%    /var/acc
+004 export-home /dev/vx/dsk/bootdg/home 1942645  697302 1187064    38%    /export/home
+
+ssh fz6v7m@aubwsacc005 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+005 root /dev/vx/dsk/bootdg/rootvol 8258597 1641868 6534144    21%    /
+005 root /dev/vx/dsk/bootdg/var 8258597 3343291 4832721    41%    /var
+005 cust /dev/vx/dsk/rootdg/cust 30965686 14731176 15924854    49%    /cust
+005 lc /dev/vx/dsk/rootdg/lc  246511  133205   88655    61%    /lc
+005 root /dev/vx/dsk/bootdg/opt 8258597 3519979 4656033    44%    /opt
+005 export-home /dev/vx/dsk/bootdg/home 1942645  657380 1226986    35%    /export/home
+005 var-acc /dev/vx/dsk/rootdg/acc 4128430 2330665 1756481    58%    /var/acc
+
+ssh fz6v7m@aubwsacc006 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+006 root /dev/vx/dsk/bootdg/rootvol 8258597 1220434 6955578    15%    /
+006 root /dev/vx/dsk/bootdg/var 8258597 7972877  203135    98%    /var
+006 root /dev/vx/dsk/bootdg/opt 8258597 3551910 4624102    44%    /opt
+006 2a /dev/vx/dsk/rootdg/2a 3145728   55020 2897596     2%    /2a
+006 app /dev/vx/dsk/rootdg/app 10485760   26191 9805916     1%    /app
+006 1a /dev/vx/dsk/rootdg/1a 11534336 4804679 6309113    44%    /1a
+006 export-home /dev/vx/dsk/bootdg/home 1942645 1460854  423512    78%    /export/home
+
+ssh fz6v7m@aubwsacc007 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+007 root /dev/vx/dsk/bootdg/rootvol 8258597 3721269 4454743    46%    /
+007 root /dev/vx/dsk/bootdg/var 8258597 2674733 5501279    33%    /var
+007 root /dev/vx/dsk/bootdg/opt 8258597 3738742 4437270    46%    /opt
+007 cust /dev/vx/dsk/rootdg/cust 5160542    3620 5105317     1%    /cust
+007 app /dev/vx/dsk/rootdg/app 10485760 1677109 8258412    17%    /app
+007 2a /dev/vx/dsk/rootdg/2a 3145728  487251 2492376    17%    /2a
+007 1a /dev/vx/dsk/rootdg/1a 11534336 6181388 5019059    56%    /1a
+007 u06 /dev/vx/dsk/pam_dg/oradata6 10481664 6954759 3306535    68%    /u06
+007 u05 /dev/vx/dsk/pam_dg/oradata5 10485760 6929504 3334058    68%    /u05
+007 u03 /dev/vx/dsk/pam_dg/oradata3 10485760 6576343 3665188    65%    /u03
+007 u04 /dev/vx/dsk/pem_dg/oradata4 10481664 8211354 2128484    80%    /u04
+007 u02 /dev/vx/dsk/pem_dg/oradata2 10485760 9542446  884363    92%    /u02
+007 u01 /dev/vx/dsk/pem_dg/oradata1 10485760 6685978 3562375    66%    /u01
+
+ssh fz6v7m@aubwsacc008 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+008 root /dev/vx/dsk/bootdg/rootvol 8258597 1356274 6819738    17%    /
+008 root /dev/vx/dsk/bootdg/var 8258597 3812695 4363317    47%    /var
+008 lc /dev/vx/dsk/rootdg/lc  246511   73510  148350    34%    /lc
+008 cust /dev/vx/dsk/rootdg/cust 30965686 23698810 6957220    78%    /cust
+008 root /dev/vx/dsk/bootdg/opt 8258597 3827630 4348382    47%    /opt
+008 var-acc /dev/vx/dsk/rootdg/acc 4128430 1687077 2400069    42%    /var/acc
+008 export-home /dev/vx/dsk/bootdg/home 1942645  980061  904305    53%    /export/home
+
+ssh fz6v7m@aubwsacc015 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+015 root /dev/md/dsk/d100     8263373 1187067 6993673    15%    /
+015 root /dev/md/dsk/d103     8263373 6206380 1974360    76%    /var
+015 root /dev/md/dsk/d104     11360140 4496714 6749825    40%    /opt
+015 lc /dev/vx/dsk/syd0361_localdg/lc  262144  133832  120336    53%    /lc
+015 cust /dev/vx/dsk/syd0361_localdg/cust 31457280 4495537 25278015    16%    /cust
+015 export-home /dev/vx/dsk/syd0361_localdg/homevol01 10485760  206458 9636886     3%    /export/home
+015 var-acc /dev/vx/dsk/syd0361_localdg/acc 8388608   48772 7818599     1%    /var/acc
+
+ssh fz6v7m@aubwsacc016 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+016 root /dev/md/dsk/d0       8263373 2127332 5970774    27%    /
+016 root /dev/md/dsk/d3       8263373 1811003 6287103    23%    /var
+016 root /dev/md/dsk/d4       8263373 1770335 6327771    22%    /opt
+016 lc /dev/vx/dsk/syd0362_localdg/lc  262144  136779  117570    54%    /lc
+016 cust /dev/vx/dsk/syd0362_localdg/cust 31457280 9213352 20853684    31%    /cust
+016 var-acc /dev/vx/dsk/syd0362_localdg/acc 8388608  102177 7768589     2%    /var/acc
+016 export-home /dev/vx/dsk/syd0362_localdg/homevol01 10485760  211125 9633198     3%    /export/home
+
+ssh fz6v7m@aubwsacc017 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+017 root /dev/md/dsk/d0       8263373 1214816 6965924    15%    /
+017 root /dev/md/dsk/d3       8263373 2556627 5624113    32%    /var
+017 root /dev/md/dsk/d4       8263373 1012417 7168323    13%    /opt
+017 lc /dev/vx/dsk/syd0363_appdg/lc  262144  136779  117570    54%    /lc
+017 cust /dev/vx/dsk/syd0363_appdg/cust 31457280 20211656 10562411    66%    /cust
+017 export-home /dev/vx/dsk/syd0363_appdg/home-vol 10485760  794448 9086328     9%    /export/home
+017 var-acc /dev/vx/dsk/syd0363_appdg/acc 8388608  624491 7278911     8%    /var/acc
+
+ssh fz6v7m@aubwsacc018 df -k
+Filesystem            kbytes    used   avail capacity  Mounted on
+018 root /dev/md/dsk/d0       8263373 1822049 6358691    23%    /
+018 root /dev/md/dsk/d3       8263373 1659405 6521335    21%    /var
+018 root /dev/md/dsk/d4       8263373 1026516 7154224    13%    /opt
+018 lc /dev/vx/dsk/syd0364_appdg/lc  262144  136779  117570    54%    /lc
+018 cust /dev/vx/dsk/syd0364_appdg/cust 31457280 21965784 8914270    72%    /cust
+018 var-acc /dev/vx/dsk/syd0364_appdg/acc 8388608  793180 7121150    11%    /var/acc
+018 export-home /dev/vx/dsk/syd0364_appdg/home-vol 10485760  843432 9040352     9%    /export/home

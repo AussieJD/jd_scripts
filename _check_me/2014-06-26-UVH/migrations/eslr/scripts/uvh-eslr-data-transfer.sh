@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# pull files from target using rsync, an item number, and a server name
+
+REMOTE_RSYNC=/export/home/cz0qk6/rsync-sol10
+
+# list of "items" to sync from $DATA
+SOURCEFILE=/UVH/migrations/eslr/scripts/uvh-eslr-data-sizes.out
+BWL=9000			# rsync bandwidth limit (1000=1MB/s)
+BASE=/migration2/eslr		# local folder where data is sync'd to
+
+if [ $# != 2 ]
+then
+	echo "usage: $0 {index} {server}"
+	exit 1
+fi
+cd $BASE/$2 || exit 1
+
+DATE=`date +%y%m%d-%H%M`
+exec > $BASE/logs/$DATE-$2-$1 2>&1
+
+echo "`date` : $2 $1 started"
+T1=`date +%H%M`
+for i in `grep "^$1 $2 " $SOURCEFILE | awk '{print $3}'`
+ do
+	T2=`date +%H%M`
+	echo "-----"
+	echo "started: $2: $1: $i: (${T2})"
+	/usr/local/bin/rsync -a -H -x --bwlimit=$BWL --delete --inplace --progress --stats --numeric-ids --rsync-path=$REMOTE_RSYNC root@$2:$i .
+	T3=`date +%H%M` ; E1=`echo "${T3}-${T2}" | bc`
+	echo "finished: $2: $1: $i: (`date +%H%M`)($E1 mins)"
+	echo ""
+done
+T4=`date +%H%M` ; E2=`echo "${T4}-${T1}" | bc`
+echo "`date` : $2 $1 finished ($E2 mins total elapsed)"
+
+#
+# The End!

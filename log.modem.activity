@@ -1,0 +1,38 @@
+#!/bin/ksh
+#
+# this script is designed to be run by cron
+# and will poll the adelaide modem annex for connections
+#
+debug="n"
+stamp=`date`
+totalusers=`cat $HOME/modem.annex.log.stats|awk '{ print $1 }'`
+  if [ $debug = "y" ];then echo totalusers=$totalusers;fi
+count=`cat $HOME/modem.annex.log.stats | awk '{ print $2}'`
+  if [ $debug = "y" ];then echo count=$count;fi
+maxusers=`cat $HOME/modem.annex.log.stats | awk '{ print $3}'`
+  if [ $debug = "y" ];then echo maxusers=$maxusers;fi
+users=`finger @adl-ann-1 | grep -v adl-ann | grep -v Location | wc -l`
+  if [ $debug = "y" ];then echo users=$users;fi
+if [ $users -gt $maxusers ];then maxusers=${users};fi
+  if [ $debug = "y" ];then echo maxusers=$maxusers;fi
+newtotalusers=$(($totalusers+$users))
+newcount=$(($count+1))
+echo $newtotalusers $newcount $maxusers > $HOME/modem.annex.log.stats
+cp $HOME/modem.annex.log $HOME/modem.annex.log.old
+#
+echo " $stamp
+`finger @adl-ann-1 | grep -v adl-ann | grep -v Location `
+$users users. average users = $(($newtotalusers/$newcount)).$(($newtotalusers%$newcount)).. max users=$maxusers (sample count=$newcount).  
+" > $HOME/modem.annex.log
+cat $HOME/modem.annex.log.old >> $HOME/modem.annex.log
+rm $HOME/modem.annex.log.old
+  if [ $debug = "y" ]
+    then
+    echo "
+    $stamp
+    `finger @adl-ann-1 | grep -v adl-ann | grep -v Location `
+    $users users. average users = $(($newtotalusers/$newcount)).$(($newtotalusers%$newcount)).. max users=$maxusers (sample count=$newcount).
+    "
+  fi
+#
+#The end!

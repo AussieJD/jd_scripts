@@ -1,0 +1,82 @@
+#
+
+ssh aubwsacc004
+bash
+
+df -k | grep UVH
+
+[ ! -d /export/home/cz0qk6/UVH ] && mkdir /export/home/cz0qk6/UVH
+mount 139.73.190.120:/migration5/vcc/outage2 /export/home/cz0qk6/UVH
+
+#create flash archive: (on physical) 10.4G 18m12s
+D1=`date +%Y-%m-%d`
+flarcreate -S -n aubwsacc004-full \
+-x /export/home/cz0qk6/UVH \
+-x /cust \
+-x /lc \
+-x /var/acc \
+-x /export/home \
+/export/home/cz0qk6/UVH/aubwsacc004-$D1.flasharchive
+
+umount /export/home/cz0qk6/UVH
+rmdir /export/home/cz0qk6/UVH
+df -k | grep UVH
+
+###########
+
+
+
+root password hash:
+jVdS7YguDkGMQ
+
+create zone command file:
+        create -t SUNWsolaris8
+        set zonepath=/migration3/zones/aubwsacc004
+        set autoboot=false
+        set bootargs="-m verbose"
+        add net
+        set address=30.4.113.68/24
+        set physical=igb10
+        end
+        verify
+        commit
+
+create zone:
+zonecfg -z aubwsacc004 -f /net/30.4.113.20/UVH/etc/zone-create.aubwsacc004test
+
+# zonecfg -z aubwsacc004 info
+< tba >
+
+install branded OS from flash archive:
+zoneadm -z aubwsacc004 install -p -a /migration5/vcc/outage2/aubwsacc004	# <tab>
+
+/etc/inittab
+  #UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+cd /zones/aubwsacc004/root/etc/rc2.d
+mv S01VXFSLDLIC _UVH_S01VXFSLDLIC
+mv S50isisd _UVH_S50isisd
+mv S68net-tune _UVH_S68net-tune
+mv S70nddconfig _UVH_S70nddconfig
+mv S74xntpd _UVH_S74xntpd
+#mv S88sendmail _UVH_S88sendmail
+mv S94vxnm-vxnetd _UVH_S94vxnm-vxnetd
+mv S95vxvm-recover _UVH_S95vxvm-recover
+mv S96vxrsyncd _UVH_S96vxrsyncd
+mv S99dsmcsched _UVH_S99dsmcsched
+#mv S99eds.audit _UVH_S99eds.audit
+mv S99routes _UVH_S99routes
+#mv S99sneep _UVH_S99sneep
+cd /zones/aubwsacc004/root/etc/rc3.d
+#mv S999UnicenterAT _UVH_S999UnicenterAT
+
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+# hostname files
+
+# default router
+
+# netmasks
+
+# The End!

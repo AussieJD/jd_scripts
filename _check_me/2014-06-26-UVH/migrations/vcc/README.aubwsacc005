@@ -1,0 +1,118 @@
+#
+ssh aubwsacc005
+bash
+df -k | grep UVH
+
+ifconfig ce4:1 plumb
+ifconfig ce4:1 139.73.190.125 netmask 255.255.255.0 broadcast + up
+
+## test login to "new" interface
+# from auszvuvh001
+ssh 139.73.190.125
+
+# modify NFS share entries on 001
+add 139.73.190.125 to /migration5 in /etc/dfs/dfstab
+shareall
+
+ifconfig -a
+
+# disable production network interfaces
+ifconfig ce4 down
+# verify connectivity through ce4:1
+
+ifconfig ce0 down
+ifconfig ce0:1 down
+ifconfig ce1 down
+ifconfig ce2 down
+ifconfig ce3 down
+ifconfig ce4 down
+ifconfig ce9 down
+ifconfig ce9:1 down
+ifconfig -a
+
+
+[ ! -d /export/home/cz0qk6/UVH ] && mkdir /export/home/cz0qk6/UVH
+mount 139.73.190.120:/migration5 /export/home/cz0qk6/UVH
+
+#create flash archive: (on physical) 8.6G 15m2s
+D1=`date +%Y-%m-%d`
+flarcreate -S -n aubwsacc005-full \
+-x /export/home/cz0qk6/UVH \
+-x /cust \
+-x /lc \
+-x /var/acc \
+-x /export/home \
+/export/home/cz0qk6/UVH/vcc/outage1/aubwsacc005-$D1.flasharchive
+
+umount /export/home/cz0qk6/UVH
+rmdir /export/home/cz0qk6/UVH
+df -k | grep UVH
+
+###############
+
+root password hash:
+yk2sZResalfVE
+
+#
+## check  zone command file:
+cat /UVH/etc/zone-create.aubwsacc005
+
+#
+## create zone:
+
+zonecfg -z aubwsacc005  -f /UVH/etc/zone-create.aubwsacc005
+
+#
+## check zone config
+
+zonecfg -z aubwsacc005 info
+
+#
+## install branded OS from flash archive:
+
+zoneadm -z aubwsacc005 install -p -a /migration5/vcc/outage1/aubwsacc005/aubwsacc005-	# tab complete
+
+#
+## edits
+
+# /etc/inittab
+vi /zones/aubwsacc005/root/etc/inittab
+
+#UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+# rc
+
+cd /zones/aubwsacc005/root/etc/rc2.d
+mv S50isisd _UVH_S50isisd
+mv S68net-tune _UVH_S68net-tune
+mv S70nddconfig _UVH_S70nddconfig
+mv S74xntpd _UVH_S74xntpd
+mv S94vxnm-vxnetd _UVH_S94vxnm-vxnetd
+mv S95vxvm-recover _UVH_S95vxvm-recover
+mv S96vxrsyncd _UVH_S96vxrsyncd
+mv S99dsmcsched _UVH_S99dsmcsched
+mv S99routes _UVH_S99routes
+
+#mv S88sendmail _UVH_S88sendmail
+#mv S99eds.audit _UVH_S99eds.audit
+#mv S99sneep _UVH_S99sneep
+
+cd /zones/aubwsacc005/root/etc/rc3.d
+#mv S999UnicenterAT _UVH_S999UnicenterAT
+ 
+
+cd /zones/aubwsacc005/root/etc
+mv hostname.ce0 _UVH_hostname.ce0
+mv hostname.ce1 _UVH_hostname.ce1
+mv hostname.ce2 _UVH_hostname.ce2
+mv hostname.ce3 _UVH_hostname.ce3
+mv hostname.ce4 _UVH_hostname.ce4
+mv hostname.ce9 _UVH_hostname.ce9
+
+echo "aubwsacc005-data" > /zones/aubwsacc005/root/etc/hostname.aggr1305002      # 139.73.187.69
+echo "aubwsacc005-mgmt" > /zones/aubwsacc005/root/etc/hostname.aggr1306002      # 139.73.190.25
+echo "aubwsacc005" > /zones/aubwsacc005/root/etc/hostname.aggr1937002           # 205.239.180.69
+
+
+#
+## The end!

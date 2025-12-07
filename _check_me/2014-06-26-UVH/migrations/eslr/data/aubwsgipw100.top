@@ -1,0 +1,21 @@
+create -b
+set zonepath=/zones/aubwsgipw100
+set autoboot=false
+set bootargs="-m verbose"
+add net
+set address=205.239.143.46/24
+set physical=igb11
+set defrouter=205.239.143.1
+end
+add net
+set address=205.239.143.52/24
+set physical=igb11
+end
+add net
+set address=205.239.143.53/24
+set physical=igb11
+end
+add net
+set address=139.73.184.48/24
+set physical=igb11
+end

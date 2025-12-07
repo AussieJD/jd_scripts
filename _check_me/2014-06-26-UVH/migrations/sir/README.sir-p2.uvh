@@ -1,0 +1,235 @@
+website:
+http://sir.asiapacific.eds.com
+
+
+mount-commands:
+mkdir /UVH-migration1
+mount 134.251.166.230:/migration1/sir/sir-p2 /UVH-migration1
+
+
+cd /export/home/lstadmin/kev
+flar-commands:
+#sird#time ./flarcreate -S -I -n sirp2-full -x /em -x /opt/IBM -x "/UVH-migration1" \
+"/UVH-migration1/sir-d-full-`date +%Y-%m-%d-%H%M`-testmig.flasharchive"
+time ./flarcreate -S -I -n sirp2-full -x /database9 -x /db2_9/log -x /db2_9/tmp -x "/UVH-migration1" \
+"/UVH-migration1/sir-p2-full-`date +%Y-%m-%d-%H%M`-testmig.flasharchive"
+
+
+root hash: 67nRggze5HZXY		# sir-p2 physical ( 29-Apr-2014 )
+
+pre-flar: (prod migration)
+
+metaset:
+
+metaset -s syd0201
+Set name = syd0201, Set number = 9
+Host                Owner
+  auszvuvh001        Yes
+  auszvuvh002
+  auszvuvh004
+  auszvuvh005
+Drive                                            Dbase
+/dev/dsk/c0t60060E8016025C000001025C00000327d0   Yes
+
+
+LUN setup:
+
+metastat -s syd0201 -c
+syd0201/d7       p  232GB syd0201/d0
+syd0201/d6       p  200GB syd0201/d0
+syd0201/d5       p  5.0GB syd0201/d0
+syd0201/d4       p  5.0GB syd0201/d0
+syd0201/d3       p   25GB syd0201/d0
+syd0201/d2       p   16GB syd0201/d0
+syd0201/d1       p   16GB syd0201/d0
+    syd0201/d0   s  499GB /dev/dsk/c0t60060E8016025C000001025C00000327d0s0
+
+
+zone install:
+
+/zones/syd0201
+/zones/fs/syd0201/sirdata
+/zones/fs/syd0201/db2_9-log
+/zones/fs/syd0201/db2_9-tmp
+/zones/fs/syd0201/database9
+/zones/fs/syd0201/spare
+
+
+zone command file:
+
+# cat zone-create.syd0201
+create -t SUNWsolaris9
+set zonepath=/zones/syd0201
+set autoboot=false
+set bootargs="-m verbose"
+add fs
+set dir=/em/SIR/sirdata
+set special=/zones/fs/syd0201/sirdata
+set type=lofs
+end
+add fs
+set dir=/db2_9/log
+set special=/zones/fs/syd0201/db2_9-log
+set type=lofs
+end
+add fs
+set dir=/db2_9/tmp
+set special=/zones/fs/syd0201/db2_9-tmp
+set type=lofs
+end
+add fs
+set dir=/database9
+set special=/zones/fs/syd0201/database9
+set type=lofs
+end
+add fs
+set dir=/spare
+set special=/zones/fs/syd0201/spare
+set type=lofs
+end
+add net
+set address=134.251.166.233/25
+set physical=aggr100002
+set defrouter=134.251.166.129
+end
+set hostid=838c2cab
+verify
+commit
+
+
+zonecfg -z syd0201 -f /UVH/etc/zone-create.syd0201
+
+# zonecfg -z syd0201 info
+
+zonecfg -z syd0201 info
+zonename: syd0201
+zonepath: /zones/syd0201
+brand: solaris9
+autoboot: false
+bootargs: -m verbose
+pool:
+limitpriv:
+scheduling-class:
+ip-type: shared
+hostid: 838c2cab
+fs:
+        dir: /em/SIR/sirdata
+        special: /zones/fs/syd0201/sirdata
+        raw not specified
+        type: lofs
+        options: []
+fs:
+        dir: /db2_9/log
+        special: /zones/fs/syd0201/db2_9-log
+        raw not specified
+        type: lofs
+        options: []
+fs:
+        dir: /db2_9/tmp
+        special: /zones/fs/syd0201/db2_9-tmp
+        raw not specified
+        type: lofs
+        options: []
+fs:
+        dir: /database9
+        special: /zones/fs/syd0201/database9
+        raw not specified
+        type: lofs
+        options: []
+fs:
+        dir: /spare
+        special: /zones/fs/syd0201/spare
+        raw not specified
+        type: lofs
+        options: []
+net:
+        address: 134.251.166.233/25
+        physical: aggr100002
+        defrouter: 134.251.166.129
+
+
+
+zoneadm -z syd0201 install -p -a /migration1/sir/sir-d/sir-d-full-2014-04-11-testmig.flasharchive
+
+
+zone notes:
+ - hosts
+   - change entry for host (name) in /etc/hosts as the IP address is now different
+ - rc mods
+cd /zones/syd0201/root/etc
+mv rc2.d/S01vxfsldlic rc2.d/_UVH_S01vxfsldlic
+mv rc2.d/S74xntpd rc2.d/_UVH_S74xntpd
+mv rc2.d/S88sendmail rc2.d/_UVH_S88sendmail
+mv rc2.d/S94vxnm-vxnetd rc2.d/_UVH_S94vxnm-vxnetd
+mv rc2.d/S95svm.sync rc2.d/_UVH_S95svm.sync
+mv rc2.d/S95vxvm-recover rc2.d/_UVH_S95vxvm-recover
+mv rc2.d/S96vxrsyncd rc2.d/_UVH_S96vxrsyncd
+mv rc2.d/S99dsmcsched rc2.d/_UVH_S99dsmcsched
+mv rc2.d/S99eccmad rc2.d/_UVH_S99eccmad
+mv rc2.d/S99sneep rc2.d/_UVH_S99sneep
+mv rc3.d/S90samba rc3.d/_UVH_S90samba
+mv rc3.d/S96net-tune rc3.d/_UVH_S96net-tune
+mv rc3.d/S999UnicenterAT rc3.d/_UVH_S999UnicenterAT
+mv rc3.d/S99routes rc3.d/_UVH_S99routes
+ - /etc/inittab
+    - hobble tictimed, as it interferes with zlogin -C
+      - #UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+    - stop db2 until ready
+      - #UVH#fmc:234:respawn:/opt/IBM/db2/V9.7/bin/db2fmcd
+ - cd /zones/syd0201/root/etc/cfg/fp
+   mv fabric_WWN_map _UVH_fabric_WWN_map
+   mv fabric_WWN_map.old _UVH_fabric_WWN_map.old
+- check permissions of any folders NOT mounted by flash archive 
+- add line to /etc/project (in the zone) to allow more open filee
+  user.db2inst9:101:DB2 project:::process.max-file-descriptor=(privileged,65536,deny)
+- consider "modifying" /.bashrc PS1
+  - PS1='PHYS:231:\h:[\u]:\w '		#  replace 231 with IP reference
+
+
+zoneadm -z syd0201 boot;zlogin -C syd0201
+
+
+##apcap#- restore root shadow password hash
+##apcap#- liase withapp support re: putting zone "on production network" (Yin-Ping)
+##apcap#   - this exposes zone to data being sent from others (point of no return)
+##apcap#- return syd0201 to IP 160
+##apcap#   - via zonecfg
+##apcap#- re-enable rc2.d and rc3.d scripts as required
+##apcap#   - /etc/rc2.d/_UVH_S79opsware-agent --> /etc/rc2.d/S79opsware-agent
+##apcap#   - /etc/rc2.d/_UVH_S88sendmail --> /etc/rc2.d/S88sendmail
+##apcap#   - /etc/rc2.d/_UVH_S999UnicenterAT --> /etc/rc2.d/S999UnicenterAT
+##apcap#   - /etc/rc2.d/_UVH_S99audit --> /etc/rc2.d/S99audit 
+##apcap#   - /etc/rc2.d/_UVH_S99sneep --> /etc/rc2.d/S99sneep
+##apcap#   - /etc/rc3.d/_UVH_S90samba --> /etc/rc3.d/S90samba
+##apcap#- reboot zone
+##apcap#- liase withapp support re: turning cron jobs on
+##apcap#   - unless specific reasons are given, we propose returning ALL crontabs to pre-migration state at once
+##apcap#	- exceptions
+##apcap#	  - adm cron jobs for apcap should not be re-enabled (now handled by global "Capacity" package
+
+
+Misc info
+
+MAC addresses
+sir-d 	ce0:		134.251.166.219		00:03:ba:b2:2b:34
+uvh001	aggr100002:	134.251.166.135		a0:36:9f:1a:7b:28
+uvh001	igb0:		30.4.113.20		00:10:e0:35:42:ce
+uvh004	aggr100002:	134.251.166.137		a0:36:9f:1a:7a:fc
+
+Kev's thoughts:
+
+  cpu capping (DB2 license)
+  fix sudoers (comment out db2inst9)
+  re-enable crontab jobs
+  fix IP
+  do backups
+  re-eneable sendmail (anything else?)
+  restore root pwd hash
+  check /etc/system for boot noise
+  /.ssh/authorized_keys
+  /UVH-migration1
+
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+# The End

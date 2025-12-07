@@ -1,0 +1,95 @@
+#
+
+ssh aubwstsdnt001 
+df -k | grep UVH
+
+[ ! -d /UVH ] && mkdir /UVH
+mount 139.73.190.120:/migration1 /UVH
+
+#create flash archive: (on physical) 4.9G 7m16s
+flarcreate -S -n aubwstsdnt001-full \
+-x /UVH \
+/UVH/sts/aubwstsdnt001-2014-05-16.flasharchive
+
+umount /UVH
+rmdir /UVH
+df -k | grep UVH
+
+
+##############
+
+
+root password hash:
+8gYL3uXDaqziE
+
+create zone command file:
+create -t SUNWsolaris9
+set zonepath=/zones/aubwtsdnt001
+set autoboot=false
+set bootargs="-m verbose"
+add fs
+set dir=/opt/tarantella
+set special=/zones/fs/aubwtsdnt001/opt-tarantella
+set type=lofs
+end
+add net
+set address=134.251.163.142/24
+set physical=igb10
+set defrouter=134.251.163.1
+end
+add net
+set address=139.73.190.11/24
+set physical=igb10
+end
+add net
+set address=205.239.124.32/24
+set physical=igb10
+end
+set hostid=830501e1
+verify
+
+
+create zone:
+zonecfg -z aubwtsdnt001 -f /UVH/etc/zone-create.aubwtsdnt001
+
+# zonecfg -z aubwsacc003 info
+zonename: aubwsacc003
+zonepath: /migration3/zones/aubwsacc003
+brand: solaris8 autoboot: false
+bootargs: -m verbose
+pool:
+limitpriv:
+scheduling-class:
+ip-type: shared
+hostid:
+net:
+        address: 30.4.113.32/24
+        physical: igb0
+        defrouter: 30.4.113.1
+
+install branded OS from flash archive:
+zoneadm -z aubwtsdnt001 install -p -a /mirgration1/sts/aubwtsdnt001-2014-05-16.flasharchive
+
+/etc/inittab
+  #UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+cd /zones/aubwsacc003/root/etc/rc2.d
+mv S50isisdS50isisd _UVH_S50isisd
+mv S68net-tuneS68net-tune _UVH_S68net-tune
+mv S70nddconfigS70nddconfig _UVH_S70nddconfig
+mv S74xntpdS74xntpd _UVH_S74xntpd
+mv S88sendmailS88sendmail _UVH_S88sendmail
+mv S94vxnm-vxnetdS94vxnm-vxnetd _UVH_S94vxnm-vxnetd
+mv S95vxvm-recoverS95vxvm-recover _UVH_S95vxvm-recover
+mv S96vxrsyncdS96vxrsyncd _UVH_S96vxrsyncd
+mv S99dsmcschedS99dsmcsched _UVH_S99dsmcsched
+mv S99eds.auditS99eds.audit _UVH_S99eds.audit
+mv S99routesS99routes _UVH_S99routes
+mv S99sneepS99sneep _UVH_S99sneep
+cd /zones/aubwsacc003/root/etc/rc3.d
+mv S999UnicenterAT _UVH_S999UnicenterAT
+
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+# The End!

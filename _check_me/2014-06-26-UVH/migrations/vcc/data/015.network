@@ -1,0 +1,13 @@
+add net
+set address=139.73.187.113/24
+set physical=igb10
+end
+add net
+set address=205.239.180.113/24
+set physical=igb10
+set defrouter=205.239.180.1
+end
+add net
+set address=139.73.190.17/24
+set physical=igb10
+end

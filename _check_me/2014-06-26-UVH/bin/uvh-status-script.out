@@ -1,0 +1,49 @@
+#!/bin/bash
+#/usr/sbin/zoneadm list -cv | grep -v STATUS | awk '{print $1,$2,$3}'
+#/usr/sbin/zoneadm list -cv | awk '{print $1,$2,$3}'
+#
+
+# VARIABLES #################################
+
+COUNT=0
+
+# FUNCTIONS #################################
+
+function zoneinfo(){
+if [ `/usr/sbin/zoneadm list -cv | egrep -v '(STATUS|global)' | wc -l` = 0 ]
+ then
+        echo "No zones configured"
+ else
+
+        /usr/sbin/zoneadm list -cv | egrep -v '(STATUS|global)' | while read LINE
+         do
+                COUNT=`expr $COUNT + 1`
+                ZNAME=`echo $LINE | awk '{print $2}'`
+                STATUS=`echo $LINE | awk '{print $3}'`
+                ZPATH=`echo $LINE | awk '{print $4}'`
+
+                IP=`/usr/sbin/zonecfg -z $ZNAME info | grep "address" | awk -F":" '{print $2}'`
+
+		printf '%-20s %-20s %-20s %-20s %-20s\n', "zone: ${COUNT}" "${ZNAME}" "${STATUS}" "${ZPATH}" "${IP}"
+
+        done
+fi
+echo "---------------------------------------------"
+}
+
+function metasetinfo(){
+echo "=============="
+echo "Metaset Info:"
+# /usr/sbin/metaset | grep -v '^$'
+/usr/sbin/metaset | grep -v '^$' | egrep -v '(^Drive|^Host|^/dev)'
+echo "---------------------------------------------"
+}
+
+## SCRIPT #############################
+
+clear
+zoneinfo		# function
+# metasetinfo		# function
+
+
+#The End!

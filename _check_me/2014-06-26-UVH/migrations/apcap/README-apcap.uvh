@@ -1,0 +1,148 @@
+command:
+[ hint: edited flarcreate and made our own copy in /export/home/cz0qk6 ]
+time ./flarcreate -S -n apcap-full -x /data -x /UVH -x "/UVH-migration1" "/UVH-migration1/apcap/apcap-full-2014-04-11-prodmig.flasharchive"
+
+root hash: FbXc9XVizePxc
+
+pre-flar: (prod migration)
+- disable sendmail (kill)
+- console
+- ifconfig bge0: 139.73.132.134 (from 160)
+- 
+
+zone install:
+- /zones/syd0497
+- /zones/fs/syd0497/export-home
+- /zones/fs/syd0497/data
+- chmod 700 /zones/syd0497
+- 
+
+
+zone commands:
+create -t SUNWsolaris9
+set zonepath=/zones/syd0497
+set autoboot=false
+set bootargs="-m verbose"
+add fs
+set dir=/data
+set special=/zones/fs/syd0497/data
+set type=lofs
+end
+add fs
+set dir=/export/home
+set special=/zones/fs/syd0497/export-home
+set type=lofs
+end
+add net
+set address=139.73.132.135/25
+set physical=aggr112005
+set defrouter=139.73.132.129
+end
+set hostid=83e70b7d
+verify
+commit
+
+zonecfg -z syd0497 -f /UVH/etc/zone-create.syd0497
+
+# zonecfg -z syd0497 info
+zonename: syd0497
+zonepath: /zones/syd0497
+brand: solaris9
+autoboot: false
+bootargs: -m verbose
+pool:
+limitpriv:
+scheduling-class:
+ip-type: shared
+hostid: 83e70b7d
+fs:
+        dir: /data
+        special: /zones/fs/syd0497/data
+        raw not specified
+        type: lofs
+        options: []
+fs:
+        dir: /export/home
+        special: /zones/fs/syd0497/export-home
+        raw not specified
+        type: lofs
+        options: []
+net:
+        address: 139.73.132.135/25
+        physical: aggr112005
+        defrouter: 139.73.132.129
+
+zoneadm -z syd0497 install -p -a /mirgration1/apcap/apcap-full-2014-04-11-prodmig.flasharchive
+
+
+zone notes:
+ - modified flasharchive file/script
+   - placed edited file (flarcreate) in /export/home/cz0qk6
+   - line 684: removed "incorrect" syntax for ksh 	# grr. what else is also broken ?
+ - rc mods
+   - /etc/rc2.d/_UVH_S01vxfsldlic
+   - /etc/rc2.d/_UVH_S68net-tune
+   - /etc/rc2.d/_UVH_S70nddconfig
+   - /etc/rc2.d/_UVH_S71staticroutes
+   - /etc/rc2.d/_UVH_S74xntpd
+   - /etc/rc2.d/_UVH_S79opsware-agent
+   - /etc/rc2.d/_UVH_S88sendmail
+   - /etc/rc2.d/_UVH_S95svm.sync
+   - /etc/rc2.d/_UVH_S94vxnm-vxnetd
+   - /etc/rc2.d/_UVH_S95vxvm-recover
+   - /etc/rc2.d/_UVH_S96vxrsyncd
+   - /etc/rc2.d/_UVH_S999UnicenterAT
+   - /etc/rc2.d/_UVH_S99audit
+   - /etc/rc2.d/_UVH_S99dsmcsched
+   - /etc/rc2.d/_UVH_S99eccmad
+   - /etc/rc2.d/_UVH_S99eds.audit
+   - /etc/rc2.d/_UVH_S99sneep
+   - /etc/rc3.d/_UVH_S90samba
+- /etc/inittab
+   - hobble tictimed, as it interferes with zlogin -C
+     - #LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+- /etc/cfg/fp/fabric_WWN_map
+   - XXX 
+- check permissions of any folders NOT mounted by flash archive 
+   - /data was set to root:root 755, and should have been capacity:other 755
+
+zoneadm -s syd0497 boot;zlogin -C syd0497
+
+
+- restore root shadow password hash
+- liase withapp support re: putting zone "on production network" (Yin-Ping)
+   - this exposes zone to data being sent from others (point of no return)
+- return syd0497 to IP 160
+   - via zonecfg
+- re-enable rc2.d and rc3.d scripts as required
+   - /etc/rc2.d/_UVH_S79opsware-agent --> /etc/rc2.d/S79opsware-agent
+   - /etc/rc2.d/_UVH_S88sendmail --> /etc/rc2.d/S88sendmail
+   - /etc/rc2.d/_UVH_S999UnicenterAT --> /etc/rc2.d/S999UnicenterAT
+   - /etc/rc2.d/_UVH_S99audit --> /etc/rc2.d/S99audit 
+   - /etc/rc2.d/_UVH_S99sneep --> /etc/rc2.d/S99sneep
+   - /etc/rc3.d/_UVH_S90samba --> /etc/rc3.d/S90samba
+- reboot zone
+- liase withapp support re: turning cron jobs on
+   - unless specific reasons are given, we propose returning ALL crontabs to pre-migration state at once
+	- exceptions
+	  - adm cron jobs for apcap should not be re-enabled (now handled by global "Capacity" package
+- 
+
+#### Misc info
+
+MAC addresses
+apcap 	bge0:		139.73.132.160	00:03:ba:e7:0b:7d
+uvh001	aggr112005:	139.73.132.133	a0:36:9f:1a:72:b0
+uvh001	bge0:		30.4.113.20	00:10:e0:35:42:ce
+uvh004	aggr112005:	139.73.132.137	00:36:9f:1a:79:68
+
+
+Kev's thoughts:
+  re-enable crontab jobs
+  fix IP
+  do backups
+  re-eneable sendmail and samba
+  restore root pwd hash
+  remember to check /etc/system for boot noise
+
+# The End

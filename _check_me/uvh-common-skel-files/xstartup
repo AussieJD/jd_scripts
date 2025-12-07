@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+#
+unset SESSION_MANAGER
+gnome-session & 
+

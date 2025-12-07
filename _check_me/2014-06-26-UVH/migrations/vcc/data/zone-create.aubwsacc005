@@ -1,0 +1,40 @@
+create -t SUNWsolaris8
+set zonepath=/zones/aubwsacc005
+set autoboot=false
+set bootargs="-m verbose"
+add fs
+set dir=/cust
+set special=/zones/fs/aubwsacc005/cust
+set type=lofs
+end
+add fs
+set dir=/lc
+set special=/zones/fs/aubwsacc005/lc
+set type=lofs
+end
+add fs
+set dir=/export/home
+set special=/zones/fs/aubwsacc005/export-home
+set type=lofs
+end
+add fs
+set dir=/var/acc
+set special=/zones/fs/aubwsacc005/var-acc
+set type=lofs
+end
+add net
+set address=139.73.187.69/24
+set physical=igb10
+end
+add net
+set address=205.239.180.69/24
+set physical=igb10
+set defrouter=205.239.180.1
+end
+add net
+set address=139.73.190.25/24
+set physical=igb10
+end
+set hostid=83849911
+verify
+commit

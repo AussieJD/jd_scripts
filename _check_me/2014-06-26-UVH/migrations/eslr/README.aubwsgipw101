@@ -1,0 +1,152 @@
+#
+create NFS mounts: (on physical)
+ - mkdir /export/home/cz0qk6/UVH
+ - mount 139.73.184.130:/migration1 /export/home/cz0qk6/UVH
+
+create flash archive: (on physical)
+flarcreate -S -I -n aubwsgipw101-full \
+-x /export/home/cz0qk6/UVH \
+-x /vl01 \
+-x /vl02 \
+-x /vl03 \
+/export/home/cz0qk6/UVH/eslr/aubwsgipw101/aubwsgipw101-test-2014-05-05.flasharchive
+
+root password hash:
+$1$5VZb.BEN$57zFAxXtE3K3.f4JzxcVz1
+
+hostid
+839b3097
+
+create zone command file:
+        create -b
+        set zonepath=/zones/aubwsgipw101
+        set autoboot=false
+        set bootargs="-m verbose"
+        add net
+        set address=205.239.143.49/24
+        set physical=aggr1904005
+        set defrouter=205.239.143.1
+        end
+        add net
+        set address=139.73.184.49/24
+        set physical=aggr1906005
+        end
+        add net
+        set address=139.73.184.50/24
+        set physical=aggr1906005
+        end
+	set hostid=839b3097
+        set fs
+        set dir=/vl01
+        set special=/zones/fs/aubwsgipw101/vl01
+        set type=lofs
+        end
+        set fs
+        set dir=/vl03
+        set special=/zones/fs/aubwsgipw101/vl03
+        set type=lofs
+        end
+        set fs
+        set dir=/vl02
+        set special=/zones/fs/aubwsgipw101/vl02
+        set type=lofs
+        end
+        verify
+        commit
+
+create zone:
+zonecfg -z aubwsgipw101 -f /UVH/etc/zone-create.aubwsgipw101
+
+# zonecfg -z aubwsgipw101 info
+
+install OS from flash archive:
+zoneadm -z aubwsgipw101 install -p -a /migration1/eslr/aubwsgipw101/aubwsgipw101-test-2014-05-05.flasharchive
+
+/etc/inittab
+#UVH#LT:3:respawn:/usr/sbin/tictimed >/dev/msglog 2<>/dev/msglog
+
+# K01dsmcsched
+# K05appserv
+# K05patchserver
+# K06mipagent
+# K15imq
+# K16apache
+# K27boot.server
+# K50vxvail
+# K71xprtld
+# K750vxpal.gridnode
+# K75vxpal.StorageAgent
+# K760vxpal.actionagent
+# K87ctrmc
+# README
+# S00set-tmp-permissions
+# S07set-tmp-permissions
+# S10lu
+# S13ctrmc
+# S20sysetup
+# S40llc2
+# S42ncakmod
+# S45vxpbx_exchanged
+# S50vxvail
+# S70nddconfig
+# S70uucp
+# S71xprtld
+# S72autoinstall
+# S73cachefs.daemon
+# S73isisd
+# S750vxpal.gridnode
+# S75vxpal.StorageAgent
+# # S760vxpal.actionagent
+# S79opsware-agent
+# S81dodatadm.udaplt
+# S82mkdtab
+# S89PRESERVE
+# S89bdconfig
+# S91afbinit
+# S91gfbinit
+# S91ifbinit
+# S91jfbinit
+# S91zuluinit
+# S92vxdcli
+# S94ncalogd
+# S98deallocate
+# S99ITMAgents1
+# S99ITMAgents2
+# S99dsmcsched
+# S99sneep
+# _S47pppd
+# _S70uucp
+# _S72autoinstall
+# _S89PRESERVE
+ 
+cd /zones/aubwsgipw101/root/etc/rc2.d
+mv S45vxpbx_exchanged _UVH_S45vxpbx_exchanged
+mv S50vxvail _UVH_S50vxvail
+mv S70nddconfig _UVH_S70nddconfig
+mv S73isisd _UVH_S73isisd
+mv S750vxpal.gridnode _UVH_S750vxpal.gridnode
+mv S75vxpal.StorageAgent _UVH_S75vxpal.StorageAgent
+mv S760vxpal.actionagent _UVH_S760vxpal.actionagent
+#mv S79opsware-agent _UVH_S79opsware-agent
+mv S92vxdcli _UVH_S92vxdcli
+mv S99dsmcsched _UVH_S99dsmcsched
+#mv S99sneep _UVH_S99sneep
+
+cd /zones/aubwsgipw101/root/etc/rc3.d
+#mv S999UnicenterAT _UVH_S999UnicenterAT
+
+#Services
+svcs -a | grep maint
+svcadm disable svc:/network/pcm:default
+svcadm disable svc:/system/vxfs/vxfsldlic:default
+svcadm disable svc:/system/auditd:default
+#scvadm disable svc:/application/src:default	# check me
+
+svcadm disable sendmail
+svcadm disable ntp
+svcadm disable svc:/network/sendmail-client:default
+
+# sudoers
+# check /usr/local/etc/sudoers against original
+
+# The End!

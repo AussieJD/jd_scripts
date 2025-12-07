@@ -1,0 +1,54 @@
+#!/bin/bash
+
+### VARIABLES ###
+
+#LIST="auszvuvh001 auszvuvh002 auszvuvh003 auszvuvh004 auszvuvh005 auszvuvh006"
+#LIST="auszvuvh001 auszvuvh002 auszvuvh004 auszvuvh005"	# removed 003 & 006 during BAU testing
+LIST="auszvuvh001 auszvuvh004"	# 6-Mar-2014 removed 002, 003 and 005
+ALL_USER="root"
+ME=`uname -n`
+
+function answer(){
+ans1=n
+printf "Are you sure you want to do this (n)/y ? "
+read ans1
+[ ! ${ans1} ] && ans1=n
+echo "ans1=$ans1"
+[ $ans1 = "n" ] && echo "exiting..." \
+		&& exit 1
+}
+
+### script ###
+
+clear
+cat << EOF
+------------- WARNING WARNING -------------
+This script will run commands as ($ALL_USER) on the following hosts
+$LIST
+This could be dangerous if executed incorrectly.....
+EOF
+
+answer			# function
+
+for i in $LIST
+do
+	if [ _"$1" = _-get ]
+	then
+		if [ _"$2" = _ ] ; then echo "get what?" ; exit 1 ; fi
+		F=`echo "$i" | sed "s/.*\(.\)/\1/"`
+		CMD="scp $ALL_USER@$i:$2 $F"
+	elif [ _"$1" = _-put ]
+	then
+		if [ _"$2" = _ ] ; then echo "put what?" ; exit 1 ; fi
+		if [ _"$3" = _ ] ; then F="$2" ; else F="$3" ; fi
+		CMD="scp $2 $ALL_USER@$i:$F"
+	else
+#		answer			# function
+		CMD="ssh $ALL_USER@$i $@"
+	fi
+	echo ""
+	echo "$CMD"
+	$CMD
+done
+
+### The end!
